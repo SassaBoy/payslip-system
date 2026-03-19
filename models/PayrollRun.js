@@ -2,7 +2,6 @@
  * PayrollRun Model
  * Stores the result of a monthly payroll run for a company
  */
-
 const mongoose = require('mongoose');
 
 // ─── Sub-document: individual employee payslip data ──────────────────────────
@@ -12,7 +11,6 @@ const payslipSchema = new mongoose.Schema({
     ref: 'Employee',
     required: true
   },
-  // Snapshot of employee details at time of payroll (in case they change later)
   employeeSnapshot: {
     fullName: String,
     idNumber: String,
@@ -22,35 +20,54 @@ const payslipSchema = new mongoose.Schema({
     phone: String
   },
 
-  // ─── Inputs ───────────────────────────────────────────────────────────────
-  daysWorked: { type: Number, default: 0, min: 0 },
-  hoursWorked: { type: Number, default: 0, min: 0 },
+  // ─── Variable Inputs (Admin defined per month) ───────────────────────────
   overtimeHours: { type: Number, default: 0, min: 0 },
-  annualLeaveTaken: { type: Number, default: 0, min: 0 },
-  sickLeaveTaken: { type: Number, default: 0, min: 0 },
+  
+  // New Fields for flexibility
+  taxableAllowances: { 
+    type: Number, 
+    default: 0, 
+    min: 0,
+    description: "Bonuses, commissions, taxable fringe benefits"
+  },
+  nonTaxableAllowances: { 
+    type: Number, 
+    default: 0, 
+    min: 0,
+    description: "Expense reimbursements, non-taxable perks" 
+  },
+  otherDeductions: { 
+    type: Number, 
+    default: 0, 
+    min: 0,
+    description: "Staff loans, uniform costs, union fees"
+  },
 
   // ─── Calculated Values ────────────────────────────────────────────────────
   basicSalary: { type: Number, required: true, min: 0 },
   overtimePay: { type: Number, default: 0, min: 0 },
+  
+  // Total Taxable Income = Basic + Overtime + Taxable Allowances
+  totalTaxableIncome: { type: Number, default: 0 }, 
+  
+  // Gross Pay = Basic + Overtime + Taxable Allowances + Non-Taxable Allowances
   grossPay: { type: Number, required: true, min: 0 },
 
   // Tax & deductions
-  annualizedGross: { type: Number, default: 0 },  // grossPay × 12
-  annualTax: { type: Number, default: 0 },          // full-year PAYE
-  paye: { type: Number, default: 0, min: 0 },       // monthly PAYE (annualTax / 12)
+  annualizedGross: { type: Number, default: 0 },
+  paye: { type: Number, default: 0, min: 0 },
 
   // Social Security Contributions
-  sscEmployee: { type: Number, default: 0, min: 0 }, // 0.9% employee portion
-  sscEmployer: { type: Number, default: 0, min: 0 }, // 0.9% employer portion
-
-  // Employer Compensation Fund (employer only)
+  sscEmployee: { type: Number, default: 0, min: 0 },
+  sscEmployer: { type: Number, default: 0, min: 0 },
   ecf: { type: Number, default: 0, min: 0 },
 
   // ─── Totals ───────────────────────────────────────────────────────────────
-  totalDeductions: { type: Number, default: 0, min: 0 }, // PAYE + sscEmployee
+  // totalDeductions = PAYE + sscEmployee + otherDeductions
+  totalDeductions: { type: Number, default: 0, min: 0 }, 
   netPay: { type: Number, required: true, min: 0 },
 
-  // Total employer cost = grossPay + sscEmployer + ecf
+  // Total employer cost = (Gross Pay - Non-Taxable) + sscEmployer + ecf
   totalEmployerCost: { type: Number, default: 0, min: 0 }
 }, { _id: true });
 
@@ -62,17 +79,8 @@ const payrollRunSchema = new mongoose.Schema({
     required: true,
     index: true
   },
-  month: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 12
-  },
-  year: {
-    type: Number,
-    required: true,
-    min: 2020
-  },
+  month: { type: Number, required: true, min: 1, max: 12 },
+  year: { type: Number, required: true, min: 2020 },
   status: {
     type: String,
     enum: ['draft', 'finalised'],
@@ -86,13 +94,12 @@ const payrollRunSchema = new mongoose.Schema({
   totalSSCEmployee: { type: Number, default: 0 },
   totalSSCEmployer: { type: Number, default: 0 },
   totalECF: { type: Number, default: 0 },
+  totalOtherDeductions: { type: Number, default: 0 }, // Summary of manual deductions
   totalEmployerCost: { type: Number, default: 0 },
   employeeCount: { type: Number, default: 0 },
 
-  // ─── Individual payslips ──────────────────────────────────────────────────
   payslips: [payslipSchema],
 
-  // Settings snapshot at time of run
   settingsSnapshot: {
     ecfRate: Number,
     sscRate: Number,
@@ -100,15 +107,11 @@ const payrollRunSchema = new mongoose.Schema({
     taxBrackets: mongoose.Schema.Types.Mixed
   },
 
-  processedAt: {
-    type: Date,
-    default: Date.now
-  }
+  processedAt: { type: Date, default: Date.now }
 }, {
   timestamps: true
 });
 
-// ─── Compound unique index: one payroll run per company per month/year ────────
 payrollRunSchema.index({ company: 1, month: 1, year: 1 }, { unique: true });
 
 module.exports = mongoose.model('PayrollRun', payrollRunSchema);

@@ -2,7 +2,6 @@
  * User (Company Admin) Model
  * Represents a company that has registered on NamPayroll
  */
-
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -18,6 +17,10 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Owner name is required'],
     trim: true,
     maxlength: [100, 'Owner name cannot exceed 100 characters']
+  },
+  numEmployees: {
+    type: String,
+    required: [true, 'Number of employees is required']
   },
   email: {
     type: String,
@@ -38,6 +41,21 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [8, 'Password must be at least 8 characters']
   },
+  companyLogo: {
+    type: String,
+    default: null
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: {
+    type: String
+  },
+  // --- Password Reset Fields ---
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  
   role: {
     type: String,
     default: 'admin',
@@ -47,7 +65,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// ─── Hash password before saving ─────────────────────────────────────────────
+// Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   try {
@@ -59,12 +77,10 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// ─── Instance method: compare password ───────────────────────────────────────
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// ─── Prevent returning password in JSON ──────────────────────────────────────
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

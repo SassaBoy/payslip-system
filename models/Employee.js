@@ -74,7 +74,7 @@ const employeeSchema = new mongoose.Schema({
     min: 0
   },
 
-  // ─── Portal Access ─────────────────────────────────────────────────────────
+  // ─── Portal Access & Verification ─────────────────────────────────────────
   portalPassword: {
     type: String,
     // Set by admin; hashed before save
@@ -83,6 +83,15 @@ const employeeSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String,
+  
+  // For the "Forgot Password" flow we discussed
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 
   // ─── Status ───────────────────────────────────────────────────────────────
   isActive: {
@@ -98,7 +107,11 @@ employeeSchema.index({ company: 1, email: 1 }, { unique: true });
 
 // ─── Hash portal password when set ───────────────────────────────────────────
 employeeSchema.pre('save', async function (next) {
-  if (!this.isModified('portalPassword') || !this.portalPassword) return next();
+  // Only hash the password if it has been modified (or is new) AND it's not empty
+  if (!this.isModified('portalPassword') || !this.portalPassword) {
+    return next();
+  }
+
   try {
     const salt = await bcrypt.genSalt(12);
     this.portalPassword = await bcrypt.hash(this.portalPassword, salt);

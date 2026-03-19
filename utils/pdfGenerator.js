@@ -1,279 +1,239 @@
 /**
- * pdfGenerator.js - Enhanced Professional Version
+ * pdfGenerator.js – NamPayroll Professional Edition
  * ─────────────────────────────────────────────────────────────────────────────
- * Generates premium, internationally-standard payslips and compliance reports.
- * Clean, modern design matching your employee index aesthetic.
- *
- * DISCLAIMER: Payroll calculations are for guidance only.
- * Always verify with NamRA and Social Security before final submission.
+ * Full version: Supports Taxable/Non-Taxable Allowances and Manual Deductions.
+ * Updated: White Header Design & Larger Logo Support.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
 const PDFDocument = require('pdfkit');
 const moment = require('moment-timezone');
+const path = require('path');
+const fs = require('fs');
 const { formatNAD } = require('./payrollCalculator');
 
-const BRAND_COLOR = '#1a5276';      // Deep navy
-const ACCENT_COLOR = '#2980b9';     // Professional blue
-const ACCENT_LIGHT = '#3498db';
-const LIGHT_GRAY = '#f8f9fa';
-const MID_GRAY = '#95a5a6';
-const TEXT_DARK = '#2c3e50';
-const SOFT_GRAY = '#ecf0f1';
+// ── Design Tokens ─────────────────────────────────────────────────────────────
+const C = {
+  pageBg:     '#ffffff',
+  black:      '#000000',
+  darkGray:   '#1a1a1a',
+  bodyText:   '#333333',
+  subText:    '#555555',
+  medGray:    '#777777',
+  lightGray:  '#aaaaaa',
+  border:     '#eeeeee',
+  borderDark: '#dddddd',
+  rowAlt:     '#f9fafb',
+  pillBg:     '#f1f5f9',
+  accentBg:   '#f8fafc',
+  headerText: '#1e293b'
+};
 
-const DISCLAIMER = 'DISCLAIMER: Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.';
+const PAGE_W = 595;
+const PAGE_H = 842;
+const ML     = 48;
+const MR     = 48;
+const INNER  = PAGE_W - ML - MR;
+
+// ── Utility Helpers ───────────────────────────────────────────────────────────
 
 /**
- * Draw a subtle horizontal rule
+ * Renders company logo with increased dimensions
  */
-function drawRule(doc, y, color = MID_GRAY, width = 495, thickness = 0.8) {
-  doc.moveTo(50, y).lineTo(50 + width, y).strokeColor(color).lineWidth(thickness).stroke();
+function renderCompanyLogo(doc, logoPath, x, y) {
+  if (!logoPath) return false;
+  const fullPath = path.join(__dirname, '..', 'public', logoPath);
+  try {
+    if (fs.existsSync(fullPath)) {
+      // Increased width to 180 and max height to 65
+      doc.image(fullPath, x, y, { fit: [180, 65] });
+      return true;
+    }
+  } catch (err) { console.error('PDF Logo Error:', err); }
+  return false;
 }
 
-/**
- * Draw a clean labeled row (label left, value right aligned)
- */
-function drawRow(doc, label, value, y, bold = false, color = TEXT_DARK, size = 9.5) {
-  doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(size).fillColor(color);
-  doc.text(label, 60, y, { width: 200 });
-  doc.text(value, 380, y, { width: 165, align: 'right' });
+function rule(doc, y, color = C.border, thickness = 0.5) {
+  doc.save().moveTo(ML, y).lineTo(ML + INNER, y).strokeColor(color).lineWidth(thickness).stroke().restore();
 }
 
-/**
- * Modern section header with subtle accent bar
- */
-function drawSectionHeader(doc, title, y) {
-  // Soft accent underline bar
-  doc.rect(50, y, 495, 3).fill(ACCENT_COLOR);
-  doc.font('Helvetica-Bold').fontSize(11).fillColor(BRAND_COLOR);
-  doc.text(title.toUpperCase(), 52, y + 12, { letterSpacing: 0.5 });
-  return y + 28;
+function tableRow(doc, description, amount, y, opts = {}) {
+  const { descColor = C.bodyText, amountColor = C.darkGray, fontSize = 9, bold = false, shade = false, note = null } = opts;
+  
+  if (shade) {
+    doc.rect(ML, y - 4, INNER, note ? 24 : 18).fill(C.rowAlt);
+  }
+  
+  doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(fontSize).fillColor(descColor);
+  doc.text(description, ML + 10, y);
+  
+  if (note) {
+    doc.font('Helvetica').fontSize(7.5).fillColor(C.lightGray);
+    doc.text(note, ML + 10, y + 11);
+  }
+  
+  doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(fontSize).fillColor(amountColor);
+  const displayAmount = amount || 'N$ 0.00';
+  doc.text(displayAmount, ML, y, { width: INNER - 10, align: 'right' });
 }
+
+function sectionHeader(doc, title, y) {
+  const H = 20;
+  doc.rect(ML, y, INNER, H).fill(C.pillBg);
+  doc.font('Helvetica-Bold').fontSize(8).fillColor(C.headerText);
+  doc.text(title.toUpperCase(), ML + 10, y + 6, { characterSpacing: 1 });
+  return y + H + 10;
+}
+
+function footer(doc) {
+  const fy = PAGE_H - 40;
+  rule(doc, fy, C.borderDark, 0.5);
+  doc.font('Helvetica').fontSize(7).fillColor(C.lightGray);
+  doc.text('This payslip is a private and confidential document.', ML, fy + 12);
+  doc.text(`NamPayroll System • ${moment().format('YYYY-MM-DD HH:mm')}`, ML, fy + 12, { align: 'right', width: INNER });
+}
+
+// ── PAYSLIP GENERATION ────────────────────────────────────────────────────────
 
 function generatePayslipPDF(payslip, companyUser, month, year, stream) {
-  const doc = new PDFDocument({ margin: 50, size: 'A4' });
+  const doc = new PDFDocument({ margin: 0, size: 'A4' });
   doc.pipe(stream);
 
+  doc.rect(0, 0, PAGE_W, PAGE_H).fill(C.pageBg);
   const monthName = moment(`${year}-${String(month).padStart(2, '0')}-01`).format('MMMM YYYY');
-
-  // ─── Premium Header ───────────────────────────────────────────────────────
-  // Subtle gradient header
-  const grad = doc.linearGradient(0, 0, 0, 92);
-  grad.stop(0, BRAND_COLOR).stop(1, '#0f3a55');
-  doc.rect(0, 0, 595, 92).fill(grad);
-
-  doc.font('Helvetica-Bold').fontSize(28).fillColor('#ffffff');
-  doc.text('PAYSLIP', 52, 28, { letterSpacing: -0.8 });
-
-  doc.font('Helvetica').fontSize(11).fillColor('#e0f0ff');
-  doc.text(companyUser.companyName.toUpperCase(), 52, 58);
-
-  doc.font('Helvetica').fontSize(10.5).fillColor('#ffffff');
-  doc.text(monthName, 395, 32, { width: 160, align: 'right' });
-
-  let y = 120;
-
-  // ─── Employee Details ─────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Employee Details', y);
-
   const snap = payslip.employeeSnapshot || {};
-  const fields = [
-    ['Employee Name', snap.fullName || ''],
-    ['ID Number',     snap.idNumber || ''],
-    ['Position',      snap.position || ''],
-    ['Department',    snap.department || ''],
-    ['Email',         snap.email || ''],
-    ['Phone',         snap.phone || '']
-  ];
 
-  fields.forEach(([label, value]) => {
-    drawRow(doc, label, value, y);
-    y += 17;
-  });
+  // ── HEADER (White Background) ──
+  let y = 30;
+  const hasLogo = renderCompanyLogo(doc, companyUser.companyLogo, ML, y);
+  
+  // Header Text
+  doc.font('Helvetica-Bold').fontSize(14).fillColor(C.headerText)
+     .text(companyUser.companyName || 'NAMIBIA PAYROLL', ML, y + (hasLogo ? 0 : 0), { align: 'right', width: INNER });
+  
+  doc.font('Helvetica-Bold').fontSize(22).fillColor(C.black)
+     .text('PAYSLIP', ML, y + 20, { align: 'right', width: INNER });
+  
+  doc.font('Helvetica').fontSize(10).fillColor(C.medGray)
+     .text(monthName.toUpperCase(), ML, y + 45, { align: 'right', width: INNER });
 
-  y += 12;
-  drawRule(doc, y);
-  y += 18;
+  y = 110;
+  rule(doc, y, C.borderDark, 1);
+  y += 20;
 
-  // ─── Earnings ─────────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Earnings', y);
+  // ── EMPLOYEE INFO GRID ──
+  const colW = INNER / 2;
+  doc.font('Helvetica-Bold').fontSize(9).fillColor(C.black).text('EMPLOYEE DETAILS', ML, y);
+  doc.text('PAYMENT INFO', ML + colW, y);
+  y += 15;
 
-  drawRow(doc, 'Basic Salary', formatNAD(payslip.basicSalary), y, false, TEXT_DARK, 10);
-  y += 17;
+  const infoRow = (label, val, x) => {
+    doc.font('Helvetica').fontSize(8.5).fillColor(C.medGray).text(label, x, y);
+    doc.font('Helvetica-Bold').fontSize(8.5).fillColor(C.darkGray).text(val || '-', x + 75, y);
+  };
+
+  infoRow('Name:', snap.fullName, ML);
+  infoRow('Period:', monthName, ML + colW);
+  y += 14;
+  infoRow('ID No:', snap.idNumber, ML);
+  infoRow('Date:', moment().format('DD MMM YYYY'), ML + colW);
+  y += 14;
+  infoRow('Position:', snap.position, ML);
+  infoRow('Method:', 'EFT / Bank Transfer', ML + colW);
+
+  y += 30;
+
+  // ── EARNINGS ──
+  y = sectionHeader(doc, 'Earnings', y);
+  
+  tableRow(doc, 'Basic Salary', formatNAD(payslip.basicSalary), y);
+  y += 20;
 
   if (payslip.overtimePay > 0) {
-    drawRow(doc, `Overtime Pay (${payslip.overtimeHours} hrs)`, formatNAD(payslip.overtimePay), y, false, TEXT_DARK, 10);
-    y += 17;
+    tableRow(doc, 'Overtime Pay', formatNAD(payslip.overtimePay), y, { shade: true, note: `${payslip.overtimeHours} hours worked` });
+    y += 25;
   }
 
-  drawRule(doc, y, ACCENT_LIGHT, 495, 1.2);
-  y += 9;
-  drawRow(doc, 'GROSS PAY', formatNAD(payslip.grossPay), y, true, BRAND_COLOR, 11.5);
-  y += 22;
+  if (payslip.taxableAllowances > 0) {
+    tableRow(doc, 'Taxable Allowances', formatNAD(payslip.taxableAllowances), y, { note: 'Housing, Car, or Performance Bonuses' });
+    y += 25;
+  }
 
-  // ─── Deductions ───────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Deductions', y);
+  if (payslip.nonTaxableAllowances > 0) {
+    tableRow(doc, 'Non-Taxable Allowances', formatNAD(payslip.nonTaxableAllowances), y, { shade: true, note: 'Reimbursements and Exempt Perks' });
+    y += 25;
+  }
 
-  drawRow(doc, 'PAYE (Income Tax)', formatNAD(payslip.paye), y, false, TEXT_DARK, 10);
-  y += 17;
-  drawRow(doc, `SSC – Employee (0.9%)`, formatNAD(payslip.sscEmployee), y, false, TEXT_DARK, 10);
-  y += 17;
+  // Gross Pay Summary
+  doc.rect(ML, y, INNER, 22).fill(C.accentBg);
+  tableRow(doc, 'GROSS PAY', formatNAD(payslip.grossPay), y + 6, { bold: true, fontSize: 10 });
+  y += 40;
 
-  drawRule(doc, y, ACCENT_LIGHT, 495, 1.2);
-  y += 9;
-  drawRow(doc, 'TOTAL DEDUCTIONS', formatNAD(payslip.totalDeductions), y, true, '#c0392b', 11);
-  y += 22;
+  // ── DEDUCTIONS ──
+  y = sectionHeader(doc, 'Deductions', y);
 
-  // ─── Net Pay ──────────────────────────────────────────────────────────────
-  // Elegant highlighted box
-  doc.rect(50, y, 495, 42).fill(ACCENT_COLOR).strokeColor('#ffffff').lineWidth(1.5).stroke();
-  doc.font('Helvetica-Bold').fontSize(14).fillColor('#ffffff');
-  doc.text('NET PAY', 68, y + 14);
-  doc.text(formatNAD(payslip.netPay), 380, y + 14, { width: 155, align: 'right' });
-  y += 55;
+  tableRow(doc, 'P.A.Y.E (Tax)', formatNAD(payslip.paye), y, { note: 'NamRA Statutory Income Tax' });
+  y += 25;
 
-  // ─── Employer Contributions ───────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Employer Contributions (For Information Only)', y);
+  tableRow(doc, 'Social Security (Employee)', formatNAD(payslip.sscEmployee), y, { shade: true, note: '0.9% Employee Contribution' });
+  y += 25;
 
-  drawRow(doc, 'SSC – Employer (0.9%)', formatNAD(payslip.sscEmployer), y, false, TEXT_DARK, 9.8);
-  y += 17;
-  drawRow(doc, 'Employer Compensation Fund (ECF)', formatNAD(payslip.ecf), y, false, TEXT_DARK, 9.8);
-  y += 17;
-  drawRow(doc, 'Total Employer Cost', formatNAD(payslip.totalEmployerCost), y, true, BRAND_COLOR, 10.2);
-  y += 26;
+  if (payslip.otherDeductions > 0) {
+    tableRow(doc, 'Other Deductions', formatNAD(payslip.otherDeductions), y, { note: 'Manual Adjustments / Staff Loans' });
+    y += 25;
+  }
 
-  // ─── Leave Summary ────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Leave Taken This Month', y);
+  doc.rect(ML, y, INNER, 22).fill(C.accentBg);
+  tableRow(doc, 'TOTAL DEDUCTIONS', formatNAD(payslip.totalDeductions), y + 6, { bold: true });
+  y += 50;
 
-  drawRow(doc, 'Annual Leave Taken', `${payslip.annualLeaveTaken || 0} day(s)`, y);
-  y += 17;
-  drawRow(doc, 'Sick Leave Taken', `${payslip.sickLeaveTaken || 0} day(s)`, y);
-  y += 26;
+  // ── NET PAY BOX ──
+  doc.rect(ML, y, INNER, 45).fill(C.black);
+  doc.font('Helvetica-Bold').fontSize(11).fillColor('#ffffff').text('NET PAYABLE AMOUNT', ML + 15, y + 16);
+  doc.fontSize(18).text(formatNAD(payslip.netPay), ML, y + 13, { width: INNER - 15, align: 'right' });
+  y += 70;
 
-  // ─── Tax Note ─────────────────────────────────────────────────────────────
-  doc.font('Helvetica').fontSize(8).fillColor('#7f8c8d');
-  doc.text(`PAYE calculation: Annualized gross = ${formatNAD(payslip.annualizedGross)} | Annual tax = ${formatNAD(payslip.annualTax)} | Monthly PAYE = Annual tax ÷ 12`, 52, y, { width: 490 });
-  y += 18;
+  // ── LEAVE BALANCE (Optional) ──
+  doc.font('Helvetica-Bold').fontSize(8).fillColor(C.medGray).text('LEAVE BALANCES', ML, y);
+  y += 12;
+  doc.font('Helvetica').fontSize(8).fillColor(C.bodyText)
+     .text(`Annual Leave Taken: ${payslip.annualLeaveTaken || 0} days`, ML, y);
+  doc.text(`Sick Leave Taken: ${payslip.sickLeaveTaken || 0} days`, ML + 200, y);
 
-  // ─── Disclaimer ───────────────────────────────────────────────────────────
-  doc.rect(50, y, 495, 36).fill(SOFT_GRAY).strokeColor(MID_GRAY).lineWidth(0.5).stroke();
-  doc.font('Helvetica-Oblique').fontSize(7.8).fillColor('#555');
-  doc.text(DISCLAIMER, 58, y + 9, { width: 480, align: 'left' });
-  y += 48;
-
-  // ─── Footer ───────────────────────────────────────────────────────────────
-  doc.font('Helvetica').fontSize(8).fillColor(MID_GRAY);
-  doc.text(`Generated by NamPayroll • ${moment().tz('Africa/Windhoek').format('DD MMMM YYYY HH:mm')}`, 50, 780, { align: 'center', width: 495 });
-
+  footer(doc);
   doc.end();
-  return doc;
 }
 
+// ── COMPLIANCE REPORT ────────────────────────────────────────────────────────
+
 function generateCompliancePDF(payrollRun, companyUser, stream) {
-  const doc = new PDFDocument({ margin: 50, size: 'A4' });
+  const doc = new PDFDocument({ margin: 0, size: 'A4' });
   doc.pipe(stream);
+  doc.rect(0, 0, PAGE_W, PAGE_H).fill(C.pageBg);
+  
+  doc.rect(0, 0, PAGE_W, 70).fill(C.pillBg);
+  doc.font('Helvetica-Bold').fontSize(16).fillColor(C.black).text('MONTHLY COMPLIANCE REPORT', ML, 25);
+  doc.font('Helvetica').fontSize(10).fillColor(C.medGray).text(`${companyUser.companyName} • ${payrollRun.month}/${payrollRun.year}`, ML, 45);
 
-  const monthName = moment(`${payrollRun.year}-${String(payrollRun.month).padStart(2, '0')}-01`).format('MMMM YYYY');
+  let y = 100;
+  y = sectionHeader(doc, 'Statutory Remittance Summary', y);
+  
+  const stats = [
+    ['Total Gross Salaries', formatNAD(payrollRun.totalGrossPay)],
+    ['Total PAYE Liability (NamRA)', formatNAD(payrollRun.totalPAYE)],
+    ['Total SSC (Employee + Employer)', formatNAD(payrollRun.totalSSCEmployee + payrollRun.totalSSCEmployer)],
+    ['Total Workmens Comp (ECF)', formatNAD(payrollRun.totalECF)],
+    ['Total Net Salaries Distributed', formatNAD(payrollRun.totalNetPay)]
+  ];
 
-  // ─── Premium Header ───────────────────────────────────────────────────────
-  const grad = doc.linearGradient(0, 0, 0, 92);
-  grad.stop(0, BRAND_COLOR).stop(1, '#0f3a55');
-  doc.rect(0, 0, 595, 92).fill(grad);
-
-  doc.font('Helvetica-Bold').fontSize(21).fillColor('#ffffff');
-  doc.text('MONTHLY PAYROLL COMPLIANCE SUMMARY', 52, 24, { width: 480 });
-
-  doc.font('Helvetica').fontSize(11).fillColor('#e0f0ff');
-  doc.text(companyUser.companyName.toUpperCase(), 52, 55);
-  doc.text(monthName, 395, 55, { width: 160, align: 'right' });
-
-  let y = 120;
-
-  // ─── Company Info ─────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Company Details', y);
-
-  drawRow(doc, 'Company Name', companyUser.companyName, y);
-  y += 17;
-  drawRow(doc, 'Contact Email', companyUser.email, y);
-  y += 17;
-  drawRow(doc, 'Period', monthName, y);
-  y += 17;
-  drawRow(doc, 'Employees Processed', String(payrollRun.employeeCount), y, true);
-  y += 26;
-
-  // ─── PAYE Summary ─────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'PAYE (Income Tax) – For Submission to NamRA', y);
-
-  drawRow(doc, 'Total Gross Pay', formatNAD(payrollRun.totalGrossPay), y);
-  y += 17;
-  drawRow(doc, 'Total PAYE Withheld', formatNAD(payrollRun.totalPAYE), y, true, BRAND_COLOR, 11);
-  y += 26;
-
-  // ─── SSC Summary ──────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Social Security Contributions (SSC)', y);
-
-  drawRow(doc, 'Total Employee SSC (0.9%)', formatNAD(payrollRun.totalSSCEmployee), y);
-  y += 17;
-  drawRow(doc, 'Total Employer SSC (0.9%)', formatNAD(payrollRun.totalSSCEmployer), y);
-  y += 17;
-  drawRow(doc, 'Total SSC (Employee + Employer)', formatNAD(payrollRun.totalSSCEmployee + payrollRun.totalSSCEmployer), y, true);
-  y += 26;
-
-  // ─── ECF Summary ──────────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Employer Compensation Fund (ECF)', y);
-
-  drawRow(doc, 'Total ECF Contribution', formatNAD(payrollRun.totalECF), y, true);
-  y += 26;
-
-  // ─── Payroll Summary ──────────────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Payroll Summary', y);
-
-  drawRow(doc, 'Total Gross Pay', formatNAD(payrollRun.totalGrossPay), y);
-  y += 17;
-  drawRow(doc, 'Total Net Pay (to employees)', formatNAD(payrollRun.totalNetPay), y);
-  y += 17;
-  drawRow(doc, 'Total Employer Cost (Gross + SSC + ECF)', formatNAD(payrollRun.totalEmployerCost), y, true, BRAND_COLOR, 11);
-  y += 26;
-
-  // ─── Employee Breakdown Table ─────────────────────────────────────────────
-  y = drawSectionHeader(doc, 'Employee Breakdown', y);
-
-  // Table header (modern, subtle background)
-  doc.rect(50, y, 495, 19).fill('#f1f4f7');
-  doc.font('Helvetica-Bold').fontSize(8.2).fillColor(TEXT_DARK);
-  doc.text('Employee', 56, y + 6);
-  doc.text('Gross Pay', 255, y + 6, { width: 80, align: 'right' });
-  doc.text('PAYE', 335, y + 6, { width: 65, align: 'right' });
-  doc.text('SSC (Emp)', 400, y + 6, { width: 55, align: 'right' });
-  doc.text('Net Pay', 455, y + 6, { width: 85, align: 'right' });
-  y += 24;
-
-  payrollRun.payslips.forEach((ps, i) => {
-    if (i % 2 === 0) {
-      doc.rect(50, y - 2, 495, 15).fill('#fafbfc');
-    }
-    doc.font('Helvetica').fontSize(8).fillColor(TEXT_DARK);
-    doc.text(ps.employeeSnapshot?.fullName || 'Unknown', 56, y + 2, { width: 190 });
-    doc.text(formatNAD(ps.grossPay), 255, y + 2, { width: 80, align: 'right' });
-    doc.text(formatNAD(ps.paye), 335, y + 2, { width: 65, align: 'right' });
-    doc.text(formatNAD(ps.sscEmployee), 400, y + 2, { width: 55, align: 'right' });
-    doc.text(formatNAD(ps.netPay), 455, y + 2, { width: 85, align: 'right' });
-    y += 15.5;
+  stats.forEach(([label, val]) => {
+    tableRow(doc, label, val, y);
+    y += 25;
+    rule(doc, y - 5);
   });
 
-  y += 12;
-
-  // ─── Disclaimer ───────────────────────────────────────────────────────────
-  doc.rect(50, y, 495, 38).fill(SOFT_GRAY).strokeColor(MID_GRAY).lineWidth(0.5).stroke();
-  doc.font('Helvetica-Oblique').fontSize(7.8).fillColor('#555');
-  doc.text(DISCLAIMER, 58, y + 10, { width: 480 });
-
-  // ─── Footer ───────────────────────────────────────────────────────────────
-  doc.font('Helvetica').fontSize(8).fillColor(MID_GRAY);
-  doc.text(`Generated by NamPayroll • ${moment().tz('Africa/Windhoek').format('DD MMMM YYYY HH:mm')}`, 50, 780, { align: 'center', width: 495 });
-
+  footer(doc);
   doc.end();
-  return doc;
 }
 
 module.exports = { generatePayslipPDF, generateCompliancePDF };

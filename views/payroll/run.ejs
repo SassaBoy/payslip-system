@@ -3,84 +3,42 @@
 
 <style>
   .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-page-inner   { max-width:1200px; margin:0 auto; }
+  .nm-page-inner   { max-width:1400px; margin:0 auto; }
 
   .nm-form-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; }
-  .nm-back-btn { width:38px; height:38px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); background:#1a2f45; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.65); font-size:1rem; text-decoration:none; flex-shrink:0; transition:background 0.16s,color 0.16s; }
+  .nm-back-btn { width:38px; height:38px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); background:#1a2f45; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.65); text-decoration:none; flex-shrink:0; transition: 0.16s; }
   .nm-back-btn:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.92); }
   .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
   .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:5px 0 0; }
 
-  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:20px; }
-  .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-danger  { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.22); color:#f87171; }
-  .nm-alert-warning { background:rgba(245,166,35,0.08);  border:1px solid rgba(245,166,35,0.22);  color:#f5a623; }
-  .nm-alert a { color:inherit; font-weight:600; }
-
-  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; text-decoration:none; white-space:nowrap; transition:background 0.16s,box-shadow 0.16s,transform 0.1s; }
-  .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; box-shadow:0 4px 16px rgba(245,166,35,0.25); transform:translateY(-1px); }
-  .nm-btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:none; }
-  .nm-btn-primary.lg { padding:12px 32px; font-size:0.95rem; }
-  .nm-btn-ghost { display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:9px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.65); font-size:0.875rem; font-weight:500; text-decoration:none; transition:background 0.16s,color 0.16s; }
-  .nm-btn-ghost:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.92); }
-  .nm-btn-ghost.lg { padding:12px 24px; font-size:0.95rem; }
-  .nm-btn-outline { display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; background:transparent; border:1px solid rgba(96,165,250,0.3); color:#60a5fa; font-size:0.875rem; font-weight:500; cursor:pointer; transition:background 0.16s,border-color 0.16s; }
-  .nm-btn-outline:hover { background:rgba(96,165,250,0.08); border-color:rgba(96,165,250,0.5); }
-
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; transition: 0.16s; }
+  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); }
+  .nm-btn-ghost { padding:8px 16px; color:rgba(255,255,255,0.4); text-decoration:none; font-size:0.82rem; transition:0.16s; border-radius:8px; border: none; background: transparent; cursor: pointer; }
+  .nm-btn-ghost:hover { background:rgba(255,255,255,0.05); color:#fff; }
+  
   .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:20px; }
   .nm-panel-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; }
-  .nm-panel-title { display:flex; align-items:center; gap:9px; font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); }
-  .nm-panel-icon  { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; }
-  .nm-panel-icon.gold { background:rgba(245,166,35,0.1); color:#f5a623; border:1px solid rgba(245,166,35,0.15); }
-  .nm-panel-icon.blue { background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.15); }
-  .nm-panel-body { padding:20px; }
+  
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .nm-table thead th { padding:12px 14px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); background:#112235; border-bottom:1px solid rgba(255,255,255,0.07); text-align:left; }
+  .nm-table td { padding:14px 14px; vertical-align: top; border-bottom:1px solid rgba(255,255,255,0.04); }
 
-  .nm-period-form { display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; }
-  .nm-field { display:flex; flex-direction:column; gap:7px; }
-  .nm-label { font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); letter-spacing:0.01em; }
-  .nm-select { padding:9px 36px 9px 13px; background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; cursor:pointer; min-width:130px; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; transition:border-color 0.16s,box-shadow 0.16s; }
-  .nm-select:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+  /* Duplicate Highlighting */
+  .emp-row.is-duplicate { background: rgba(239, 68, 68, 0.08) !important; }
+  .duplicate-badge { display: none; color: #ef4444; font-size: 0.65rem; font-weight: 700; margin-top: 4px; text-transform: uppercase; }
+  .is-duplicate .duplicate-badge { display: block; }
 
-  .nm-count-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#60a5fa; font-size:0.75rem; font-weight:600; }
-  .nm-info-note { display:flex; align-items:center; gap:6px; font-size:0.8rem; color:rgba(255,255,255,0.35); }
+  .nm-label { font-size:0.7rem; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:6px; display:block; font-weight:600; }
+  .nm-emp-name { font-weight:600; color:rgba(255,255,255,0.88); font-size:0.85rem; margin-top: 2px; }
+  .nm-salary   { font-family:'Sora',sans-serif; font-weight:600; color:#60a5fa; white-space:nowrap; margin-top: 2px; }
 
-  .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
-  .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table thead th { padding:12px 14px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); white-space:nowrap; background:#112235; }
-  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.14s; }
-  .nm-table tbody tr:last-child { border-bottom:none; }
-  .nm-table tbody tr:hover { background:rgba(255,255,255,0.02); }
-  .nm-table td { padding:12px 14px; vertical-align:middle; color:rgba(255,255,255,0.65); }
-
-  .nm-emp-name { font-weight:600; color:rgba(255,255,255,0.88); font-size:0.875rem; }
-  .nm-emp-pos  { font-size:0.755rem; color:rgba(255,255,255,0.38); margin-top:1px; }
-  .nm-salary   { font-family:'Sora',sans-serif; font-weight:600; color:#60a5fa; font-size:0.875rem; white-space:nowrap; }
-
-  .nm-input { width:100%; padding:8px 10px; background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:7px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.855rem; outline:none; transition:border-color 0.16s,box-shadow 0.16s; -webkit-appearance:none; min-width:80px; }
-  .nm-input::placeholder { color:rgba(255,255,255,0.25); }
-  .nm-input:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
-  .nm-input.ot:focus { border-color:rgba(96,165,250,0.45); box-shadow:0 0 0 3px rgba(96,165,250,0.08); }
-  .nm-bal { font-size:0.72rem; color:rgba(255,255,255,0.3); margin-top:4px; white-space:nowrap; }
-
-  .nm-submit-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding-top:4px; }
-
-  .nm-empty { text-align:center; padding:64px 24px; color:rgba(255,255,255,0.3); }
-  .nm-empty i { font-size:2.5rem; display:block; margin-bottom:16px; opacity:0.3; }
-  .nm-empty p { font-size:0.9rem; margin-bottom:18px; }
-  .nm-empty a { color:#f5a623; text-decoration:none; font-weight:500; }
-
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-bottom:20px; font-size:0.815rem; color:rgba(245,166,35,0.8); line-height:1.5; }
-  .nm-disclaimer i { color:#f5a623; flex-shrink:0; margin-top:1px; }
-
-  @media (max-width:767.98px) {
-    .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-page-title   { font-size:1.25rem; }
-    .nm-period-form  { flex-direction:column; align-items:flex-start; }
-    .nm-select       { width:100%; }
-    .nm-submit-bar   { flex-direction:column; align-items:stretch; }
-    .nm-btn-primary.lg, .nm-btn-ghost.lg { justify-content:center; width:100%; }
-    .nm-table thead th:nth-child(4), .nm-table td:nth-child(4) { display:none; }
-  }
+  .nm-input { width:100%; padding:8px 10px; background:#0a141f; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff; font-size:0.85rem; outline:none; transition:0.16s; }
+  .nm-input:focus { border-color:#f5a623; background:#112235; box-shadow: 0 0 0 2px rgba(245,166,35,0.1); }
+  .nm-input.allowance { border-color: rgba(52, 211, 153, 0.2); color: #34d399; }
+  .nm-input.deduction { border-color: rgba(248, 113, 113, 0.2); color: #f87171; }
+  
+  .nm-bal { font-size:0.68rem; color:rgba(255,255,255,0.25); margin-top:6px; font-style: italic; }
+  .nm-submit-bar { position: sticky; bottom: 20px; display:flex; align-items:center; gap:12px; margin-top:20px; background: #1a2f45; padding: 16px; border-radius: 12px; border: 1px solid rgba(245,166,35,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
 </style>
 
 <div class="nm-page-wrapper">
@@ -90,129 +48,80 @@
       <a href="/payroll" class="nm-back-btn"><i class="bi bi-arrow-left"></i></a>
       <div>
         <h1 class="nm-page-title">Run Payroll</h1>
-        <p class="nm-page-subtitle">Enter hours/leave for each employee, then click Run Payroll</p>
+        <p class="nm-page-subtitle">Batch Entry: <%= months.find(m=>m.value===selectedMonth).name %> <%= selectedYear %></p>
       </div>
     </div>
 
-    <% if (error && error.length > 0) { %>
-      <div class="nm-alert nm-alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-circle-fill"></i>
-        <span><%= error[0] %></span>
-        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
-      </div>
-    <% } %>
+    <div id="importStatusAlert" style="display:none;" class="alert alert-info py-2 px-3 border-0 rounded-3 mb-3 small"></div>
 
-    <% if (existing) { %>
-      <div class="nm-alert nm-alert-warning">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <span>
-          <strong>Payroll already run for this period.</strong>
-          Submitting again will overwrite the existing run.
-          <a href="/payroll/<%= existing._id %>" class="ms-2">View existing run &rarr;</a>
-        </span>
-      </div>
-    <% } %>
-
-    <!-- Period Selector -->
-    <div class="nm-panel">
-      <div class="nm-panel-header">
-        <div class="nm-panel-title">
-          <span class="nm-panel-icon gold"><i class="bi bi-calendar3"></i></span>
-          Pay Period
+    <div class="d-flex justify-content-between align-items-end mb-4 gap-3">
+      <div class="nm-panel m-0" style="max-width: 450px; flex: 1;">
+        <div class="nm-panel-body py-2 px-3">
+          <form method="GET" action="/payroll/run" class="row g-2 align-items-end">
+            <div class="col"><select name="month" class="nm-input"><% months.forEach(m => { %><option value="<%= m.value %>" <%= m.value === selectedMonth ? 'selected' : '' %>><%= m.name %></option><% }) %></select></div>
+            <div class="col"><select name="year" class="nm-input"><% years.forEach(y => { %><option value="<%= y %>" <%= y === selectedYear ? 'selected' : '' %>><%= y %></option><% }) %></select></div>
+            <div class="col-auto"><button type="submit" class="nm-btn-primary" style="padding: 7px 15px;">Load</button></div>
+          </form>
         </div>
       </div>
-      <div class="nm-panel-body">
-        <form method="GET" action="/payroll/run" class="nm-period-form">
-          <div class="nm-field">
-            <label class="nm-label">Month</label>
-            <select name="month" class="nm-select">
-              <% months.forEach(m => { %>
-                <option value="<%= m.value %>" <%= m.value === selectedMonth ? 'selected' : '' %>><%= m.name %></option>
-              <% }) %>
-            </select>
-          </div>
-          <div class="nm-field">
-            <label class="nm-label">Year</label>
-            <select name="year" class="nm-select">
-              <% years.forEach(y => { %>
-                <option value="<%= y %>" <%= y === selectedYear ? 'selected' : '' %>><%= y %></option>
-              <% }) %>
-            </select>
-          </div>
-          <button type="submit" class="nm-btn-outline">
-            <i class="bi bi-arrow-clockwise"></i>Load
-          </button>
-        </form>
+      
+      <div class="d-flex gap-2 mb-1">
+        <button type="button" onclick="downloadTemplate()" class="nm-btn-ghost"><i class="bi bi-download me-1"></i> Template</button>
+        <button type="button" class="nm-btn-primary" onclick="document.getElementById('csvInput').click()">
+          <i class="bi bi-file-earmark-excel"></i> Bulk Import CSV
+        </button>
+        <input type="file" id="csvInput" style="display: none;" accept=".csv" onchange="handleCSV(this)">
       </div>
     </div>
 
-    <% if (employees.length === 0) { %>
-      <div class="nm-panel">
-        <div class="nm-empty">
-          <i class="bi bi-people"></i>
-          <p>No active employees. <a href="/employees/new">Add employees first</a>.</p>
-        </div>
-      </div>
-    <% } else { %>
-
+    <% if (employees.length > 0) { %>
     <form action="/payroll/run" method="POST" id="payrollForm">
       <input type="hidden" name="month" value="<%= selectedMonth %>" />
       <input type="hidden" name="year" value="<%= selectedYear %>" />
 
       <div class="nm-panel">
         <div class="nm-panel-header">
-          <div class="nm-panel-title">
-            <span class="nm-panel-icon blue"><i class="bi bi-table"></i></span>
-            Employee Payroll Input
-            <span class="nm-count-badge"><i class="bi bi-people"></i><%= employees.length %> employees</span>
-          </div>
-          <span class="nm-info-note"><i class="bi bi-info-circle"></i>All fields default to 0 if left blank</span>
+          <div class="nm-panel-title"><i class="bi bi-people-fill text-info"></i> Payroll Entry List</div>
+          <div class="text-muted small" id="autosaveStatus">All changes saved</div>
         </div>
 
         <div class="table-responsive">
-          <table class="nm-table">
+          <table class="nm-table" id="entryTable">
             <thead>
               <tr>
-                <th style="min-width:160px">Employee</th>
-                <th style="min-width:100px">Basic Salary</th>
-                <th style="min-width:100px">Days Worked</th>
-                <th style="min-width:100px">Hours Worked</th>
-                <th style="min-width:100px">Overtime Hrs</th>
-                <th style="min-width:100px">Annual Leave</th>
-                <th style="min-width:100px">Sick Leave</th>
+                <th style="width: 240px;">Employee</th>
+                <th style="width: 130px;">Basic Salary</th>
+                <th>Taxable Allow.</th>
+                <th>Non-Tax Allow.</th>
+                <th>Other Deduct.</th>
+                <th style="width: 80px;">OT (Hrs)</th>
+                <th style="width: 210px;">Leave Days</th>
               </tr>
             </thead>
             <tbody>
               <% employees.forEach(emp => { %>
-                <tr>
+                <tr class="emp-row" data-id-number="<%= emp.idNumber %>">
                   <td>
                     <div class="nm-emp-name"><%= emp.fullName %></div>
-                    <div class="nm-emp-pos"><%= emp.position || '' %></div>
+                    <div class="nm-bal">ID: <span class="row-id-display"><%= emp.idNumber %></span></div>
+                    <div class="duplicate-badge"><i class="bi bi-exclamation-triangle"></i> Duplicate ID Found</div>
                   </td>
+                  <td><div class="nm-salary">N$ <%= emp.basicSalary.toLocaleString() %></div></td>
+                  <td><input type="number" name="employees[<%= emp._id %>][taxableAllowances]" data-key="tax-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input allowance payroll-field" value="0" step="0.01"></td>
+                  <td><input type="number" name="employees[<%= emp._id %>][nonTaxableAllowances]" data-key="ntax-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input allowance payroll-field" value="0" step="0.01"></td>
+                  <td><input type="number" name="employees[<%= emp._id %>][otherDeductions]" data-key="ded-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input deduction payroll-field" value="0" step="0.01"></td>
+                  <td><input type="number" name="employees[<%= emp._id %>][overtimeHours]" data-key="ot-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input payroll-field" value="0" step="0.5"></td>
                   <td>
-                    <span class="nm-salary">N$ <%= emp.basicSalary.toLocaleString('en-NA', {minimumFractionDigits:2}) %></span>
-                  </td>
-                  <td>
-                    <input type="number" name="employees[<%= emp._id %>][daysWorked]"
-                           class="nm-input" value="22" min="0" max="31" step="0.5" placeholder="22" />
-                  </td>
-                  <td>
-                    <input type="number" name="employees[<%= emp._id %>][hoursWorked]"
-                           class="nm-input" value="0" min="0" step="0.5" placeholder="0" />
-                  </td>
-                  <td>
-                    <input type="number" name="employees[<%= emp._id %>][overtimeHours]"
-                           class="nm-input ot" value="0" min="0" step="0.5" placeholder="0" />
-                  </td>
-                  <td>
-                    <input type="number" name="employees[<%= emp._id %>][annualLeaveTaken]"
-                           class="nm-input" value="0" min="0" max="<%= emp.annualLeaveBalance %>" step="0.5" placeholder="0" />
-                    <div class="nm-bal">Bal: <%= emp.annualLeaveBalance %>d</div>
-                  </td>
-                  <td>
-                    <input type="number" name="employees[<%= emp._id %>][sickLeaveTaken]"
-                           class="nm-input" value="0" min="0" max="<%= emp.sickLeaveBalance %>" step="0.5" placeholder="0" />
-                    <div class="nm-bal">Bal: <%= emp.sickLeaveBalance %>d</div>
+                    <div class="d-flex gap-2">
+                      <div style="flex:1">
+                        <input type="number" name="employees[<%= emp._id %>][annualLeaveTaken]" data-key="ann-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input payroll-field" value="0" step="0.5" placeholder="Ann.">
+                        <div class="nm-bal">Bal: <%= emp.annualLeaveBalance %>d</div>
+                      </div>
+                      <div style="flex:1">
+                        <input type="number" name="employees[<%= emp._id %>][sickLeaveTaken]" data-key="sick-<%= emp._id %>" data-match="<%= emp.idNumber %>" class="nm-input payroll-field" value="0" step="0.5" placeholder="Sick">
+                        <div class="nm-bal">Bal: <%= emp.sickLeaveBalance %>d</div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               <% }) %>
@@ -221,29 +130,149 @@
         </div>
       </div>
 
-      <div class="nm-disclaimer">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <strong>Disclaimer:</strong> Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.
-      </div>
-
       <div class="nm-submit-bar">
-        <button type="submit" class="nm-btn-primary lg" id="runPayrollBtn">
-          <i class="bi bi-play-circle"></i>Run Payroll for <%= months.find(m=>m.value===selectedMonth).name %> <%= selectedYear %>
-        </button>
-        <a href="/payroll" class="nm-btn-ghost lg">Cancel</a>
+        <button type="submit" class="nm-btn-primary" id="runPayrollBtn">Process Payroll</button>
+        <button type="button" class="nm-btn-ghost ms-auto" onclick="clearDraft()">Reset Form</button>
       </div>
     </form>
-
     <% } %>
   </div>
 </div>
 
 <script>
-  document.getElementById('payrollForm')?.addEventListener('submit', function() {
-    const btn = document.getElementById('runPayrollBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+  const STORAGE_KEY = 'payroll_draft_<%= selectedMonth %>_<%= selectedYear %>';
+
+  // --- 1. DUPLICATE ID DETECTION ---
+  function checkDuplicates() {
+    const ids = {};
+    document.querySelectorAll('.emp-row').forEach(row => {
+      const id = row.getAttribute('data-id-number');
+      ids[id] = (ids[id] || 0) + 1;
+    });
+
+    document.querySelectorAll('.emp-row').forEach(row => {
+      const id = row.getAttribute('data-id-number');
+      if (ids[id] > 1) {
+        row.classList.add('is-duplicate');
+      } else {
+        row.classList.remove('is-duplicate');
+      }
+    });
+  }
+
+  // --- 2. IMPROVED CSV IMPORT (Match by ID Number) ---
+  function handleCSV(input) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const lines = reader.result.split('\n');
+      const header = lines[0].toLowerCase();
+      
+      // Validation: Ensure the file has the correct ID column
+      if (!header.includes('id number') && !header.includes('employeeid')) {
+        alert('Invalid CSV: Please ensure the first column header is "ID Number"');
+        return;
+      }
+
+      let matchCount = 0;
+      let failCount = 0;
+
+      lines.slice(1).forEach(line => {
+        const parts = line.split(',');
+        if (parts.length < 2) return;
+
+        const idNum = parts[0].trim();
+        const data = parts.slice(1); // [tax, ntax, ded, ot, ann, sick]
+
+        // Find all inputs that match this ID Number
+        const targetInputs = document.querySelectorAll(`input[data-match="${idNum}"]`);
+        
+        if (targetInputs.length > 0) {
+          matchCount++;
+          // Filter inputs by type and update
+          updateFieldGroup(idNum, 'tax-', data[0]);
+          updateFieldGroup(idNum, 'ntax-', data[1]);
+          updateFieldGroup(idNum, 'ded-', data[2]);
+          updateFieldGroup(idNum, 'ot-', data[3]);
+          updateFieldGroup(idNum, 'ann-', data[4]);
+          updateFieldGroup(idNum, 'sick-', data[5]);
+        } else {
+          failCount++;
+        }
+      });
+
+      const status = document.getElementById('importStatusAlert');
+      status.style.display = 'block';
+      status.innerHTML = `<strong>Import Result:</strong> Matched ${matchCount} records. ${failCount > 0 ? failCount + ' IDs were not found in this list.' : ''}`;
+    };
+    reader.readAsText(input.files[0]);
+  }
+
+  function updateFieldGroup(idNum, keyPrefix, value) {
+    if (value === undefined || value === "") return;
+    // We look for any input where the data-match is the ID number and data-key starts with our prefix
+    document.querySelectorAll(`input[data-match="${idNum}"]`).forEach(input => {
+        if (input.dataset.key.startsWith(keyPrefix)) {
+            input.value = value.trim();
+            input.dispatchEvent(new Event('input'));
+        }
+    });
+  }
+
+  function downloadTemplate() {
+    let csv = "ID Number,Taxable_Allow,NonTax_Allow,Deductions,OT_Hrs,Annual_Leave,Sick_Leave\n";
+    <% employees.forEach(emp => { %>
+      csv += "<%= emp.idNumber %>,0,0,0,0,0,0\n";
+    <% }) %>
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "payroll_template.csv";
+    a.click();
+  }
+
+  // --- 3. KEYBOARD NAV & AUTOSAVE ---
+  window.addEventListener('load', () => {
+    checkDuplicates();
+    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (savedData) {
+      Object.keys(savedData).forEach(key => {
+        const input = document.querySelector(`[data-key="${key}"]`);
+        if (input) input.value = savedData[key];
+      });
+    }
   });
+
+  document.getElementById('payrollForm')?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const active = document.activeElement;
+      if (active.classList.contains('payroll-field')) {
+        e.preventDefault();
+        const currentTd = active.closest('td');
+        const currentRow = active.closest('tr');
+        const colIndex = Array.from(currentRow.children).indexOf(currentTd);
+        const nextRow = currentRow.nextElementSibling;
+        if (nextRow && nextRow.children[colIndex]) {
+          const nextInput = nextRow.children[colIndex].querySelector('input');
+          if (nextInput) { nextInput.focus(); nextInput.select(); }
+        }
+      }
+    }
+  });
+
+  document.querySelectorAll('.payroll-field').forEach(input => {
+    input.addEventListener('input', (e) => {
+      let draft = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      draft[e.target.dataset.key] = e.target.value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+      document.getElementById('autosaveStatus').innerText = 'Saving...';
+      setTimeout(() => { document.getElementById('autosaveStatus').innerText = 'All changes saved'; }, 500);
+    });
+  });
+
+  function clearDraft() {
+    if(confirm('Clear all entries?')) { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+  }
 </script>
 
 <%- include('../partials/footer') %>

@@ -1,20 +1,53 @@
 <%- include('../partials/header') %>
 
 <style>
+  /* --- PREVENT NAVBAR/FOOTER OVERLAP --- */
   .nm-auth-bg {
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:#0a1520;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a1520;
     background-image: radial-gradient(ellipse at 20% 50%, rgba(245,166,35,0.04) 0%, transparent 60%),
                       radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.04) 0%, transparent 60%);
-    padding:24px 16px;
+    /* Space for fixed navbar and footer */
+    padding: 100px 16px 80px; 
+    box-sizing: border-box;
   }
 
   .nm-auth-card {
-    width:100%; max-width:420px;
-    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
-    border-radius:18px; padding:40px 36px;
-    box-shadow:0 24px 64px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 440px;
+    background: #0d1b2a;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    padding: 48px 36px 40px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
   }
+
+  /* --- FIX AUTOFILL WHITE BACKGROUND --- */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active {
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: #ffffff !important;
+      transition: background-color 5000s ease-in-out 0s;
+      box-shadow: inset 0 0 20px 20px #112235 !important;
+  }
+
+  /* --- ICON GROUP STYLING --- */
+  .nm-input-group { position: relative; }
+  .nm-input-group .nm-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.4);
+    z-index: 2;
+  }
+  .nm-input-group .nm-input { padding-left: 46px !important; }
 
   .nm-auth-brand { text-align:center; margin-bottom:32px; }
   .nm-auth-brand-icon {
@@ -24,48 +57,46 @@
     margin:0 auto 14px; box-shadow:0 4px 16px rgba(245,166,35,0.3);
   }
   .nm-auth-brand-icon i { font-size:1.5rem; color:#fff; }
-  .nm-auth-title { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0 0 4px; letter-spacing:-0.02em; }
-  .nm-auth-sub   { font-size:0.85rem; color:rgba(255,255,255,0.4); margin:0; }
+  .nm-auth-title { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0 0 4px; }
+  .nm-auth-sub { font-size:0.85rem; color:rgba(255,255,255,0.4); margin:0; }
 
-  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; border-radius:9px; font-size:0.845rem; font-weight:500; margin-bottom:18px; }
-  .nm-alert i { font-size:0.95rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1);  border:1px solid rgba(46,204,138,0.25);  color:#2ecc8a; }
-  .nm-alert-danger  { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.22); color:#f87171; }
+  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; border-radius:9px; font-size:0.845rem; margin-bottom:18px; }
+  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
+  .nm-alert-danger { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.22); color:#f87171; }
 
-  .nm-field { margin-bottom:18px; }
-  .nm-label { display:block; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); margin-bottom:7px; letter-spacing:0.01em; }
+  .nm-field { margin-bottom:18px; position: relative; }
+  .nm-label-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+  .nm-label { font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); margin:0; }
+  .nm-forgot-link { font-size: 0.78rem; color: #f5a623; text-decoration: none; }
+  .nm-forgot-link:hover { text-decoration: underline; }
+
   .nm-input {
-    display:block; width:100%; padding:11px 14px;
+    display:block; width:100%; padding:11px 13px;
     background:#112235; border:1px solid rgba(255,255,255,0.07);
-    border-radius:9px; color:rgba(255,255,255,0.92);
-    font-family:'DM Sans',sans-serif; font-size:0.9rem;
-    outline:none; transition:border-color 0.16s,box-shadow 0.16s; -webkit-appearance:none;
+    border-radius:9px; color:rgba(255,255,255,0.92); outline:none;
   }
-  .nm-input::placeholder { color:rgba(255,255,255,0.3); }
   .nm-input:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+
+  .nm-eye {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 1.2rem; color: rgba(255,255,255,0.5); cursor: pointer; z-index: 3;
+  }
 
   .nm-btn-submit {
     display:flex; align-items:center; justify-content:center; gap:8px;
     width:100%; padding:12px; border-radius:9px;
-    background:#f5a623; color:#1a0e00;
-    font-family:'DM Sans',sans-serif; font-size:0.925rem; font-weight:700;
-    border:none; cursor:pointer; margin-top:6px;
-    transition:background 0.16s,box-shadow 0.16s,transform 0.1s;
+    background:#f5a623; color:#1a0e00; font-weight:700; border:none; cursor:pointer;
+    margin-top: 24px;
   }
-  .nm-btn-submit:hover { background:#e8981e; box-shadow:0 4px 18px rgba(245,166,35,0.3); transform:translateY(-1px); }
-  .nm-btn-submit:active { transform:translateY(0); }
+  .nm-btn-submit:hover { background:#e8981e; transform:translateY(-1px); }
 
   .nm-auth-divider { display:flex; align-items:center; gap:12px; margin:24px 0; }
-  .nm-auth-divider::before,
-  .nm-auth-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
-  .nm-auth-divider span { font-size:0.75rem; color:rgba(255,255,255,0.3); white-space:nowrap; }
+  .nm-auth-divider::before, .nm-auth-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+  .nm-auth-divider span { font-size:0.75rem; color:rgba(255,255,255,0.3); }
 
-  .nm-auth-footer { text-align:center; }
-  .nm-auth-footer p { font-size:0.83rem; color:rgba(255,255,255,0.4); margin:0 0 12px; }
+  .nm-auth-footer { text-align:center; font-size:0.83rem; color:rgba(255,255,255,0.4); }
   .nm-auth-footer a { color:#f5a623; font-weight:600; text-decoration:none; }
-  .nm-auth-footer a:hover { text-decoration:underline; }
-  .nm-portal-link { display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.16s; }
-  .nm-portal-link:hover { color:rgba(255,255,255,0.65); }
+  .nm-portal-link { margin-top: 15px; display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,0.35) !important; font-weight: 400 !important; }
 </style>
 
 <div class="nm-auth-bg">
@@ -73,52 +104,55 @@
 
     <div class="nm-auth-brand">
       <div class="nm-auth-brand-icon"><i class="bi bi-coin"></i></div>
-      <h1 class="nm-auth-title">NamPayroll</h1>
-      <p class="nm-auth-sub">Namibian Payroll Made Simple</p>
+      <h1 class="nm-auth-title">Welcome Back</h1>
+      <p class="nm-auth-sub">Log in to manage your company payroll</p>
     </div>
 
-    <% if (success && success.length > 0) { %>
-      <div class="nm-alert nm-alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle-fill"></i><span><%= success[0] %></span>
-        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
-      </div>
+    <% if (typeof success !== 'undefined' && success.length > 0) { %>
+      <div class="nm-alert nm-alert-success"><i class="bi bi-check-circle-fill"></i><%= success[0] %></div>
     <% } %>
 
-    <% if (error && error.length > 0) { %>
-      <div class="nm-alert nm-alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-circle-fill"></i><span><%= error[0] %></span>
-        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
-      </div>
+    <% if (typeof error !== 'undefined' && error.length > 0) { %>
+      <div class="nm-alert nm-alert-danger"><i class="bi bi-exclamation-circle-fill"></i><%= error[0] %></div>
     <% } %>
 
-    <% if (errors && errors.length > 0) { %>
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
       <div class="nm-alert nm-alert-danger">
         <i class="bi bi-exclamation-circle-fill"></i>
         <div><% errors.forEach(e => { %><div><%= e.msg %></div><% }) %></div>
       </div>
     <% } %>
 
-    <form action="/login" method="POST" novalidate>
+    <form action="/login" method="POST">
       <div class="nm-field">
         <label class="nm-label">Email Address</label>
-        <input type="email" name="email" class="nm-input"
-               placeholder="admin@company.com"
-               value="<%= formData.email || '' %>" required />
+        <div class="nm-input-group">
+          <i class="bi bi-envelope nm-icon"></i>
+          <input type="email" name="email" class="nm-input" placeholder="admin@company.com" value="<%= formData.email || '' %>" required />
+        </div>
       </div>
-      <div class="nm-field" style="margin-bottom:24px">
-        <label class="nm-label">Password</label>
-        <input type="password" name="password" class="nm-input"
-               placeholder="••••••••" required />
+
+      <div class="nm-field">
+        <div class="nm-label-wrapper">
+          <label class="nm-label">Password</label>
+          <a href="/forgot-password" class="nm-forgot-link">Forgot Password?</a>
+        </div>
+        <div class="nm-input-group">
+          <i class="bi bi-lock nm-icon"></i>
+          <input type="password" name="password" id="password" class="nm-input" placeholder="••••••••" required />
+          <i class="bi bi-eye-slash nm-eye" id="togglePassword"></i>
+        </div>
       </div>
+
       <button type="submit" class="nm-btn-submit">
-        <i class="bi bi-box-arrow-in-right"></i>Login
+        <i class="bi bi-box-arrow-in-right"></i> Sign In
       </button>
     </form>
 
     <div class="nm-auth-divider"><span>or</span></div>
 
     <div class="nm-auth-footer">
-      <p>Don't have an account? <a href="/register">Register your company</a></p>
+      <p>Need an account? <a href="/register">Register your company</a></p>
       <a href="/portal/login" class="nm-portal-link">
         <i class="bi bi-person-badge"></i>Employee Portal Login
       </a>
@@ -128,3 +162,19 @@
 </div>
 
 <%- include('../partials/footer') %>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('password');
+
+  if(toggleBtn && passwordInput) {
+    toggleBtn.addEventListener('click', function() {
+      const isPass = passwordInput.type === 'password';
+      passwordInput.type = isPass ? 'text' : 'password';
+      this.classList.toggle('bi-eye');
+      this.classList.toggle('bi-eye-slash');
+    });
+  }
+});
+</script>

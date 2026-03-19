@@ -3,7 +3,7 @@
 
 <style>
   .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-page-inner   { max-width:1280px; margin:0 auto; }
+  .nm-page-inner   { max-width:1350px; margin:0 auto; } 
 
   .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
   .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
@@ -22,12 +22,11 @@
   .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
   .nm-table thead th { padding:13px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); white-space:nowrap; background:#112235; }
   .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.14s; }
-  .nm-table tbody tr:last-child { border-bottom:none; }
   .nm-table tbody tr:hover { background:rgba(255,255,255,0.025); }
   .nm-table td { padding:15px 16px; vertical-align:middle; color:rgba(255,255,255,0.65); }
 
   .nm-period { font-family:'Sora',sans-serif; font-weight:700; font-size:0.9rem; color:rgba(255,255,255,0.92); }
-  .nm-emp-pill { display:inline-flex; align-items:center; gap:5px; font-size:0.8rem; color:rgba(255,255,255,0.5); }
+  .nm-emp-pill { display:inline-flex; align-items:center; gap:5px; font-size:0.8rem; color:rgba(96,165,250,0.8); background:rgba(96,165,250,0.1); padding:2px 8px; border-radius:6px; }
   .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; }
   .nm-money.green  { color:#2ecc8a; }
   .nm-money.red    { color:#f87171; }
@@ -35,30 +34,24 @@
   .nm-date { font-size:0.8rem; color:rgba(255,255,255,0.35); }
 
   .nm-actions { display:flex; align-items:center; gap:6px; }
-  .nm-action-btn { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; text-decoration:none; border:1px solid rgba(255,255,255,0.07); background:transparent; cursor:pointer; transition:background 0.14s,border-color 0.14s,color 0.14s; }
+  .nm-action-btn { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; text-decoration:none; border:1px solid rgba(255,255,255,0.07); background:transparent; cursor:pointer; transition: 0.14s; }
   .nm-action-btn.view { color:#60a5fa; }
-  .nm-action-btn.view:hover { background:rgba(96,165,250,0.1); border-color:rgba(96,165,250,0.25); color:#60a5fa; }
+  .nm-action-btn.view:hover { background:rgba(96,165,250,0.1); border-color:#60a5fa; }
   .nm-action-btn.zip  { color:rgba(255,255,255,0.5); }
-  .nm-action-btn.zip:hover  { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); color:rgba(255,255,255,0.88); }
+  .nm-action-btn.zip:hover  { background:rgba(255,255,255,0.05); color:#fff; }
   .nm-action-btn.pdf  { color:#f87171; }
-  .nm-action-btn.pdf:hover  { background:rgba(248,113,113,0.1); border-color:rgba(248,113,113,0.25); color:#f87171; }
+  .nm-action-btn.pdf:hover  { background:rgba(248,113,113,0.1); border-color:#f87171; }
 
-  .nm-empty { text-align:center; padding:64px 24px; color:rgba(255,255,255,0.3); }
-  .nm-empty i { font-size:2.5rem; display:block; margin-bottom:16px; opacity:0.3; }
-  .nm-empty p { font-size:0.9rem; margin-bottom:18px; }
-  .nm-empty a { color:#f5a623; text-decoration:none; font-weight:500; }
-  .nm-empty a:hover { text-decoration:underline; }
+  .nm-empty { text-align:center; padding:80px 24px; color:rgba(255,255,255,0.3); }
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); }
 
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); line-height:1.5; }
-  .nm-disclaimer i { color:#f5a623; flex-shrink:0; margin-top:1px; }
-
+  @media (max-width:992px) {
+    .nm-table thead th:nth-child(5), .nm-table td:nth-child(5) { display:none; }
+  }
   @media (max-width:767.98px) {
     .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-page-header  { flex-direction:column; align-items:flex-start; }
-    .nm-table thead th:nth-child(3),
-    .nm-table thead th:nth-child(6),
-    .nm-table td:nth-child(3),
-    .nm-table td:nth-child(6) { display:none; }
+    .nm-table thead th:nth-child(3), .nm-table td:nth-child(3),
+    .nm-table thead th:nth-child(6), .nm-table td:nth-child(6) { display:none; }
   }
 </style>
 
@@ -66,7 +59,7 @@
   <div class="nm-page-inner">
 
     <% if (success && success.length > 0) { %>
-      <div class="nm-alert nm-alert-success alert-dismissible fade show" role="alert">
+      <div class="nm-alert nm-alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle-fill"></i>
         <span><%= success[0] %></span>
         <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
@@ -76,19 +69,19 @@
     <div class="nm-page-header">
       <div>
         <h1 class="nm-page-title">Payroll History</h1>
-        <p class="nm-page-subtitle"><%= payrolls.length %> payroll run(s)</p>
+        <p class="nm-page-subtitle">Total records: <%= payrolls.length %></p>
       </div>
       <a href="/payroll/run" class="nm-btn-primary">
-        <i class="bi bi-play-circle me-1"></i>Run Payroll
+        <i class="bi bi-plus-lg me-1"></i>New Payroll Run
       </a>
     </div>
 
     <% if (payrolls.length === 0) { %>
       <div class="nm-panel">
         <div class="nm-empty">
-          <i class="bi bi-receipt"></i>
-          <p>No payroll runs yet.</p>
-          <a href="/payroll/run">Run your first payroll &rarr;</a>
+          <i class="bi bi-stack" style="font-size: 3rem; opacity: 0.1; display: block; margin-bottom: 20px;"></i>
+          <p>You haven't processed any payroll runs yet.</p>
+          <a href="/payroll/run" class="nm-btn-primary" style="background: transparent; border: 1px solid #f5a623; color: #f5a623;">Start First Run</a>
         </div>
       </div>
     <% } else { %>
@@ -97,31 +90,43 @@
           <table class="nm-table">
             <thead>
               <tr>
-                <th>Period</th>
-                <th>Employees</th>
+                <th>Pay Period</th>
+                <th>Staff</th>
                 <th>Total Gross</th>
                 <th>Total Net</th>
                 <th>Total PAYE</th>
-                <th>Employer Cost</th>
-                <th>Processed</th>
-                <th>Actions</th>
+                <th>Total Co. Cost</th>
+                <th>Processed On</th>
+                <th class="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <% payrolls.forEach(run => { %>
+              <% payrolls.sort((a,b) => b.year - a.year || b.month - a.month).forEach(run => { %>
                 <tr>
-                  <td><span class="nm-period"><%= moment(`${run.year}-${String(run.month).padStart(2,'0')}-01`).format('MMMM YYYY') %></span></td>
-                  <td><span class="nm-emp-pill"><i class="bi bi-people"></i><%= run.employeeCount %></span></td>
-                  <td><span class="nm-money plain">N$ <%= run.totalGrossPay.toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money green">N$ <%= run.totalNetPay.toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money red">N$ <%= run.totalPAYE.toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money plain">N$ <%= run.totalEmployerCost.toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
+                  <td>
+                    <span class="nm-period">
+                      <%= moment(`${run.year}-${String(run.month).padStart(2,'0')}-01`).format('MMMM YYYY') %>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="nm-emp-pill">
+                      <i class="bi bi-people-fill"></i><%= run.employeeCount %>
+                    </span>
+                  </td>
+                  <td><span class="nm-money plain">N$ <%= (run.totalGrossPay || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
+                  <td><span class="nm-money green">N$ <%= (run.totalNetPay || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
+                  <td><span class="nm-money red">N$ <%= (run.totalPAYE || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
+                  <td>
+                    <span class="nm-money plain" style="color: #a78bfa;">
+                      N$ <%= (run.totalEmployerCost || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %>
+                    </span>
+                  </td>
                   <td><span class="nm-date"><%= moment(run.processedAt).format('DD MMM YYYY') %></span></td>
                   <td>
-                    <div class="nm-actions">
-                      <a href="/payroll/<%= run._id %>" class="nm-action-btn view" title="View"><i class="bi bi-eye"></i></a>
-                      <a href="/payroll/<%= run._id %>/zip" class="nm-action-btn zip" title="Download all payslips"><i class="bi bi-file-zip"></i></a>
-                      <a href="/payroll/<%= run._id %>/compliance-pdf" class="nm-action-btn pdf" title="Compliance PDF"><i class="bi bi-file-earmark-pdf"></i></a>
+                    <div class="nm-actions justify-content-end">
+                      <a href="/payroll/<%= run._id %>" class="nm-action-btn view" title="View Detailed Report"><i class="bi bi-eye-fill"></i></a>
+                      <a href="/payroll/<%= run._id %>/zip" class="nm-action-btn zip" title="Download ZIP Payslips"><i class="bi bi-file-earmark-zip-fill"></i></a>
+                      <a href="/payroll/<%= run._id %>/compliance-pdf" class="nm-action-btn pdf" title="Compliance Summary"><i class="bi bi-file-earmark-check-fill"></i></a>
                     </div>
                   </td>
                 </tr>
@@ -132,9 +137,9 @@
       </div>
     <% } %>
 
-    <div class="nm-disclaimer mt-4">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <strong>Disclaimer:</strong> Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.
+    <div class="nm-disclaimer">
+      <i class="bi bi-shield-check"></i>
+      <strong>Namibia Payroll Compliance:</strong> Ensure your VET Levy and Social Security submissions match these processed totals for the corresponding period.
     </div>
 
   </div>

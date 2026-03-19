@@ -18,182 +18,159 @@
   .nm-form-card-body { padding:20px; }
 
   .nm-label { display:block; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); margin-bottom:7px; letter-spacing:0.01em; }
-  .nm-hint  { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-top:5px; }
+  .nm-hint  { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-top:5px; line-height:1.4; }
 
-  .nm-input { display:block; width:100%; padding:9px 13px; background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:border-color 0.16s,box-shadow 0.16s; -webkit-appearance:none; }
-  .nm-input::placeholder { color:rgba(255,255,255,0.3); }
+  .nm-input { display:block; width:100%; padding:9px 13px; background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:all 0.16s; }
   .nm-input:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
 
-  .nm-input-group { display:flex; align-items:stretch; border:1px solid rgba(255,255,255,0.07); border-radius:8px; overflow:hidden; background:#112235; transition:border-color 0.16s,box-shadow 0.16s; }
-  .nm-input-group:focus-within { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
-  .nm-input-addon { padding:9px 13px; background:#1a2f45; border-right:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.4); font-size:0.875rem; font-weight:600; white-space:nowrap; display:flex; align-items:center; }
-  .nm-input-addon.right { border-right:none; border-left:1px solid rgba(255,255,255,0.07); }
-  .nm-input-group .nm-input { border:none !important; border-radius:0 !important; box-shadow:none !important; background:transparent; flex:1; }
-  .nm-input-group .nm-input:focus { box-shadow:none !important; }
+  .nm-input-group { display:flex; align-items:stretch; border:1px solid rgba(255,255,255,0.07); border-radius:8px; overflow:hidden; background:#112235; }
+  .nm-input-addon { padding:9px 13px; background:#1a2f45; color:rgba(255,255,255,0.4); font-size:0.875rem; font-weight:600; display:flex; align-items:center; }
+  .nm-input-group .nm-input { border:none !important; background:transparent; flex:1; }
 
-  /* Tax table */
   .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
-  .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table thead th { padding:12px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); background:#112235; }
-  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); }
-  .nm-table tbody tr:last-child { border-bottom:none; }
-  .nm-table tbody tr:hover { background:rgba(255,255,255,0.02); }
-  .nm-table td { padding:12px 16px; color:rgba(255,255,255,0.65); vertical-align:middle; }
-  .nm-table-note { padding:12px 16px 16px; font-size:0.775rem; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px; border-top:1px solid rgba(255,255,255,0.04); }
-
+  .nm-table thead th { padding:12px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; color:rgba(255,255,255,0.35); background:#112235; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .nm-table td { padding:12px 16px; color:rgba(255,255,255,0.65); border-bottom:1px solid rgba(255,255,255,0.04); }
+  
   .nm-rate-badge { display:inline-flex; align-items:center; font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623; }
 
-  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 24px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; transition:background 0.16s,box-shadow 0.16s,transform 0.1s; }
-  .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; box-shadow:0 4px 16px rgba(245,166,35,0.25); transform:translateY(-1px); }
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 24px; border-radius:9px; background:#f5a623; color:#1a0e00; font-weight:600; border:none; cursor:pointer; transition:all 0.2s; }
+  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 4px 12px rgba(245,166,35,0.2); }
 
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); line-height:1.5; }
-  .nm-disclaimer i { color:#f5a623; flex-shrink:0; margin-top:1px; }
-
-  @media (max-width:767.98px) {
-    .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-form-card-body { padding:16px; }
-  }
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:12px; background:rgba(245,166,35,0.05); border:1px solid rgba(245,166,35,0.15); border-radius:12px; padding:16px; margin-top:32px; font-size:0.82rem; color:rgba(255,255,255,0.6); }
+  .nm-disclaimer i { color:#f5a623; font-size:1.1rem; }
 </style>
 
 <div class="nm-page-wrapper">
   <div class="nm-settings-page">
 
     <% if (success && success.length > 0) { %>
-      <div class="nm-alert nm-alert-success alert-dismissible fade show" role="alert">
+      <div class="nm-alert nm-alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle-fill"></i>
         <span><%= success[0] %></span>
         <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
       </div>
     <% } %>
 
-    <h1 class="nm-page-title">Settings</h1>
-    <p class="nm-page-subtitle">Configure payroll rates for your company. Changes apply to future payroll runs.</p>
+    <h1 class="nm-page-title">Company Settings</h1>
+    <p class="nm-page-subtitle">Manage statutory Namibian payroll rates and compliance variables.</p>
 
-    <form action="/settings" method="POST" novalidate>
+    <form action="/settings" method="POST">
 
-      <!-- SSC Settings -->
       <div class="nm-form-card">
         <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-shield-check"></i></span>
-          Social Security Contributions (SSC)
+          <span class="nm-form-card-icon"><i class="bi bi-shield-lock"></i></span>
+          Social Security Commission (SSC)
         </div>
         <div class="nm-form-card-body">
-          <div class="row g-3">
+          <div class="row g-4">
             <div class="col-md-4">
-              <label class="nm-label">SSC Rate (%)</label>
+              <label class="nm-label">Contribution Rate (%)</label>
               <div class="nm-input-group">
-                <input type="number" name="sscRate" class="nm-input" step="0.01" min="0" max="100"
-                       value="<%= (settings.sscRate * 100).toFixed(2) %>" />
-                <span class="nm-input-addon right">%</span>
+                <input type="number" name="sscRate" class="nm-input" step="0.01" value="<%= ((settings.sscRate || 0.009) * 100).toFixed(2) %>" />
+                <span class="nm-input-addon">%</span>
               </div>
-              <div class="nm-hint">Default: 0.9% (both employee and employer)</div>
+              <div class="nm-hint">Standard: 0.9% for Employee & Employer.</div>
             </div>
             <div class="col-md-4">
-              <label class="nm-label">Monthly Salary Cap (NAD)</label>
+              <label class="nm-label">Monthly Salary Cap</label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
-                <input type="number" name="sscMonthlyCap" class="nm-input" step="100" min="0"
-                       value="<%= settings.sscMonthlyCap %>" />
+                <input type="number" name="sscMonthlyCap" class="nm-input" value="<%= settings.sscMonthlyCap || 11000 %>" />
               </div>
-              <div class="nm-hint">Default: N$11,000</div>
+              <div class="nm-hint">The income level where SSC stops increasing.</div>
             </div>
             <div class="col-md-4">
-              <label class="nm-label">Max Contribution/Month (NAD)</label>
+              <label class="nm-label">Max Monthly Contribution</label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
-                <input type="number" name="sscMaxContribution" class="nm-input" step="0.01" min="0"
-                       value="<%= settings.sscMaxContribution %>" />
+                <input type="number" name="sscMaxContribution" class="nm-input" step="0.01" value="<%= settings.sscMaxContribution || 99.00 %>" />
               </div>
-              <div class="nm-hint">Default: N$99 each side</div>
+              <div class="nm-hint">Cap on the N$ value (Standard: N$99.00).</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ECF Settings -->
-      <div class="nm-form-card">
-        <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-building-fill-check"></i></span>
-          Employer Compensation Fund (ECF)
-        </div>
-        <div class="nm-form-card-body">
-          <div class="col-md-4">
-            <label class="nm-label">ECF Rate (%)</label>
-            <div class="nm-input-group">
-              <input type="number" name="ecfRate" class="nm-input" step="0.01" min="0" max="100"
-                     value="<%= (settings.ecfRate * 100).toFixed(2) %>" />
-              <span class="nm-input-addon right">%</span>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="nm-form-card">
+            <div class="nm-form-card-header">
+              <span class="nm-form-card-icon"><i class="bi bi-safe"></i></span>
+              Workmen's Comp (ECF)
             </div>
-            <div class="nm-hint">Default: 4% of basic salary (employer only)</div>
+            <div class="nm-form-card-body">
+              <label class="nm-label">Employer ECF Rate (%)</label>
+              <div class="nm-input-group">
+                <input type="number" name="ecfRate" class="nm-input" step="0.01" value="<%= ((settings.ecfRate || 0) * 100).toFixed(2) %>" />
+                <span class="nm-input-addon">%</span>
+              </div>
+              <div class="nm-hint">Based on industry risk class as per EEC.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="nm-form-card">
+            <div class="nm-form-card-header">
+              <span class="nm-form-card-icon"><i class="bi bi-stopwatch"></i></span>
+              Overtime Calculation
+            </div>
+            <div class="nm-form-card-body">
+              <div class="row g-2">
+                <div class="col-6">
+                  <label class="nm-label">Days/Month</label>
+                  <input type="number" name="workingDaysPerMonth" class="nm-input" value="<%= settings.workingDaysPerMonth || 22 %>" />
+                </div>
+                <div class="col-6">
+                  <label class="nm-label">Multiplier</label>
+                  <input type="number" name="overtimeMultiplier" class="nm-input" step="0.1" value="<%= settings.overtimeMultiplier || 1.5 %>" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Working Hours -->
       <div class="nm-form-card">
         <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-clock"></i></span>
-          Working Hours & Overtime
-        </div>
-        <div class="nm-form-card-body">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="nm-label">Working Days per Month</label>
-              <input type="number" name="workingDaysPerMonth" class="nm-input" min="1" max="31"
-                     value="<%= settings.workingDaysPerMonth %>" />
-              <div class="nm-hint">Used for overtime hourly rate. Default: 22</div>
-            </div>
-            <div class="col-md-4">
-              <label class="nm-label">Overtime Multiplier</label>
-              <input type="number" name="overtimeMultiplier" class="nm-input" step="0.25" min="1"
-                     value="<%= settings.overtimeMultiplier %>" />
-              <div class="nm-hint">Default: 1.5× (time and a half)</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tax Brackets -->
-      <div class="nm-form-card">
-        <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-percent"></i></span>
-          PAYE Tax Brackets (2026 Namibia)
+          <span class="nm-form-card-icon"><i class="bi bi-bank"></i></span>
+          NamRA Individual Tax Brackets (2025/2026)
         </div>
         <div class="table-responsive">
           <table class="nm-table">
             <thead>
               <tr>
-                <th>Annual Income Range (NAD)</th>
+                <th>Annual Taxable Income (NAD)</th>
                 <th>Base Tax</th>
-                <th>Marginal Rate</th>
+                <th>Rate on Excess</th>
               </tr>
             </thead>
             <tbody>
-              <% settings.taxBrackets.forEach(b => { %>
+              <% (settings.taxBrackets || []).forEach(bracket => { %>
                 <tr>
-                  <td>N$ <%= Number(b.min).toLocaleString() %> – <%= b.max ? 'N$ ' + Number(b.max).toLocaleString() : 'above' %></td>
-                  <td>N$ <%= Number(b.baseAmount).toLocaleString() %></td>
-                  <td><span class="nm-rate-badge"><%= (b.rate * 100).toFixed(0) %>%</span></td>
+                  <td>N$ <%= Number(bracket.min || 0).toLocaleString() %> – <%= bracket.max ? 'N$ ' + Number(bracket.max).toLocaleString() : 'Above' %></td>
+                  <td>N$ <%= Number(bracket.baseAmount || 0).toLocaleString() %></td>
+                  <td><span class="nm-rate-badge"><%= ((bracket.rate || 0) * 100).toFixed(0) %>%</span></td>
                 </tr>
               <% }) %>
             </tbody>
           </table>
         </div>
         <div class="nm-table-note">
-          <i class="bi bi-info-circle"></i>
-          Tax brackets are pre-configured per NamRA 2026 rates. Contact support if brackets change.
+          <i class="bi bi-info-circle-fill"></i> These brackets are managed globally to ensure compliance with NamRA's N$ 100,000 tax-free threshold.
         </div>
       </div>
 
       <button type="submit" class="nm-btn-primary">
-        <i class="bi bi-save"></i>Save Settings
+        <i class="bi bi-check2-all"></i> Update Company Rates
       </button>
 
     </form>
 
     <div class="nm-disclaimer">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <strong>Disclaimer:</strong> Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.
+      <i class="bi bi-info-square-fill"></i>
+      <div>
+        <strong>Legal Compliance Note:</strong> In accordance with the <em>Namibian Income Tax Act</em> and <em>Social Security Act</em>, employers are responsible for the accurate deduction and timely remittance of P.A.Y.E and SSC. Ensure all "Other Deductions" (introduced in the latest update) are supported by signed employee agreements.
+      </div>
     </div>
 
   </div>

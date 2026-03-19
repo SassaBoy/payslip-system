@@ -2,235 +2,135 @@
 <%- include('../partials/navbar') %>
 
 <% const period = moment(`${payrollRun.year}-${String(payrollRun.month).padStart(2,'0')}-01`).format('MMMM YYYY') %>
-<% const fmt = (n) => 'N$ ' + Number(n).toLocaleString('en-NA', {minimumFractionDigits:2, maximumFractionDigits:2}) %>
+<% const fmt = (n) => 'N$ ' + Number(n || 0).toLocaleString('en-NA', {minimumFractionDigits:2, maximumFractionDigits:2}) %>
 
 <style>
   .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-page-inner   { max-width:1280px; margin:0 auto; }
+  .nm-page-inner   { max-width:1400px; margin:0 auto; } 
 
-  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
-  .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
-
-  .nm-page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+  .nm-page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; }
   .nm-header-left { display:flex; align-items:center; gap:16px; }
-  .nm-back-btn { width:38px; height:38px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); background:#1a2f45; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.65); font-size:1rem; text-decoration:none; flex-shrink:0; transition:background 0.16s,color 0.16s; }
-  .nm-back-btn:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.92); }
-  .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
-  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:5px 0 0; }
+  .nm-back-btn { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.6); text-decoration:none; transition:0.2s; }
+  .nm-back-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .nm-page-title { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:#fff; margin:0; }
+  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:4px 0 0; }
 
-  .nm-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; text-decoration:none; white-space:nowrap; transition:background 0.16s,box-shadow 0.16s,transform 0.1s; }
-  .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; box-shadow:0 4px 16px rgba(245,166,35,0.25); transform:translateY(-1px); }
-  .nm-btn-ghost { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:9px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.65); font-size:0.875rem; font-weight:500; text-decoration:none; white-space:nowrap; cursor:pointer; transition:background 0.16s,color 0.16s,border-color 0.16s; }
-  .nm-btn-ghost:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.92); border-color:rgba(255,255,255,0.15); }
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; text-decoration:none; transition:0.2s; }
+  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); }
 
-  /* Dropdown */
-  .nm-dropdown-menu { background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:6px; box-shadow:0 16px 48px rgba(0,0,0,0.55); min-width:260px; margin-top:6px !important; }
-  .nm-dd-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:7px; font-size:0.845rem; font-weight:500; color:rgba(255,255,255,0.65); text-decoration:none; background:transparent; border:none; width:100%; text-align:left; cursor:pointer; transition:background 0.14s,color 0.14s; }
-  .nm-dd-item:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.92); }
-  .nm-dd-item.danger { color:#f87171; }
-  .nm-dd-item.danger:hover { background:rgba(248,113,113,0.08); }
-  .nm-dd-sep { height:1px; background:rgba(255,255,255,0.07); margin:4px 0; }
-
-  /* KPI strip */
   .nm-kpi-strip { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:24px; }
-  .nm-kpi-mini { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px; position:relative; overflow:hidden; transition:transform 0.18s,box-shadow 0.18s; }
-  .nm-kpi-mini:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
-  .nm-kpi-mini::before { content:''; position:absolute; top:-30px; right:-30px; width:80px; height:80px; border-radius:50%; opacity:0.08; }
-  .nm-kpi-mini.c-blue::before   { background:#60a5fa; }
-  .nm-kpi-mini.c-green::before  { background:#2ecc8a; }
-  .nm-kpi-mini.c-teal::before   { background:#22d3ee; }
-  .nm-kpi-mini.c-orange::before { background:#f5a623; }
-  .nm-kpi-mini.c-purple::before { background:#a78bfa; }
-  .nm-kpi-mini.c-red::before    { background:#f87171; }
-  .nm-kpi-dot { width:7px; height:7px; border-radius:50%; position:absolute; top:14px; right:14px; }
-  .c-blue   .nm-kpi-dot { background:#60a5fa; box-shadow:0 0 5px #60a5fa; }
-  .c-green  .nm-kpi-dot { background:#2ecc8a; box-shadow:0 0 5px #2ecc8a; }
-  .c-teal   .nm-kpi-dot { background:#22d3ee; box-shadow:0 0 5px #22d3ee; }
-  .c-orange .nm-kpi-dot { background:#f5a623; box-shadow:0 0 5px #f5a623; }
-  .c-purple .nm-kpi-dot { background:#a78bfa; box-shadow:0 0 5px #a78bfa; }
-  .c-red    .nm-kpi-dot { background:#f87171; box-shadow:0 0 5px #f87171; }
-  .nm-kpi-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); margin-bottom:8px; }
-  .nm-kpi-val   { font-family:'Sora',sans-serif; font-weight:700; color:rgba(255,255,255,0.92); line-height:1; }
-  .nm-kpi-val.lg { font-size:1.8rem; }
-  .nm-kpi-val.md { font-size:1rem; }
+  .nm-kpi-mini { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); padding:16px; border-radius:12px; }
+  .nm-kpi-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.05em; color:rgba(255,255,255,0.4); margin-bottom:8px; font-weight:600; }
+  .nm-kpi-val { font-family:'Sora',sans-serif; font-weight:700; color:#fff; }
+  .nm-kpi-val.lg { font-size:1.4rem; }
+  .nm-kpi-val.md { font-size:1.1rem; }
+  
+  .c-blue   { border-left:3px solid #60a5fa; }
+  .c-green  { border-left:3px solid #2ecc8a; }
+  .c-teal   { border-left:3px solid #2dd4bf; }
+  .c-orange { border-left:3px solid #f5a623; }
+  .c-purple { border-left:3px solid #a78bfa; }
+  .c-red    { border-left:3px solid #f87171; }
 
-  /* Panel */
-  .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:20px; }
-  .nm-panel-header { display:flex; align-items:center; justify-content:space-between; padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; }
-  .nm-panel-title { display:flex; align-items:center; gap:9px; font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); }
-  .nm-panel-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; }
-  .nm-panel-icon.blue  { background:rgba(96,165,250,0.1);  color:#60a5fa;  border:1px solid rgba(96,165,250,0.15); }
-  .nm-panel-icon.green { background:rgba(46,204,138,0.1);  color:#2ecc8a;  border:1px solid rgba(46,204,138,0.15); }
+  .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:24px; }
+  .nm-panel-header { padding:16px 20px; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:space-between; }
+  .nm-panel-title { font-family:'Sora',sans-serif; font-size:0.95rem; font-weight:600; color:rgba(255,255,255,0.9); display:flex; align-items:center; gap:10px; }
+  .nm-panel-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; }
+  .nm-panel-icon.blue  { background:rgba(96,165,250,0.15); color:#60a5fa; }
+  .nm-panel-icon.green { background:rgba(46,204,138,0.15); color:#2ecc8a; }
 
-  /* Table */
-  .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
-  .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table thead th { padding:12px 14px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); white-space:nowrap; background:#112235; }
-  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.14s; }
-  .nm-table tbody tr:last-child { border-bottom:none; }
-  .nm-table tbody tr:hover { background:rgba(255,255,255,0.025); }
-  .nm-table td { padding:13px 14px; vertical-align:middle; color:rgba(255,255,255,0.65); }
-  .nm-table tfoot tr { border-top:2px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.025); }
-  .nm-table tfoot td { padding:13px 14px; font-family:'Sora',sans-serif; font-weight:700; font-size:0.855rem; color:rgba(255,255,255,0.88); }
-
-  .nm-emp-name { font-weight:600; color:rgba(255,255,255,0.88); font-size:0.875rem; }
-  .nm-emp-pos  { font-size:0.755rem; color:rgba(255,255,255,0.38); margin-top:1px; }
-  .nm-money    { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; }
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .nm-table thead th { padding:12px 14px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); background:#112235; text-align:left; }
+  .nm-table td { padding:13px 14px; vertical-align:middle; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.7); }
+  .nm-table tfoot td { padding:16px 14px; background:rgba(255,255,255,0.02); font-weight:700; color:#fff; }
+  
+  .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; }
   .nm-money.green  { color:#2ecc8a; }
   .nm-money.red    { color:#f87171; }
   .nm-money.orange { color:#f5a623; }
-  .nm-money.plain  { color:rgba(255,255,255,0.88); }
-  .nm-ot-hrs { font-size:0.755rem; color:rgba(255,255,255,0.35); margin-top:2px; }
+  .nm-money.plain  { color:rgba(255,255,255,0.9); }
+  
+  .nm-emp-name { font-weight:600; color:#fff; }
+  .nm-sub-info { font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:2px; }
+  
+  .nm-pdf-btn { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:7px; border:1px solid rgba(248,113,113,0.25); background:rgba(248,113,113,0.08); color:#f87171; font-size:0.8rem; font-weight:600; text-decoration:none; transition:0.2s; }
+  .nm-pdf-btn:hover { background:rgba(248,113,113,0.15); border-color:#f87171; }
 
-  .nm-pdf-btn { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:7px; border:1px solid rgba(248,113,113,0.25); background:rgba(248,113,113,0.08); color:#f87171; font-size:0.8rem; font-weight:600; text-decoration:none; transition:background 0.14s,border-color 0.14s; }
-  .nm-pdf-btn:hover { background:rgba(248,113,113,0.15); border-color:rgba(248,113,113,0.4); color:#f87171; }
+  .nm-contrib-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:20px; }
+  .nm-contrib-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:16px; }
+  .nm-contrib-card.highlight { border-color:rgba(245,166,35,0.3); background:rgba(245,166,35,0.05); }
+  .nm-contrib-label { font-size:0.75rem; color:rgba(255,255,255,0.4); margin-bottom:10px; }
+  .nm-contrib-val { font-family:'Sora',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; }
 
-  /* Employer summary */
-  .nm-contrib-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding:20px; }
-  .nm-contrib-card { border-radius:10px; padding:16px; background:#112235; border:1px solid rgba(255,255,255,0.07); }
-  .nm-contrib-card.highlight { background:rgba(245,166,35,0.08); border-color:rgba(245,166,35,0.2); }
-  .nm-contrib-label { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); margin-bottom:10px; }
-  .nm-contrib-val   { font-family:'Sora',sans-serif; font-size:1.2rem; font-weight:700; color:rgba(255,255,255,0.92); }
-  .nm-contrib-card.highlight .nm-contrib-val { color:#f5a623; }
-
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); line-height:1.5; }
-  .nm-disclaimer i { color:#f5a623; flex-shrink:0; margin-top:1px; }
-
-  @media (max-width:1199.98px) { .nm-kpi-strip { grid-template-columns:repeat(3,1fr); } }
-  @media (max-width:991.98px)  { .nm-contrib-grid { grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:767.98px)  {
-    .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-page-header  { flex-direction:column; align-items:flex-start; }
-    .nm-kpi-strip    { grid-template-columns:repeat(2,1fr); }
-    .nm-contrib-grid { grid-template-columns:1fr; }
-    .nm-table thead th:nth-child(3), .nm-table td:nth-child(3) { display:none; }
-  }
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(96,165,250,0.06); border:1px solid rgba(96,165,250,0.15); border-radius:10px; padding:15px 20px; font-size:0.82rem; color:rgba(96,165,250,0.8); line-height:1.5; }
 </style>
 
 <div class="nm-page-wrapper">
   <div class="nm-page-inner">
-
-    <% if (success && success.length > 0) { %>
-      <div class="nm-alert nm-alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle-fill"></i>
-        <span><%= success[0] %></span>
-        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert"></button>
-      </div>
-    <% } %>
 
     <div class="nm-page-header">
       <div class="nm-header-left">
         <a href="/payroll" class="nm-back-btn"><i class="bi bi-arrow-left"></i></a>
         <div>
           <h1 class="nm-page-title"><%= period %> Payroll</h1>
-          <p class="nm-page-subtitle"><%= payrollRun.employeeCount %> employees &bull; Processed <%= moment(payrollRun.processedAt).format('DD MMM YYYY HH:mm') %></p>
+          <p class="nm-page-subtitle"><%= payrollRun.employeeCount %> employees &bull; Processed <%= moment(payrollRun.processedAt).format('DD MMM YYYY') %></p>
         </div>
       </div>
       <div class="nm-header-actions">
-        <a href="/payroll/<%= payrollRun._id %>/zip" class="nm-btn-primary">
-          <i class="bi bi-file-zip"></i>Download All Payslips (ZIP)
-        </a>
-        <div class="dropdown">
-          <button class="nm-btn-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-download"></i>Export
-          </button>
-          <ul class="dropdown-menu nm-dropdown-menu dropdown-menu-end">
-            <li><a class="nm-dd-item" href="/payroll/<%= payrollRun._id %>/bank-csv"><i class="bi bi-bank2" style="color:#2ecc8a"></i>Bank Transfer CSV (FNB/Standard Bank)</a></li>
-            <li><a class="nm-dd-item" href="/payroll/<%= payrollRun._id %>/compliance-csv"><i class="bi bi-file-earmark-spreadsheet" style="color:#22d3ee"></i>Compliance Summary CSV</a></li>
-            <li><a class="nm-dd-item" href="/payroll/<%= payrollRun._id %>/compliance-pdf"><i class="bi bi-file-earmark-pdf" style="color:#f87171"></i>Compliance Summary PDF</a></li>
-            <li><div class="nm-dd-sep"></div></li>
-            <li>
-              <form action="/payroll/<%= payrollRun._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this entire payroll run? This cannot be undone.')">
-                <button type="submit" class="nm-dd-item danger"><i class="bi bi-trash"></i>Delete Payroll Run</button>
-              </form>
-            </li>
-          </ul>
-        </div>
+        <a href="/payroll/<%= payrollRun._id %>/zip" class="nm-btn-primary"><i class="bi bi-file-earmark-zip-fill me-1"></i>Download All (ZIP)</a>
       </div>
     </div>
 
-    <!-- KPI strip -->
     <div class="nm-kpi-strip">
-      <div class="nm-kpi-mini c-blue">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Employees</div>
-        <div class="nm-kpi-val lg"><%= payrollRun.employeeCount %></div>
-      </div>
-      <div class="nm-kpi-mini c-green">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Total Gross</div>
-        <div class="nm-kpi-val md"><%= fmt(payrollRun.totalGrossPay) %></div>
-      </div>
-      <div class="nm-kpi-mini c-teal">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Total Net Pay</div>
-        <div class="nm-kpi-val md"><%= fmt(payrollRun.totalNetPay) %></div>
-      </div>
-      <div class="nm-kpi-mini c-orange">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Total PAYE</div>
-        <div class="nm-kpi-val md"><%= fmt(payrollRun.totalPAYE) %></div>
-      </div>
-      <div class="nm-kpi-mini c-purple">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Total SSC</div>
-        <div class="nm-kpi-val md"><%= fmt(payrollRun.totalSSCEmployee + payrollRun.totalSSCEmployer) %></div>
-      </div>
-      <div class="nm-kpi-mini c-red">
-        <span class="nm-kpi-dot"></span>
-        <div class="nm-kpi-label">Total Employer Cost</div>
-        <div class="nm-kpi-val md"><%= fmt(payrollRun.totalEmployerCost) %></div>
-      </div>
+      <div class="nm-kpi-mini c-blue"><div class="nm-kpi-label">Employees</div><div class="nm-kpi-val lg"><%= payrollRun.employeeCount %></div></div>
+      <div class="nm-kpi-mini c-green"><div class="nm-kpi-label">Total Gross</div><div class="nm-kpi-val md"><%= fmt(payrollRun.totalGrossPay) %></div></div>
+      <div class="nm-kpi-mini c-teal"><div class="nm-kpi-label">Total Net Pay</div><div class="nm-kpi-val md"><%= fmt(payrollRun.totalNetPay) %></div></div>
+      <div class="nm-kpi-mini c-orange"><div class="nm-kpi-label">Total PAYE</div><div class="nm-kpi-val md"><%= fmt(payrollRun.totalPAYE) %></div></div>
+      <div class="nm-kpi-mini c-purple"><div class="nm-kpi-label">Total SSC</div><div class="nm-kpi-val md"><%= fmt(payrollRun.totalSSCEmployee + payrollRun.totalSSCEmployer) %></div></div>
+      <div class="nm-kpi-mini c-red"><div class="nm-kpi-label">Total Cost</div><div class="nm-kpi-val md"><%= fmt(payrollRun.totalEmployerCost) %></div></div>
     </div>
 
-    <!-- Payslip table -->
     <div class="nm-panel">
       <div class="nm-panel-header">
-        <div class="nm-panel-title">
-          <span class="nm-panel-icon blue"><i class="bi bi-table"></i></span>
-          Employee Payslips
-        </div>
+        <div class="nm-panel-title"><span class="nm-panel-icon blue"><i class="bi bi-table"></i></span>Breakdown</div>
       </div>
       <div class="table-responsive">
         <table class="nm-table">
           <thead>
             <tr>
               <th>Employee</th>
-              <th>Basic</th>
-              <th>Overtime</th>
+              <th>Basic Salary</th>
+              <th>Allowances</th> 
               <th>Gross Pay</th>
               <th>PAYE</th>
               <th>SSC (Emp)</th>
-              <th>Deductions</th>
+              <th>Other Deduct</th> 
               <th>Net Pay</th>
-              <th>Payslip</th>
+              <th class="text-end">Action</th>
             </tr>
           </thead>
           <tbody>
             <% payrollRun.payslips.forEach(ps => { %>
               <tr>
                 <td>
-                  <div class="nm-emp-name"><%= ps.employeeSnapshot?.fullName || 'Unknown' %></div>
-                  <div class="nm-emp-pos"><%= ps.employeeSnapshot?.position || '' %></div>
+                  <div class="nm-emp-name text-nowrap"><%= ps.employeeSnapshot?.fullName || 'Unknown' %></div>
+                  <div class="nm-sub-info">ID: <%= ps.employeeSnapshot?.idNumber %></div>
                 </td>
                 <td><span class="nm-money plain"><%= fmt(ps.basicSalary) %></span></td>
                 <td>
-                  <% if (ps.overtimePay > 0) { %>
-                    <span class="nm-money plain"><%= fmt(ps.overtimePay) %></span>
-                    <div class="nm-ot-hrs">(<%= ps.overtimeHours %>h)</div>
-                  <% } else { %>
-                    <span style="color:rgba(255,255,255,0.25)">—</span>
+                  <% const totalAllow = (ps.overtimePay || 0) + (ps.taxableAllowances || 0) + (ps.nonTaxableAllowances || 0); %>
+                  <span class="nm-money <%= totalAllow > 0 ? 'green' : 'plain' %>"><%= fmt(totalAllow) %></span>
+                  <% if (totalAllow > 0) { %>
+                    <div class="nm-sub-info">Includes Overtime & Perks</div>
                   <% } %>
                 </td>
                 <td><span class="nm-money plain"><%= fmt(ps.grossPay) %></span></td>
                 <td><span class="nm-money red"><%= fmt(ps.paye) %></span></td>
                 <td><span class="nm-money orange"><%= fmt(ps.sscEmployee) %></span></td>
-                <td><span class="nm-money red"><%= fmt(ps.totalDeductions) %></span></td>
-                <td><span class="nm-money green"><%= fmt(ps.netPay) %></span></td>
-                <td>
-                  <a href="/payroll/<%= payrollRun._id %>/payslip/<%= ps._id %>/pdf" class="nm-pdf-btn" title="Download PDF payslip">
+                <td><span class="nm-money red"><%= fmt(ps.otherDeductions) %></span></td>
+                <td><span class="nm-money green" style="font-size: 0.9rem;"><%= fmt(ps.netPay) %></span></td>
+                <td class="text-end">
+                  <a href="/payroll/<%= payrollRun._id %>/payslip/<%= ps._id %>/pdf" class="nm-pdf-btn">
                     <i class="bi bi-file-earmark-pdf"></i>PDF
                   </a>
                 </td>
@@ -239,13 +139,13 @@
           </tbody>
           <tfoot>
             <tr>
-              <td>TOTALS (<%= payrollRun.employeeCount %> employees)</td>
+              <td>TOTALS</td>
               <td>—</td>
               <td>—</td>
               <td><span class="nm-money plain"><%= fmt(payrollRun.totalGrossPay) %></span></td>
               <td><span class="nm-money red"><%= fmt(payrollRun.totalPAYE) %></span></td>
               <td><span class="nm-money orange"><%= fmt(payrollRun.totalSSCEmployee) %></span></td>
-              <td><span class="nm-money red"><%= fmt(payrollRun.totalPAYE + payrollRun.totalSSCEmployee) %></span></td>
+              <td><span class="nm-money red"><%= fmt(payrollRun.totalOtherDeductions) %></span></td>
               <td><span class="nm-money green"><%= fmt(payrollRun.totalNetPay) %></span></td>
               <td></td>
             </tr>
@@ -254,37 +154,34 @@
       </div>
     </div>
 
-    <!-- Employer contributions -->
     <div class="nm-panel">
       <div class="nm-panel-header">
-        <div class="nm-panel-title">
-          <span class="nm-panel-icon green"><i class="bi bi-building"></i></span>
-          Employer Contributions Summary
-        </div>
+        <div class="nm-panel-title"><span class="nm-panel-icon green"><i class="bi bi-building-fill-check"></i></span>Employer Compliance</div>
       </div>
       <div class="nm-contrib-grid">
         <div class="nm-contrib-card">
-          <div class="nm-contrib-label">SSC Employer (0.9%)</div>
+          <div class="nm-contrib-label">Social Security (Employer Portion)</div>
           <div class="nm-contrib-val"><%= fmt(payrollRun.totalSSCEmployer) %></div>
+          <div class="nm-sub-info">0.9% contribution per employee</div>
         </div>
         <div class="nm-contrib-card">
-          <div class="nm-contrib-label">ECF Contributions</div>
+          <div class="nm-contrib-label">Compensation Fund (ECF)</div>
           <div class="nm-contrib-val"><%= fmt(payrollRun.totalECF) %></div>
-        </div>
-        <div class="nm-contrib-card">
-          <div class="nm-contrib-label">Total Net to Employees</div>
-          <div class="nm-contrib-val" style="color:#2ecc8a"><%= fmt(payrollRun.totalNetPay) %></div>
+          <div class="nm-sub-info">Based on basic salary rates</div>
         </div>
         <div class="nm-contrib-card highlight">
-          <div class="nm-contrib-label">Total Employer Cost</div>
-          <div class="nm-contrib-val"><%= fmt(payrollRun.totalEmployerCost) %></div>
+          <div class="nm-contrib-label">Total Company Expenditure</div>
+          <div class="nm-contrib-val" style="color: #f5a623;"><%= fmt(payrollRun.totalEmployerCost) %></div>
+          <div class="nm-sub-info" style="color: rgba(245,166,35,0.6)">Gross + Employer Statutories</div>
         </div>
       </div>
     </div>
 
     <div class="nm-disclaimer">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <strong>Disclaimer:</strong> Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.
+      <i class="bi bi-info-circle-fill"></i>
+      <div>
+        <strong>Compliance Notice:</strong> This report is final. Payments for Social Security and PAYE must be settled with NamRA and the Social Security Commission by the 20th of the following month to avoid interest and penalties.
+      </div>
     </div>
 
   </div>

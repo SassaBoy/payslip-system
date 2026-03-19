@@ -4,8 +4,8 @@
   .nm-auth-bg {
     min-height:100vh; display:flex; align-items:center; justify-content:center;
     background:#0a1520;
-    background-image: radial-gradient(ellipse at 20% 50%, rgba(46,204,138,0.04) 0%, transparent 60%),
-                      radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.04) 0%, transparent 60%);
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(245,166,35,0.04) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, rgba(245,166,35,0.04) 0%, transparent 60%);
     padding:24px 16px;
   }
 
@@ -19,21 +19,24 @@
   .nm-auth-brand { text-align:center; margin-bottom:32px; }
   .nm-auth-brand-icon {
     width:52px; height:52px; border-radius:14px;
-    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    background:linear-gradient(135deg,#f5a623,#e8981e);
     display:flex; align-items:center; justify-content:center;
-    margin:0 auto 14px; box-shadow:0 4px 16px rgba(96,165,250,0.3);
+    margin:0 auto 14px; box-shadow:0 4px 16px rgba(245,166,35,0.25);
   }
-  .nm-auth-brand-icon i { font-size:1.5rem; color:#fff; }
+  .nm-auth-brand-icon i { font-size:1.5rem; color:#1a0e00; }
   .nm-auth-title { font-family:'Sora',sans-serif; font-size:1.35rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0 0 4px; letter-spacing:-0.02em; }
   .nm-auth-sub   { font-size:0.85rem; color:rgba(255,255,255,0.4); margin:0; }
 
   .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; border-radius:9px; font-size:0.845rem; font-weight:500; margin-bottom:18px; }
   .nm-alert i { font-size:0.95rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1);  border:1px solid rgba(46,204,138,0.25);  color:#2ecc8a; }
+  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
   .nm-alert-danger  { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.22); color:#f87171; }
 
   .nm-field { margin-bottom:18px; }
-  .nm-label { display:block; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); margin-bottom:7px; letter-spacing:0.01em; }
+  .nm-label-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+  .nm-label { font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); letter-spacing:0.01em; }
+  
+  .nm-input-group { position:relative; }
   .nm-input {
     display:block; width:100%; padding:11px 14px;
     background:#112235; border:1px solid rgba(255,255,255,0.07);
@@ -42,17 +45,31 @@
     outline:none; transition:border-color 0.16s,box-shadow 0.16s; -webkit-appearance:none;
   }
   .nm-input::placeholder { color:rgba(255,255,255,0.3); }
-  .nm-input:focus { border-color:rgba(96,165,250,0.5); box-shadow:0 0 0 3px rgba(96,165,250,0.1); }
+  .nm-input:focus { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.1); }
+
+  /* Eye Toggle - Clean dark style */
+  .nm-pw-toggle {
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:transparent; border:none; padding:4px;
+    color:rgba(255,255,255,0.3); cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+    transition:color 0.2s;
+  }
+  .nm-pw-toggle:hover { color:#f5a623; }
+  .nm-pw-toggle:focus { outline:none; }
+
+  .nm-forgot-link { font-size:0.75rem; color:#f5a623; text-decoration:none; font-weight:600; }
+  .nm-forgot-link:hover { text-decoration:underline; }
 
   .nm-btn-submit {
     display:flex; align-items:center; justify-content:center; gap:8px;
     width:100%; padding:12px; border-radius:9px;
-    background:linear-gradient(135deg,#2563eb,#3b82f6); color:#fff;
+    background:linear-gradient(135deg,#f5a623,#e8981e); color:#1a0e00;
     font-family:'DM Sans',sans-serif; font-size:0.925rem; font-weight:700;
     border:none; cursor:pointer; margin-top:6px;
     transition:opacity 0.16s,box-shadow 0.16s,transform 0.1s;
   }
-  .nm-btn-submit:hover { opacity:0.92; box-shadow:0 4px 18px rgba(96,165,250,0.3); transform:translateY(-1px); }
+  .nm-btn-submit:hover { opacity:0.92; box-shadow:0 4px 18px rgba(245,166,35,0.3); transform:translateY(-1px); }
   .nm-btn-submit:active { transform:translateY(0); }
 
   .nm-auth-divider { display:flex; align-items:center; gap:12px; margin:24px 0; }
@@ -61,8 +78,7 @@
   .nm-auth-divider span { font-size:0.75rem; color:rgba(255,255,255,0.3); white-space:nowrap; }
 
   .nm-auth-footer { text-align:center; }
-  .nm-auth-footer p { font-size:0.83rem; color:rgba(255,255,255,0.4); margin:0; }
-  .nm-auth-footer a { color:#60a5fa; font-weight:600; text-decoration:none; }
+  .nm-auth-footer a { color:#f5a623; font-weight:600; text-decoration:none; font-size:0.83rem; }
   .nm-auth-footer a:hover { text-decoration:underline; }
 </style>
 
@@ -72,7 +88,7 @@
     <div class="nm-auth-brand">
       <div class="nm-auth-brand-icon"><i class="bi bi-person-badge"></i></div>
       <h1 class="nm-auth-title">Employee Portal</h1>
-      <p class="nm-auth-sub">View your payslips and leave balances</p>
+      <p class="nm-auth-sub">Access your payslips & tax documents</p>
     </div>
 
     <% if (success && success.length > 0) { %>
@@ -89,31 +105,34 @@
       </div>
     <% } %>
 
-    <% if (errors && errors.length > 0) { %>
-      <div class="nm-alert nm-alert-danger">
-        <i class="bi bi-exclamation-circle-fill"></i>
-        <div><% errors.forEach(e => { %><div><%= e.msg %></div><% }) %></div>
-      </div>
-    <% } %>
-
     <form action="/portal/login" method="POST" novalidate>
       <div class="nm-field">
         <label class="nm-label">Email Address</label>
         <input type="email" name="email" class="nm-input"
-               placeholder="your@email.com"
+               placeholder="name@company.com"
                value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" required />
       </div>
+
       <div class="nm-field" style="margin-bottom:24px">
-        <label class="nm-label">Password</label>
-        <input type="password" name="password" class="nm-input"
-               placeholder="••••••••" required />
+        <div class="nm-label-row">
+          <label class="nm-label">Password</label>
+          <a href="/portal/forgot-password" class="nm-forgot-link">Forgot password?</a>
+        </div>
+        <div class="nm-input-group">
+          <input type="password" name="password" id="password" class="nm-input"
+                 placeholder="••••••••" required />
+          <button type="button" class="nm-pw-toggle" id="togglePassword">
+            <i class="bi bi-eye" id="eyeIcon"></i>
+          </button>
+        </div>
       </div>
+
       <button type="submit" class="nm-btn-submit">
         <i class="bi bi-box-arrow-in-right"></i>Sign In
       </button>
     </form>
 
-    <div class="nm-auth-divider"><span>company login</span></div>
+    <div class="nm-auth-divider"><span>corporate</span></div>
 
     <div class="nm-auth-footer">
       <p><a href="/login"><i class="bi bi-building me-1"></i>Back to Company Login</a></p>
@@ -121,5 +140,20 @@
 
   </div>
 </div>
+
+<script>
+  const togglePassword = document.querySelector('#togglePassword');
+  const password = document.querySelector('#password');
+  const eyeIcon = document.querySelector('#eyeIcon');
+
+  togglePassword.addEventListener('click', function() {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    
+    // Toggle icons
+    eyeIcon.classList.toggle('bi-eye');
+    eyeIcon.classList.toggle('bi-eye-slash');
+  });
+</script>
 
 <%- include('../partials/footer') %>

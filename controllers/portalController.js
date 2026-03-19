@@ -29,12 +29,26 @@ exports.postLogin = async (req, res) => {
     const { email, password } = req.body;
 
     // Find active employee by email (across all companies)
-    const employee = await Employee.findOne({ email, isActive: true, portalEnabled: true });
+    const employee = await Employee.findOne({ 
+      email: email.toLowerCase().trim(), 
+      isActive: true, 
+      portalEnabled: true 
+    });
 
+    // Check if employee exists and password matches
     if (!employee || !(await employee.comparePortalPassword(password))) {
       return res.render('portal/login', {
         title: 'Employee Portal – NamPayroll',
         errors: [{ msg: 'Invalid email or password, or portal access is not enabled for your account.' }],
+        formData: req.body
+      });
+    }
+
+    // NEW: Verification Guard - Check if employee has verified their email
+    if (!employee.emailVerified) {
+      return res.render('portal/login', {
+        title: 'Employee Portal – NamPayroll',
+        errors: [{ msg: 'Please verify your email address before logging in. Check your inbox for the activation link.' }],
         formData: req.body
       });
     }
@@ -58,6 +72,39 @@ exports.postLogin = async (req, res) => {
       errors: [{ msg: 'Login failed. Please try again.' }],
       formData: req.body
     });
+  }
+};
+
+// GET /portal/verify-email
+// Handles the link clicked by the employee in their welcome email
+exports.getVerifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      req.flash('error', 'Invalid verification link.');
+      return res.redirect('/portal/login');
+    }
+
+    // Find employee with the matching token
+    const employee = await Employee.findOne({ verificationToken: token });
+
+    if (!employee) {
+      req.flash('error', 'Verification link is invalid or has expired.');
+      return res.redirect('/portal/login');
+    }
+
+    // Update verification status and clear the token
+    employee.emailVerified = true;
+    employee.verificationToken = undefined;
+    await employee.save();
+
+    req.flash('success', 'Your email has been verified successfully! You can now log in.');
+    res.redirect('/portal/login');
+  } catch (err) {
+    console.error('Email verification error:', err);
+    req.flash('error', 'An error occurred during verification.');
+    res.redirect('/portal/login');
   }
 };
 

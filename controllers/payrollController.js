@@ -1,9 +1,6 @@
 /**
  * payrollController.js
  * Handles all payroll run logic: creating, viewing, and downloading outputs.
- *
- * DISCLAIMER: Payroll calculations are for guidance only.
- * Always verify with NamRA and Social Security before final submission.
  */
 
 const moment = require('moment-timezone');
@@ -66,23 +63,19 @@ exports.getRunPayroll = async (req, res) => {
     const companyId = req.session.user._id;
     const now = moment().tz('Africa/Windhoek');
 
-    // Default to current month/year, allow query override
     const selectedMonth = parseInt(req.query.month) || now.month() + 1;
     const selectedYear = parseInt(req.query.year) || now.year();
 
-    // Check if payroll already run for this period
     const existing = await PayrollRun.findOne({
       company: companyId,
       month: selectedMonth,
       year: selectedYear
     });
 
-    // Get active employees
     const employees = await Employee.find({ company: companyId, isActive: true })
       .sort({ fullName: 1 })
       .lean();
 
-    // Build year options (current year ± 2)
     const years = [];
     for (let y = now.year() - 2; y <= now.year() + 1; y++) years.push(y);
 
@@ -122,22 +115,18 @@ exports.postRunPayroll = async (req, res) => {
       return res.redirect('/payroll/run');
     }
 
-    // Load settings
     const settings = await getSettings(companyId);
-
-    // Load active employees
     const employees = await Employee.find({ company: companyId, isActive: true });
 
     if (employees.length === 0) {
-      req.flash('error', 'No active employees found. Please add employees first.');
+      req.flash('error', 'No active employees found.');
       return res.redirect('/payroll/run');
     }
 
-    // ─── Build payslips ───────────────────────────────────────────────────
     const payslips = [];
 
     for (const emp of employees) {
-      // Input fields are named: employees[empId][field]
+      // Capture the new flexible inputs from the UI
       const empInputs = req.body.employees?.[emp._id.toString()] || {};
 
       const inputs = {
@@ -145,9 +134,14 @@ exports.postRunPayroll = async (req, res) => {
         hoursWorked: parseFloat(empInputs.hoursWorked) || 0,
         overtimeHours: parseFloat(empInputs.overtimeHours) || 0,
         annualLeaveTaken: parseFloat(empInputs.annualLeaveTaken) || 0,
-        sickLeaveTaken: parseFloat(empInputs.sickLeaveTaken) || 0
+        sickLeaveTaken: parseFloat(empInputs.sickLeaveTaken) || 0,
+        // NEW: Flexible financial adjustments
+        taxableAllowances: parseFloat(empInputs.taxableAllowances) || 0,
+        nonTaxableAllowances: parseFloat(empInputs.nonTaxableAllowances) || 0,
+        otherDeductions: parseFloat(empInputs.otherDeductions) || 0
       };
 
+      // The calculator now receives these inputs to adjust the math
       const calc = calculateEmployeePayroll(emp, inputs, {
         ecfRate: settings.ecfRate,
         sscRate: settings.sscRate,
@@ -168,24 +162,21 @@ exports.postRunPayroll = async (req, res) => {
           email: emp.email,
           phone: emp.phone || ''
         },
+        // Spread the calculated results + the original inputs for record-keeping
+        ...inputs,
         ...calc
       });
 
-      // ── Update leave balances on the employee ──────────────────────────
-      if (inputs.annualLeaveTaken > 0) {
-        emp.annualLeaveBalance = Math.max(0, emp.annualLeaveBalance - inputs.annualLeaveTaken);
+      // Update leave balances
+      if (inputs.annualLeaveTaken > 0 || inputs.sickLeaveTaken > 0) {
+        emp.annualLeaveBalance = Math.max(0, emp.annualLeaveBalance - (inputs.annualLeaveTaken || 0));
+        emp.sickLeaveBalance = Math.max(0, emp.sickLeaveBalance - (inputs.sickLeaveTaken || 0));
+        await emp.save();
       }
-      if (inputs.sickLeaveTaken > 0) {
-        emp.sickLeaveBalance = Math.max(0, emp.sickLeaveBalance - inputs.sickLeaveTaken);
-      }
-      await emp.save();
     }
 
-    // ─── Calculate summary totals ─────────────────────────────────────────
     const summary = calculatePayrollSummary(payslips);
 
-    // ─── Upsert PayrollRun ────────────────────────────────────────────────
-    // If one already exists for this period, overwrite it
     const payrollRun = await PayrollRun.findOneAndUpdate(
       { company: companyId, month: selectedMonth, year: selectedYear },
       {
@@ -206,11 +197,11 @@ exports.postRunPayroll = async (req, res) => {
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    req.flash('success', `Payroll for ${monthName(selectedMonth, selectedYear)} has been processed for ${employees.length} employee(s).`);
+    req.flash('success', `Payroll for ${monthName(selectedMonth, selectedYear)} processed.`);
     res.redirect(`/payroll/${payrollRun._id}`);
   } catch (err) {
     console.error('Run payroll error:', err);
-    req.flash('error', 'Payroll processing failed: ' + err.message);
+    req.flash('error', 'Processing failed: ' + err.message);
     res.redirect('/payroll/run');
   }
 };
@@ -304,12 +295,10 @@ exports.downloadAllPayslipsZip = async (req, res) => {
     const archive = archiver('zip', { zlib: { level: 6 } });
     archive.pipe(res);
 
-    // Add each payslip as a PDF to the ZIP
     for (const payslip of payrollRun.payslips) {
       const safeName = (payslip.employeeSnapshot?.fullName || 'employee').replace(/[^a-z0-9]/gi, '_');
       const fileName = `payslip_${safeName}.pdf`;
 
-      // Generate PDF into a PassThrough stream, then append to archive
       const pdfStream = new PassThrough();
       generatePayslipPDF(payslip, companyUser, payrollRun.month, payrollRun.year, pdfStream);
       archive.append(pdfStream, { name: fileName });
