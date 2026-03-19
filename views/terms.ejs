@@ -1,0 +1,139 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+  .nm-legal-wrapper { flex:1; padding:40px 24px 72px; }
+  .nm-legal-inner   { max-width:760px; margin:0 auto; }
+
+  .nm-legal-header { margin-bottom:44px; padding-bottom:28px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .nm-legal-eyebrow { font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f5a623; margin-bottom:10px; }
+  .nm-legal-title   { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin:0 0 10px; }
+  .nm-legal-meta    { font-size:0.82rem; color:rgba(255,255,255,0.28); }
+
+  .nm-legal-toc { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:20px 24px; margin-bottom:36px; }
+  .nm-legal-toc-title { font-family:'Sora',sans-serif; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; }
+  .nm-legal-toc ol { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; }
+  .nm-legal-toc li a { font-size:0.845rem; color:rgba(255,255,255,0.45); text-decoration:none; transition:color 0.14s; }
+  .nm-legal-toc li a:hover { color:#f5a623; }
+
+  .nm-legal-section { margin-bottom:40px; scroll-margin-top:80px; }
+  .nm-legal-section h2 { font-family:'Sora',sans-serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,0.88); margin:0 0 14px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .nm-legal-section p  { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:12px; }
+  .nm-legal-section p:last-child { margin-bottom:0; }
+  .nm-legal-section ul { padding-left:20px; margin:0 0 12px; display:flex; flex-direction:column; gap:6px; }
+  .nm-legal-section ul li { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.6; }
+  .nm-legal-section strong { color:rgba(255,255,255,0.72); font-weight:600; }
+
+  .nm-legal-contact { background:#0d1b2a; border:1px solid rgba(245,166,35,0.15); border-radius:12px; padding:20px 24px; margin-top:44px; }
+  .nm-legal-contact p { font-size:0.855rem; color:rgba(255,255,255,0.45); margin:0 0 6px; }
+  .nm-legal-contact a { color:#f5a623; text-decoration:none; }
+  .nm-legal-contact a:hover { text-decoration:underline; }
+</style>
+
+<div class="nm-legal-wrapper">
+  <div class="nm-legal-inner">
+
+    <div class="nm-legal-header">
+      <div class="nm-legal-eyebrow">Legal</div>
+      <h1 class="nm-legal-title">Terms of Service</h1>
+      <div class="nm-legal-meta">Last updated: January 2025 &nbsp;·&nbsp; Effective date: January 2025</div>
+    </div>
+
+    <div class="nm-legal-toc">
+      <div class="nm-legal-toc-title">Table of Contents</div>
+      <ol>
+        <li><a href="#acceptance">Acceptance of Terms</a></li>
+        <li><a href="#services">Description of Services</a></li>
+        <li><a href="#accounts">Account Registration</a></li>
+        <li><a href="#subscriptions">Subscriptions & Payments</a></li>
+        <li><a href="#data">Data & Privacy</a></li>
+        <li><a href="#compliance">Compliance Responsibilities</a></li>
+        <li><a href="#liability">Limitation of Liability</a></li>
+        <li><a href="#termination">Termination</a></li>
+        <li><a href="#changes">Changes to Terms</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </div>
+
+    <div class="nm-legal-section" id="acceptance">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By registering for or using NamPayroll ("the Service", "we", "our"), you agree to be bound by these Terms of Service. If you do not agree, you may not use the Service. These terms apply to all users, including employers and employees accessing the employee portal.</p>
+    </div>
+
+    <div class="nm-legal-section" id="services">
+      <h2>2. Description of Services</h2>
+      <p>NamPayroll is a cloud-based payroll management platform designed for Namibian businesses. The Service includes:</p>
+      <ul>
+        <li>Monthly payroll processing and payslip generation</li>
+        <li>Automatic calculation of P.A.Y.E, Social Security (SSC), and ECF contributions in accordance with Namibian law</li>
+        <li>Employee portal for payslip access and leave balance visibility</li>
+        <li>Compliance reports and bank transfer CSV exports</li>
+      </ul>
+      <p>NamPayroll is a <strong>software tool</strong> and does not constitute professional accounting, tax, or legal advice. You remain responsible for the accuracy of data you input and for all statutory submissions to NamRA and the Social Security Commission.</p>
+    </div>
+
+    <div class="nm-legal-section" id="accounts">
+      <h2>3. Account Registration</h2>
+      <p>You must provide accurate and complete information when registering. You are responsible for maintaining the security of your account credentials. NamPayroll will not be liable for any loss resulting from unauthorised account access caused by your failure to keep login details secure.</p>
+      <p>One account may represent one legal entity (company). If you are registering on behalf of a company, you confirm you have authority to bind that entity to these terms.</p>
+    </div>
+
+    <div class="nm-legal-section" id="subscriptions">
+      <h2>4. Subscriptions & Payments</h2>
+      <p><strong>Free Trial:</strong> New accounts receive 5 complimentary payslips at no charge. No credit card is required for the trial.</p>
+      <p><strong>Paid Plans:</strong> After the trial, continued access requires a paid Monthly (N$299/month) or Annual (N$2,990/year) subscription. All prices are in Namibian Dollars (NAD) and exclude any applicable taxes.</p>
+      <p><strong>Payment:</strong> Payments are made via bank transfer to our designated account. Your plan is activated after manual verification of your proof of payment, typically within 1 business day.</p>
+      <p><strong>Renewals:</strong> Monthly plans renew each calendar month. Annual plans renew each year. You are responsible for initiating renewal payments before your plan expires.</p>
+      <p><strong>Refunds:</strong> Payments are non-refundable once a subscription period has begun, except where required by Namibian consumer protection law.</p>
+    </div>
+
+    <div class="nm-legal-section" id="data">
+      <h2>5. Data & Privacy</h2>
+      <p>You retain ownership of all data you input into NamPayroll. By using the Service, you grant NamPayroll a limited licence to store and process that data solely to provide the Service.</p>
+      <p>We do not sell your data to third parties. Employee data is only accessible to the employer who created those records and to the employees themselves via the portal. Please refer to our <a href="/privacy" style="color:#f5a623;">Privacy Policy</a> for full details.</p>
+    </div>
+
+    <div class="nm-legal-section" id="compliance">
+      <h2>6. Compliance Responsibilities</h2>
+      <p>NamPayroll calculates statutory deductions based on the rates and thresholds you configure and the latest NamRA tax brackets. <strong>You are solely responsible for:</strong></p>
+      <ul>
+        <li>The accuracy of all employee data, salaries, and allowances entered into the system</li>
+        <li>The timely remittance of P.A.Y.E to the Namibia Revenue Agency (NamRA) by the 20th of each following month</li>
+        <li>The timely payment of Social Security contributions to the Social Security Commission</li>
+        <li>Ensuring your ECF rate is correctly set according to your industry risk class</li>
+        <li>Any penalties, interest, or fines arising from late or incorrect statutory submissions</li>
+      </ul>
+      <p>NamPayroll is a calculation and document generation tool. It does not submit returns on your behalf.</p>
+    </div>
+
+    <div class="nm-legal-section" id="liability">
+      <h2>7. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by Namibian law, NamPayroll and its owners shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service, including but not limited to tax penalties, compliance failures, or data loss resulting from incorrect data entry.</p>
+      <p>Our total liability to you for any claim shall not exceed the amount you paid for the Service in the three months preceding the claim.</p>
+    </div>
+
+    <div class="nm-legal-section" id="termination">
+      <h2>8. Termination</h2>
+      <p>You may cancel your account at any time by contacting support. Upon cancellation, your plan will remain active until the end of the paid period. Your data will be retained for 90 days after expiry before being permanently deleted.</p>
+      <p>NamPayroll reserves the right to suspend or terminate accounts that violate these terms, engage in fraudulent activity, or fail to pay for services rendered.</p>
+    </div>
+
+    <div class="nm-legal-section" id="changes">
+      <h2>9. Changes to Terms</h2>
+      <p>We may update these terms from time to time. We will notify you of material changes via email or a prominent notice on the platform. Continued use of the Service after changes take effect constitutes acceptance of the revised terms.</p>
+    </div>
+
+    <div class="nm-legal-section" id="contact">
+      <h2>10. Governing Law</h2>
+      <p>These terms are governed by the laws of the Republic of Namibia. Any disputes shall be subject to the exclusive jurisdiction of the courts of Namibia.</p>
+    </div>
+
+    <div class="nm-legal-contact">
+      <p><strong style="color:rgba(255,255,255,0.6);">Questions about these terms?</strong></p>
+      <p>Email us at <a href="mailto:support@nampayroll.com">support@nampayroll.com</a> or visit our <a href="/support">Support page</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -22,34 +22,48 @@ const payslipSchema = new mongoose.Schema({
 
   // ─── Variable Inputs (Admin defined per month) ───────────────────────────
   overtimeHours: { type: Number, default: 0, min: 0 },
-  
+
   // New Fields for flexibility
-  taxableAllowances: { 
-    type: Number, 
-    default: 0, 
+  taxableAllowances: {
+    type: Number,
+    default: 0,
     min: 0,
     description: "Bonuses, commissions, taxable fringe benefits"
   },
-  nonTaxableAllowances: { 
-    type: Number, 
-    default: 0, 
+  nonTaxableAllowances: {
+    type: Number,
+    default: 0,
     min: 0,
-    description: "Expense reimbursements, non-taxable perks" 
+    description: "Expense reimbursements, non-taxable perks"
   },
-  otherDeductions: { 
-    type: Number, 
-    default: 0, 
+  otherDeductions: {
+    type: Number,
+    default: 0,
     min: 0,
     description: "Staff loans, uniform costs, union fees"
+  },
+
+  // ─── Leave Taken (per pay period) ────────────────────────────────────────
+  annualLeaveTaken: {
+    type: Number,
+    default: 0,
+    min: 0,
+    description: "Annual leave days taken during this pay period"
+  },
+  sickLeaveTaken: {
+    type: Number,
+    default: 0,
+    min: 0,
+    description: "Sick leave days taken during this pay period"
   },
 
   // ─── Calculated Values ────────────────────────────────────────────────────
   basicSalary: { type: Number, required: true, min: 0 },
   overtimePay: { type: Number, default: 0, min: 0 },
-  
+
   // Total Taxable Income = Basic + Overtime + Taxable Allowances
-  totalTaxableIncome: { type: Number, default: 0 }, 
-  
+  totalTaxableIncome: { type: Number, default: 0 },
+
   // Gross Pay = Basic + Overtime + Taxable Allowances + Non-Taxable Allowances
   grossPay: { type: Number, required: true, min: 0 },
 
@@ -64,7 +78,7 @@ const payslipSchema = new mongoose.Schema({
 
   // ─── Totals ───────────────────────────────────────────────────────────────
   // totalDeductions = PAYE + sscEmployee + otherDeductions
-  totalDeductions: { type: Number, default: 0, min: 0 }, 
+  totalDeductions: { type: Number, default: 0, min: 0 },
   netPay: { type: Number, required: true, min: 0 },
 
   // Total employer cost = (Gross Pay - Non-Taxable) + sscEmployer + ecf

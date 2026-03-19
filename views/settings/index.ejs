@@ -2,42 +2,162 @@
 <%- include('../partials/navbar') %>
 
 <style>
-  .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-settings-page { max-width:760px; margin:0 auto; }
+  /* ── Base ───────────────────────────────────────────────────────────────── */
+  .nm-page-wrapper  { flex:1; padding:32px 24px 64px; }
+  .nm-settings-page { max-width:800px; margin:0 auto; }
 
-  .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
-  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:5px 0 24px; }
+  /* ── Page header ────────────────────────────────────────────────────────── */
+  .nm-page-header   { margin-bottom:32px; }
+  .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0 0 4px; letter-spacing:-0.02em; }
+  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.38); margin:0; }
 
-  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
+  /* ── Alert ──────────────────────────────────────────────────────────────── */
+  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:13px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
   .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
+  .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
 
-  .nm-form-card { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:20px; }
-  .nm-form-card-header { display:flex; align-items:center; gap:10px; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); background:#112235; }
-  .nm-form-card-icon { width:28px; height:28px; border-radius:7px; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.15); display:flex; align-items:center; justify-content:center; color:#f5a623; font-size:0.82rem; flex-shrink:0; }
-  .nm-form-card-body { padding:20px; }
+  /* ── Section label (above cards) ───────────────────────────────────────── */
+  .nm-section-label {
+    font-family:'Sora',sans-serif;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.25);
+    margin:28px 0 10px 2px;
+  }
 
-  .nm-label { display:block; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.65); margin-bottom:7px; letter-spacing:0.01em; }
-  .nm-hint  { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-top:5px; line-height:1.4; }
+  /* ── Card ───────────────────────────────────────────────────────────────── */
+  .nm-form-card { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:16px; }
+  .nm-form-card-header {
+    display:flex; align-items:center; gap:12px;
+    padding:15px 20px;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+    background:#112235;
+  }
+  .nm-form-card-icon {
+    width:32px; height:32px; border-radius:8px;
+    background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.18);
+    display:flex; align-items:center; justify-content:center;
+    color:#f5a623; font-size:0.9rem; flex-shrink:0;
+  }
+  .nm-form-card-title { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); }
+  .nm-form-card-desc  { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-top:1px; }
+  .nm-form-card-body  { padding:22px 20px; }
 
-  .nm-input { display:block; width:100%; padding:9px 13px; background:#112235; border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:all 0.16s; }
-  .nm-input:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+  /* ── Field layout ───────────────────────────────────────────────────────── */
+  .nm-field { margin-bottom:0; }
+  .nm-label {
+    display:flex; align-items:center; gap:6px;
+    font-size:0.8rem; font-weight:600;
+    color:rgba(255,255,255,0.7);
+    margin-bottom:6px; letter-spacing:0.01em;
+  }
+  .nm-label-badge {
+    font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    padding:2px 7px; border-radius:20px; line-height:1.4;
+  }
+  .nm-label-badge.statutory { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.2); }
+  .nm-label-badge.employer  { background:rgba(96,165,250,0.1);  color:#60a5fa; border:1px solid rgba(96,165,250,0.2); }
+  .nm-label-badge.custom    { background:rgba(245,166,35,0.1);  color:#f5a623; border:1px solid rgba(245,166,35,0.2); }
 
-  .nm-input-group { display:flex; align-items:stretch; border:1px solid rgba(255,255,255,0.07); border-radius:8px; overflow:hidden; background:#112235; }
-  .nm-input-addon { padding:9px 13px; background:#1a2f45; color:rgba(255,255,255,0.4); font-size:0.875rem; font-weight:600; display:flex; align-items:center; }
-  .nm-input-group .nm-input { border:none !important; background:transparent; flex:1; }
+  .nm-hint {
+    font-size:0.775rem; color:rgba(255,255,255,0.3);
+    margin-top:6px; line-height:1.5;
+  }
+  .nm-hint strong { color:rgba(255,255,255,0.5); font-weight:600; }
 
-  .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
-  .nm-table thead th { padding:12px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; color:rgba(255,255,255,0.35); background:#112235; border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table td { padding:12px 16px; color:rgba(255,255,255,0.65); border-bottom:1px solid rgba(255,255,255,0.04); }
-  
-  .nm-rate-badge { display:inline-flex; align-items:center; font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623; }
+  /* ── Inputs ─────────────────────────────────────────────────────────────── */
+  .nm-input {
+    display:block; width:100%; padding:9px 13px;
+    background:#071421; border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px; color:rgba(255,255,255,0.92);
+    font-family:'DM Sans',sans-serif; font-size:0.9rem;
+    outline:none; transition:all 0.16s;
+  }
+  .nm-input:focus { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.07); background:#0a1a2a; }
 
-  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 24px; border-radius:9px; background:#f5a623; color:#1a0e00; font-weight:600; border:none; cursor:pointer; transition:all 0.2s; }
-  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 4px 12px rgba(245,166,35,0.2); }
+  .nm-input-group { display:flex; align-items:stretch; border:1px solid rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; background:#071421; transition:all 0.16s; }
+  .nm-input-group:focus-within { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.07); }
+  .nm-input-addon { padding:9px 12px; background:#0f2236; color:rgba(255,255,255,0.35); font-size:0.82rem; font-weight:700; display:flex; align-items:center; white-space:nowrap; border-right:1px solid rgba(255,255,255,0.07); }
+  .nm-input-addon.right { border-right:none; border-left:1px solid rgba(255,255,255,0.07); }
+  .nm-input-group .nm-input { border:none !important; background:transparent; flex:1; box-shadow:none !important; }
 
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:12px; background:rgba(245,166,35,0.05); border:1px solid rgba(245,166,35,0.15); border-radius:12px; padding:16px; margin-top:32px; font-size:0.82rem; color:rgba(255,255,255,0.6); }
-  .nm-disclaimer i { color:#f5a623; font-size:1.1rem; }
+  /* Live preview pill */
+  .nm-preview-pill {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.15);
+    border-radius:8px; padding:8px 14px; margin-top:12px;
+    font-size:0.8rem; color:rgba(255,255,255,0.5);
+  }
+  .nm-preview-pill strong { color:#f5a623; font-family:'Sora',sans-serif; font-size:0.875rem; }
+
+  /* ── Divider inside card ────────────────────────────────────────────────── */
+  .nm-card-divider { border:none; border-top:1px solid rgba(255,255,255,0.05); margin:20px 0; }
+
+  /* ── Tax brackets table ─────────────────────────────────────────────────── */
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+  .nm-table thead th {
+    padding:10px 16px; font-size:0.68rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em;
+    color:rgba(255,255,255,0.3); background:#112235;
+    border-bottom:1px solid rgba(255,255,255,0.07); text-align:left;
+  }
+  .nm-table td { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6); vertical-align:middle; }
+  .nm-table tr:last-child td { border-bottom:none; }
+  .nm-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+  .nm-bracket-range { font-weight:600; color:rgba(255,255,255,0.82); font-family:'Sora',sans-serif; font-size:0.8rem; }
+  .nm-bracket-base  { color:rgba(255,255,255,0.45); font-size:0.82rem; }
+  .nm-rate-badge {
+    display:inline-flex; align-items:center;
+    font-family:'Sora',sans-serif; font-size:0.8rem; font-weight:700;
+    padding:3px 10px; border-radius:20px;
+    background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623;
+  }
+  .nm-rate-badge.zero { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.35); }
+
+  .nm-table-note {
+    display:flex; align-items:flex-start; gap:8px;
+    padding:12px 16px; background:#071421;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:0.775rem; color:rgba(255,255,255,0.3); line-height:1.5;
+  }
+  .nm-table-note i { color:#f5a623; font-size:0.82rem; flex-shrink:0; margin-top:1px; }
+
+  /* ── Overtime formula explainer ─────────────────────────────────────────── */
+  .nm-formula-box {
+    background:#071421; border:1px solid rgba(255,255,255,0.06);
+    border-radius:10px; padding:14px 16px; margin-top:16px;
+    font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.8;
+  }
+  .nm-formula-box code {
+    font-family:'DM Mono','Courier New',monospace;
+    color:#f5a623; background:rgba(245,166,35,0.08);
+    padding:1px 6px; border-radius:4px; font-size:0.8rem;
+  }
+
+  /* ── Submit bar ─────────────────────────────────────────────────────────── */
+  .nm-submit-row { display:flex; align-items:center; gap:14px; margin-top:28px; }
+  .nm-btn-primary {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 26px; border-radius:9px;
+    background:#f5a623; color:#1a0e00;
+    font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:700;
+    border:none; cursor:pointer; transition:all 0.18s;
+  }
+  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 6px 20px rgba(245,166,35,0.22); }
+
+  /* ── Disclaimer ─────────────────────────────────────────────────────────── */
+  .nm-disclaimer {
+    display:flex; align-items:flex-start; gap:12px;
+    background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.12);
+    border-radius:12px; padding:18px; margin-top:28px;
+    font-size:0.82rem; color:rgba(255,255,255,0.45); line-height:1.65;
+  }
+  .nm-disclaimer i { color:#f5a623; font-size:1.05rem; flex-shrink:0; margin-top:1px; }
+  .nm-disclaimer strong { color:rgba(255,255,255,0.7); }
+  .nm-disclaimer em { color:rgba(255,255,255,0.55); font-style:normal; font-weight:600; }
 </style>
 
 <div class="nm-page-wrapper">
@@ -51,129 +171,259 @@
       </div>
     <% } %>
 
-    <h1 class="nm-page-title">Company Settings</h1>
-    <p class="nm-page-subtitle">Manage statutory Namibian payroll rates and compliance variables.</p>
+    <div class="nm-page-header">
+      <h1 class="nm-page-title">Company Settings</h1>
+      <p class="nm-page-subtitle">Configure statutory Namibian payroll rates. These values are applied automatically each time payroll is processed.</p>
+    </div>
 
     <form action="/settings" method="POST">
 
+      <!-- ── SECTION 1: Social Security ───────────────────────────────────── -->
+      <div class="nm-section-label">Social Security Commission (SSC)</div>
+
       <div class="nm-form-card">
         <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-shield-lock"></i></span>
-          Social Security Commission (SSC)
+          <span class="nm-form-card-icon"><i class="bi bi-shield-check"></i></span>
+          <div>
+            <div class="nm-form-card-title">SSC Contribution Settings</div>
+            <div class="nm-form-card-desc">Both employee and employer contribute equally at this rate.</div>
+          </div>
         </div>
         <div class="nm-form-card-body">
           <div class="row g-4">
-            <div class="col-md-4">
-              <label class="nm-label">Contribution Rate (%)</label>
+
+            <div class="col-md-4 nm-field">
+              <label class="nm-label">
+                Contribution Rate
+                <span class="nm-label-badge statutory">Statutory</span>
+              </label>
               <div class="nm-input-group">
-                <input type="number" name="sscRate" class="nm-input" step="0.01" value="<%= ((settings.sscRate || 0.009) * 100).toFixed(2) %>" />
-                <span class="nm-input-addon">%</span>
+                <input type="number" name="sscRate" id="sscRateInput" class="nm-input" step="0.01" min="0" max="100"
+                  value="<%= ((settings.sscRate || 0.009) * 100).toFixed(2) %>" oninput="updateSSCPreview()" />
+                <span class="nm-input-addon right">%</span>
               </div>
-              <div class="nm-hint">Standard: 0.9% for Employee & Employer.</div>
+              <div class="nm-hint">NamRA standard is <strong>0.90%</strong>. Applied to both employee and employer portions separately.</div>
             </div>
-            <div class="col-md-4">
-              <label class="nm-label">Monthly Salary Cap</label>
+
+            <div class="col-md-4 nm-field">
+              <label class="nm-label">
+                Monthly Salary Cap
+                <span class="nm-label-badge statutory">Statutory</span>
+              </label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
-                <input type="number" name="sscMonthlyCap" class="nm-input" value="<%= settings.sscMonthlyCap || 11000 %>" />
+                <input type="number" name="sscMonthlyCap" id="sscCapInput" class="nm-input"
+                  value="<%= settings.sscMonthlyCap || 11000 %>" oninput="updateSSCPreview()" />
               </div>
-              <div class="nm-hint">The income level where SSC stops increasing.</div>
+              <div class="nm-hint">SSC is only calculated on salary <strong>up to this amount</strong>. Income above the cap is not subject to SSC.</div>
             </div>
-            <div class="col-md-4">
-              <label class="nm-label">Max Monthly Contribution</label>
+
+            <div class="col-md-4 nm-field">
+              <label class="nm-label">
+                Max Monthly Contribution
+                <span class="nm-label-badge statutory">Statutory</span>
+              </label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
-                <input type="number" name="sscMaxContribution" class="nm-input" step="0.01" value="<%= settings.sscMaxContribution || 99.00 %>" />
+                <input type="number" name="sscMaxContribution" id="sscMaxInput" class="nm-input" step="0.01"
+                  value="<%= settings.sscMaxContribution || 99.00 %>" oninput="updateSSCPreview()" />
               </div>
-              <div class="nm-hint">Cap on the N$ value (Standard: N$99.00).</div>
+              <div class="nm-hint">The <strong>maximum N$ amount</strong> that can be deducted per month per person. Standard is <strong>N$99.00</strong>.</div>
+            </div>
+
+          </div>
+
+          <!-- Live preview -->
+          <div class="nm-preview-pill mt-3">
+            <i class="bi bi-calculator" style="color:#f5a623;"></i>
+            Employee on N$<strong id="prev-cap"><%= settings.sscMonthlyCap || 11000 %></strong> salary:
+            Employee deduction = <strong id="prev-emp">N$ <span id="prev-emp-val">99.00</span></strong> &nbsp;·&nbsp;
+            Employer contributes = <strong id="prev-emr">N$ <span id="prev-emr-val">99.00</span></strong>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: ECF + Overtime ────────────────────────────────────── -->
+      <div class="nm-section-label">Employer Costs & Overtime</div>
+
+      <div class="row g-3 mb-0">
+        <div class="col-md-5">
+          <div class="nm-form-card h-100 mb-0">
+            <div class="nm-form-card-header">
+              <span class="nm-form-card-icon"><i class="bi bi-hospital"></i></span>
+              <div>
+                <div class="nm-form-card-title">Workmen's Compensation (ECF)</div>
+                <div class="nm-form-card-desc">Employer liability only — not deducted from employee.</div>
+              </div>
+            </div>
+            <div class="nm-form-card-body">
+              <label class="nm-label">
+                Employer ECF Rate
+                <span class="nm-label-badge employer">Employer Only</span>
+              </label>
+              <div class="nm-input-group">
+                <input type="number" name="ecfRate" class="nm-input" step="0.01" min="0"
+                  value="<%= ((settings.ecfRate || 0) * 100).toFixed(2) %>" />
+                <span class="nm-input-addon right">%</span>
+              </div>
+              <div class="nm-hint">Set by the Employees' Compensation Commissioner based on your industry <strong>risk class</strong>. Enter <strong>0</strong> if not applicable to your sector.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-7">
+          <div class="nm-form-card h-100 mb-0">
+            <div class="nm-form-card-header">
+              <span class="nm-form-card-icon"><i class="bi bi-clock-history"></i></span>
+              <div>
+                <div class="nm-form-card-title">Overtime Calculation</div>
+                <div class="nm-form-card-desc">Defines how overtime pay is calculated from the basic salary.</div>
+              </div>
+            </div>
+            <div class="nm-form-card-body">
+              <div class="row g-3">
+                <div class="col-6 nm-field">
+                  <label class="nm-label">
+                    Working Days/Month
+                    <span class="nm-label-badge custom">Custom</span>
+                  </label>
+                  <input type="number" name="workingDaysPerMonth" id="workDays" class="nm-input" min="1" max="31"
+                    value="<%= settings.workingDaysPerMonth || 22 %>" oninput="updateOTPreview()" />
+                  <div class="nm-hint">Typically <strong>22</strong> for a standard 5-day working week.</div>
+                </div>
+                <div class="col-6 nm-field">
+                  <label class="nm-label">
+                    OT Multiplier
+                    <span class="nm-label-badge custom">Custom</span>
+                  </label>
+                  <input type="number" name="overtimeMultiplier" id="otMultiplier" class="nm-input" step="0.1" min="1"
+                    value="<%= settings.overtimeMultiplier || 1.5 %>" oninput="updateOTPreview()" />
+                  <div class="nm-hint">Standard is <strong>1.5×</strong> (time and a half). Use <strong>2.0×</strong> for double time on public holidays.</div>
+                </div>
+              </div>
+
+              <!-- OT formula explainer -->
+              <div class="nm-formula-box">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.25);margin-bottom:6px;">Overtime Pay Formula</div>
+                Hourly Rate = <code>Basic Salary ÷ (Days/Month × 8hrs)</code><br>
+                OT Pay = <code>Hourly Rate × OT Hours × Multiplier</code><br>
+                <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;">
+                  e.g. N$10,000 salary → <span id="ot-example">N$85.23/hr @ 1.5× = N$127.84/hr OT</span>
+                </span>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6">
-          <div class="nm-form-card">
-            <div class="nm-form-card-header">
-              <span class="nm-form-card-icon"><i class="bi bi-safe"></i></span>
-              Workmen's Comp (ECF)
-            </div>
-            <div class="nm-form-card-body">
-              <label class="nm-label">Employer ECF Rate (%)</label>
-              <div class="nm-input-group">
-                <input type="number" name="ecfRate" class="nm-input" step="0.01" value="<%= ((settings.ecfRate || 0) * 100).toFixed(2) %>" />
-                <span class="nm-input-addon">%</span>
-              </div>
-              <div class="nm-hint">Based on industry risk class as per EEC.</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="nm-form-card">
-            <div class="nm-form-card-header">
-              <span class="nm-form-card-icon"><i class="bi bi-stopwatch"></i></span>
-              Overtime Calculation
-            </div>
-            <div class="nm-form-card-body">
-              <div class="row g-2">
-                <div class="col-6">
-                  <label class="nm-label">Days/Month</label>
-                  <input type="number" name="workingDaysPerMonth" class="nm-input" value="<%= settings.workingDaysPerMonth || 22 %>" />
-                </div>
-                <div class="col-6">
-                  <label class="nm-label">Multiplier</label>
-                  <input type="number" name="overtimeMultiplier" class="nm-input" step="0.1" value="<%= settings.overtimeMultiplier || 1.5 %>" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- ── SECTION 3: Tax Brackets ───────────────────────────────────────── -->
+      <div class="nm-section-label" style="margin-top:28px;">Income Tax Brackets</div>
 
       <div class="nm-form-card">
         <div class="nm-form-card-header">
-          <span class="nm-form-card-icon"><i class="bi bi-bank"></i></span>
-          NamRA Individual Tax Brackets (2025/2026)
+          <span class="nm-form-card-icon"><i class="bi bi-bank2"></i></span>
+          <div>
+            <div class="nm-form-card-title">NamRA Individual Tax Brackets — 2025/2026</div>
+            <div class="nm-form-card-desc">Applied to annualised taxable income. Read-only — managed globally for NamRA compliance.</div>
+          </div>
         </div>
+
         <div class="table-responsive">
           <table class="nm-table">
             <thead>
               <tr>
-                <th>Annual Taxable Income (NAD)</th>
-                <th>Base Tax</th>
-                <th>Rate on Excess</th>
+                <th style="width:44%">Annual Taxable Income (NAD)</th>
+                <th style="width:28%">Base Tax Amount</th>
+                <th style="width:28%">Rate on Excess</th>
               </tr>
             </thead>
             <tbody>
-              <% (settings.taxBrackets || []).forEach(bracket => { %>
+              <% (settings.taxBrackets || []).forEach((bracket, i) => { %>
                 <tr>
-                  <td>N$ <%= Number(bracket.min || 0).toLocaleString() %> – <%= bracket.max ? 'N$ ' + Number(bracket.max).toLocaleString() : 'Above' %></td>
-                  <td>N$ <%= Number(bracket.baseAmount || 0).toLocaleString() %></td>
-                  <td><span class="nm-rate-badge"><%= ((bracket.rate || 0) * 100).toFixed(0) %>%</span></td>
+                  <td>
+                    <div class="nm-bracket-range">
+                      N$ <%= Number(bracket.min || 0).toLocaleString() %>
+                      <%= bracket.max ? '– N$ ' + Number(bracket.max).toLocaleString() : 'and above' %>
+                    </div>
+                    <% if (i === 0) { %>
+                      <div style="font-size:0.72rem;color:rgba(46,204,138,0.7);margin-top:2px;">✓ Tax-free threshold</div>
+                    <% } %>
+                  </td>
+                  <td class="nm-bracket-base">
+                    <%= bracket.baseAmount ? 'N$ ' + Number(bracket.baseAmount).toLocaleString() : '—' %>
+                  </td>
+                  <td>
+                    <span class="nm-rate-badge <%= bracket.rate === 0 ? 'zero' : '' %>">
+                      <%= ((bracket.rate || 0) * 100).toFixed(0) %>%
+                    </span>
+                  </td>
                 </tr>
               <% }) %>
             </tbody>
           </table>
         </div>
+
         <div class="nm-table-note">
-          <i class="bi bi-info-circle-fill"></i> These brackets are managed globally to ensure compliance with NamRA's N$ 100,000 tax-free threshold.
+          <i class="bi bi-lock-fill"></i>
+          These brackets are locked and managed globally to comply with NamRA's N$100,000 tax-free threshold. Contact support to request a review if brackets change.
         </div>
       </div>
 
-      <button type="submit" class="nm-btn-primary">
-        <i class="bi bi-check2-all"></i> Update Company Rates
-      </button>
+      <!-- ── Submit ─────────────────────────────────────────────────────────── -->
+      <div class="nm-submit-row">
+        <button type="submit" class="nm-btn-primary">
+          <i class="bi bi-check2-all"></i> Save Company Settings
+        </button>
+        <span style="font-size:0.8rem;color:rgba(255,255,255,0.25);">Changes apply to the next payroll run.</span>
+      </div>
 
     </form>
 
+    <!-- ── Legal disclaimer ─────────────────────────────────────────────────── -->
     <div class="nm-disclaimer">
       <i class="bi bi-info-square-fill"></i>
       <div>
-        <strong>Legal Compliance Note:</strong> In accordance with the <em>Namibian Income Tax Act</em> and <em>Social Security Act</em>, employers are responsible for the accurate deduction and timely remittance of P.A.Y.E and SSC. Ensure all "Other Deductions" (introduced in the latest update) are supported by signed employee agreements.
+        <strong>Legal Compliance Note:</strong> In accordance with the <em>Namibian Income Tax Act</em> and <em>Social Security Act</em>, employers are responsible for the accurate deduction and timely remittance of P.A.Y.E and SSC contributions. Ensure all "Other Deductions" are supported by signed employee agreements before deducting.
       </div>
     </div>
 
   </div>
 </div>
+
+<script>
+  // ── SSC live preview ──────────────────────────────────────────────────────
+  function updateSSCPreview() {
+    const rate = parseFloat(document.getElementById('sscRateInput').value) / 100 || 0;
+    const cap  = parseFloat(document.getElementById('sscCapInput').value)  || 0;
+    const max  = parseFloat(document.getElementById('sscMaxInput').value)  || 0;
+
+    const base = Math.min(cap, cap); // salary at cap level
+    const raw  = cap * rate;
+    const contribution = Math.min(raw, max).toFixed(2);
+
+    document.getElementById('prev-cap').textContent     = cap.toLocaleString();
+    document.getElementById('prev-emp-val').textContent = contribution;
+    document.getElementById('prev-emr-val').textContent = contribution;
+  }
+
+  // ── OT formula live example ───────────────────────────────────────────────
+  function updateOTPreview() {
+    const days  = parseFloat(document.getElementById('workDays').value)      || 22;
+    const multi = parseFloat(document.getElementById('otMultiplier').value)  || 1.5;
+    const salary = 10000;
+
+    const hourly = salary / (days * 8);
+    const otRate = hourly * multi;
+
+    document.getElementById('ot-example').textContent =
+      `N$${hourly.toFixed(2)}/hr @ ${multi}× = N$${otRate.toFixed(2)}/hr OT`;
+  }
+
+  // Run on load
+  updateSSCPreview();
+  updateOTPreview();
+</script>
 
 <%- include('../partials/footer') %>

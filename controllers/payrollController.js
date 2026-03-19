@@ -1,28 +1,37 @@
 /**
- * payrollController.js
- * Handles all payroll run logic: creating, viewing, and downloading outputs.
+ * payrollController.js – NamPayroll
+ * Handles creating, viewing, downloading payroll runs and related exports.
  */
 
 const moment = require('moment-timezone');
 const archiver = require('archiver');
 const { PassThrough } = require('stream');
 
-const Employee = require('../models/Employee');
-const PayrollRun = require('../models/PayrollRun');
-const Settings = require('../models/Settings');
-const User = require('../models/User');
+const Employee       = require('../models/Employee');
+const PayrollRun     = require('../models/PayrollRun');
+const Settings       = require('../models/Settings');
+const User           = require('../models/User');
+const Subscription   = require('../models/Subscription');
 
 const {
   calculateEmployeePayroll,
   calculatePayrollSummary
 } = require('../utils/payrollCalculator');
 
-const { generatePayslipPDF, generateCompliancePDF } = require('../utils/pdfGenerator');
-const { generateBankTransferCSV, generateComplianceCSV } = require('../utils/csvGenerator');
+const {
+  generatePayslipPDF,
+  generateCompliancePDF
+} = require('../utils/pdfGenerator');
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+const {
+  generateBankTransferCSV,
+  generateComplianceCSV
+} = require('../utils/csvGenerator');
 
-/** Get or create settings for the company */
+const { TRIAL_RUN_LIMIT } = require('../middleware/subscriptionMiddleware');
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
 async function getSettings(companyId) {
   let settings = await Settings.findOne({ company: companyId });
   if (!settings) {
@@ -31,16 +40,14 @@ async function getSettings(companyId) {
   return settings;
 }
 
-/** Month name from number */
-function monthName(m, y) {
-  return moment(`${y}-${String(m).padStart(2, '0')}-01`).format('MMMM YYYY');
+function monthName(month, year) {
+  return moment(`${year}-${String(month).padStart(2, '0')}-01`).format('MMMM YYYY');
 }
 
 // ─── GET /payroll ─────────────────────────────────────────────────────────────
 exports.getPayrollHistory = async (req, res) => {
   try {
-    const companyId = req.session.user._id;
-    const payrolls = await PayrollRun.find({ company: companyId })
+    const payrolls = await PayrollRun.find({ company: req.session.user._id })
       .sort({ year: -1, month: -1 })
       .lean();
 
@@ -57,20 +64,20 @@ exports.getPayrollHistory = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/run ──────────────────────────────────────────────────────────
+// ─── GET /payroll/run ─────────────────────────────────────────────────────────
 exports.getRunPayroll = async (req, res) => {
   try {
     const companyId = req.session.user._id;
     const now = moment().tz('Africa/Windhoek');
 
     const selectedMonth = parseInt(req.query.month) || now.month() + 1;
-    const selectedYear = parseInt(req.query.year) || now.year();
+    const selectedYear  = parseInt(req.query.year)  || now.year();
 
-    const existing = await PayrollRun.findOne({
+    const existingRun = await PayrollRun.findOne({
       company: companyId,
       month: selectedMonth,
       year: selectedYear
-    });
+    }).lean();
 
     const employees = await Employee.find({ company: companyId, isActive: true })
       .sort({ fullName: 1 })
@@ -79,21 +86,36 @@ exports.getRunPayroll = async (req, res) => {
     const years = [];
     for (let y = now.year() - 2; y <= now.year() + 1; y++) years.push(y);
 
+    // Calculate run count for trial warning in the view
+    const runCount = await PayrollRun.countDocuments({
+      company: companyId,
+      status: 'finalised'
+    });
+
     res.render('payroll/run', {
       title: 'Run Payroll – NamPayroll',
       employees,
       selectedMonth,
       selectedYear,
-      existing,
+      existing: existingRun,
       years,
       months: [
-        { value: 1, name: 'January' }, { value: 2, name: 'February' },
-        { value: 3, name: 'March' }, { value: 4, name: 'April' },
-        { value: 5, name: 'May' }, { value: 6, name: 'June' },
-        { value: 7, name: 'July' }, { value: 8, name: 'August' },
-        { value: 9, name: 'September' }, { value: 10, name: 'October' },
-        { value: 11, name: 'November' }, { value: 12, name: 'December' }
-      ]
+        { value: 1,  name: 'January'   },
+        { value: 2,  name: 'February'  },
+        { value: 3,  name: 'March'     },
+        { value: 4,  name: 'April'     },
+        { value: 5,  name: 'May'       },
+        { value: 6,  name: 'June'      },
+        { value: 7,  name: 'July'      },
+        { value: 8,  name: 'August'    },
+        { value: 9,  name: 'September' },
+        { value: 10, name: 'October'   },
+        { value: 11, name: 'November'  },
+        { value: 12, name: 'December'  }
+      ],
+      subscription: req.subscription || null,
+      runCount,
+      TRIAL_RUN_LIMIT
     });
   } catch (err) {
     console.error('Get run payroll error:', err);
@@ -105,16 +127,25 @@ exports.getRunPayroll = async (req, res) => {
 // ─── POST /payroll/run ────────────────────────────────────────────────────────
 exports.postRunPayroll = async (req, res) => {
   try {
-    const companyId = req.session.user._id;
-    const { month, year } = req.body;
-    const selectedMonth = parseInt(month);
-    const selectedYear = parseInt(year);
+    const companyId     = req.session.user._id;
+    const selectedMonth = parseInt(req.body.month);
+    const selectedYear  = parseInt(req.body.year);
 
     if (!selectedMonth || !selectedYear) {
       req.flash('error', 'Invalid month or year.');
       return res.redirect('/payroll/run');
     }
 
+    // Check if this is a new run or re-processing an existing month
+    const existingRun = await PayrollRun.findOne({
+      company: companyId,
+      month: selectedMonth,
+      year: selectedYear
+    }).lean();
+
+    const isNewRun = !existingRun;
+
+    // ── Load data ─────────────────────────────────────────────────────────────
     const settings = await getSettings(companyId);
     const employees = await Employee.find({ company: companyId, isActive: true });
 
@@ -123,60 +154,64 @@ exports.postRunPayroll = async (req, res) => {
       return res.redirect('/payroll/run');
     }
 
+    // ── Calculate payslips ────────────────────────────────────────────────────
     const payslips = [];
 
     for (const emp of employees) {
-      // Capture the new flexible inputs from the UI
-      const empInputs = req.body.employees?.[emp._id.toString()] || {};
+      const inputs = req.body.employees?.[emp._id.toString()] || {};
 
-      const inputs = {
-        daysWorked: parseFloat(empInputs.daysWorked) || 0,
-        hoursWorked: parseFloat(empInputs.hoursWorked) || 0,
-        overtimeHours: parseFloat(empInputs.overtimeHours) || 0,
-        annualLeaveTaken: parseFloat(empInputs.annualLeaveTaken) || 0,
-        sickLeaveTaken: parseFloat(empInputs.sickLeaveTaken) || 0,
-        // NEW: Flexible financial adjustments
-        taxableAllowances: parseFloat(empInputs.taxableAllowances) || 0,
-        nonTaxableAllowances: parseFloat(empInputs.nonTaxableAllowances) || 0,
-        otherDeductions: parseFloat(empInputs.otherDeductions) || 0
-      };
+      const overtimeHours        = parseFloat(inputs.overtimeHours)        || 0;
+      const taxableAllowances    = parseFloat(inputs.taxableAllowances)    || 0;
+      const nonTaxableAllowances = parseFloat(inputs.nonTaxableAllowances) || 0;
+      const otherDeductions      = parseFloat(inputs.otherDeductions)      || 0;
+      const annualLeaveTaken     = parseFloat(inputs.annualLeaveTaken)     || 0;
+      const sickLeaveTaken       = parseFloat(inputs.sickLeaveTaken)       || 0;
 
-      // The calculator now receives these inputs to adjust the math
-      const calc = calculateEmployeePayroll(emp, inputs, {
-        ecfRate: settings.ecfRate,
-        sscRate: settings.sscRate,
-        sscMonthlyCap: settings.sscMonthlyCap,
-        sscMaxContribution: settings.sscMaxContribution,
-        taxBrackets: settings.taxBrackets,
-        overtimeMultiplier: settings.overtimeMultiplier,
+      const calc = calculateEmployeePayroll(emp, {
+        overtimeHours,
+        taxableAllowances,
+        nonTaxableAllowances,
+        otherDeductions
+      }, {
+        ecfRate:             settings.ecfRate,
+        sscRate:             settings.sscRate,
+        sscMonthlyCap:       settings.sscMonthlyCap,
+        sscMaxContribution:  settings.sscMaxContribution,
+        taxBrackets:         settings.taxBrackets,
+        overtimeMultiplier:  settings.overtimeMultiplier,
         workingDaysPerMonth: settings.workingDaysPerMonth
       });
 
       payslips.push({
         employee: emp._id,
         employeeSnapshot: {
-          fullName: emp.fullName,
-          idNumber: emp.idNumber,
-          position: emp.position || '',
+          fullName:   emp.fullName,
+          idNumber:   emp.idNumber,
+          position:   emp.position   || '',
           department: emp.department || '',
-          email: emp.email,
-          phone: emp.phone || ''
+          email:      emp.email,
+          phone:      emp.phone      || ''
         },
-        // Spread the calculated results + the original inputs for record-keeping
-        ...inputs,
-        ...calc
+        overtimeHours,
+        taxableAllowances,
+        nonTaxableAllowances,
+        otherDeductions,
+        ...calc,
+        annualLeaveTaken,   // applied last
+        sickLeaveTaken
       });
 
-      // Update leave balances
-      if (inputs.annualLeaveTaken > 0 || inputs.sickLeaveTaken > 0) {
-        emp.annualLeaveBalance = Math.max(0, emp.annualLeaveBalance - (inputs.annualLeaveTaken || 0));
-        emp.sickLeaveBalance = Math.max(0, emp.sickLeaveBalance - (inputs.sickLeaveTaken || 0));
+      // Update leave balances if used
+      if (annualLeaveTaken > 0 || sickLeaveTaken > 0) {
+        emp.annualLeaveBalance = Math.max(0, emp.annualLeaveBalance - annualLeaveTaken);
+        emp.sickLeaveBalance   = Math.max(0, emp.sickLeaveBalance   - sickLeaveTaken);
         await emp.save();
       }
     }
 
     const summary = calculatePayrollSummary(payslips);
 
+    // ── Save / update payroll run ─────────────────────────────────────────────
     const payrollRun = await PayrollRun.findOneAndUpdate(
       { company: companyId, month: selectedMonth, year: selectedYear },
       {
@@ -187,9 +222,9 @@ exports.postRunPayroll = async (req, res) => {
         payslips,
         ...summary,
         settingsSnapshot: {
-          ecfRate: settings.ecfRate,
-          sscRate: settings.sscRate,
-          sscCap: settings.sscMonthlyCap,
+          ecfRate:     settings.ecfRate,
+          sscRate:     settings.sscRate,
+          sscCap:      settings.sscMonthlyCap,
           taxBrackets: settings.taxBrackets
         },
         processedAt: new Date()
@@ -197,11 +232,12 @@ exports.postRunPayroll = async (req, res) => {
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    req.flash('success', `Payroll for ${monthName(selectedMonth, selectedYear)} processed.`);
+    req.flash('success', `Payroll for ${monthName(selectedMonth, selectedYear)} processed successfully.`);
     res.redirect(`/payroll/${payrollRun._id}`);
+
   } catch (err) {
     console.error('Run payroll error:', err);
-    req.flash('error', 'Processing failed: ' + err.message);
+    req.flash('error', 'Processing failed: ' + (err.message || 'Unknown error'));
     res.redirect('/payroll/run');
   }
 };
@@ -232,7 +268,7 @@ exports.getPayrollRun = async (req, res) => {
   }
 };
 
-// ─── DELETE /payroll/:id ───────────────────────────────────────────────────────
+// ─── DELETE /payroll/:id ──────────────────────────────────────────────────────
 exports.deletePayrollRun = async (req, res) => {
   try {
     await PayrollRun.findOneAndDelete({
@@ -248,7 +284,8 @@ exports.deletePayrollRun = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/:id/payslip/:payslipId/pdf ──────────────────────────────────
+// ─── DOWNLOAD HELPERS ────────────────────────────────────────────────────────
+
 exports.downloadPayslipPDF = async (req, res) => {
   try {
     const payrollRun = await PayrollRun.findOne({
@@ -256,18 +293,18 @@ exports.downloadPayslipPDF = async (req, res) => {
       company: req.session.user._id
     });
 
-    if (!payrollRun) return res.status(404).send('Not found');
+    if (!payrollRun) return res.status(404).send('Payroll run not found');
 
     const payslip = payrollRun.payslips.id(req.params.payslipId);
     if (!payslip) return res.status(404).send('Payslip not found');
 
     const companyUser = await User.findById(req.session.user._id).lean();
-    const safeName = (payslip.employeeSnapshot?.fullName || 'employee').replace(/[^a-z0-9]/gi, '_');
+    const safeName = (payslip.employeeSnapshot?.fullName || 'employee')
+      .replace(/[^a-z0-9]/gi, '_');
     const fileName = `payslip_${safeName}_${monthName(payrollRun.month, payrollRun.year).replace(' ', '_')}.pdf`;
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-
     generatePayslipPDF(payslip, companyUser, payrollRun.month, payrollRun.year, res);
   } catch (err) {
     console.error('Download payslip PDF error:', err);
@@ -275,7 +312,6 @@ exports.downloadPayslipPDF = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/:id/zip ─────────────────────────────────────────────────────
 exports.downloadAllPayslipsZip = async (req, res) => {
   try {
     const payrollRun = await PayrollRun.findOne({
@@ -287,21 +323,19 @@ exports.downloadAllPayslipsZip = async (req, res) => {
 
     const companyUser = await User.findById(req.session.user._id).lean();
     const period = monthName(payrollRun.month, payrollRun.year).replace(' ', '_');
-    const zipFileName = `payslips_${period}.zip`;
 
     res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename="${zipFileName}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="payslips_${period}.zip"`);
 
     const archive = archiver('zip', { zlib: { level: 6 } });
     archive.pipe(res);
 
     for (const payslip of payrollRun.payslips) {
-      const safeName = (payslip.employeeSnapshot?.fullName || 'employee').replace(/[^a-z0-9]/gi, '_');
-      const fileName = `payslip_${safeName}.pdf`;
-
+      const safeName = (payslip.employeeSnapshot?.fullName || 'employee')
+        .replace(/[^a-z0-9]/gi, '_');
       const pdfStream = new PassThrough();
       generatePayslipPDF(payslip, companyUser, payrollRun.month, payrollRun.year, pdfStream);
-      archive.append(pdfStream, { name: fileName });
+      archive.append(pdfStream, { name: `payslip_${safeName}.pdf` });
     }
 
     await archive.finalize();
@@ -311,7 +345,6 @@ exports.downloadAllPayslipsZip = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/:id/bank-csv ─────────────────────────────────────────────────
 exports.downloadBankCSV = async (req, res) => {
   try {
     const payrollRun = await PayrollRun.findOne({
@@ -334,7 +367,6 @@ exports.downloadBankCSV = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/:id/compliance-csv ──────────────────────────────────────────
 exports.downloadComplianceCSV = async (req, res) => {
   try {
     const payrollRun = await PayrollRun.findOne({
@@ -357,7 +389,6 @@ exports.downloadComplianceCSV = async (req, res) => {
   }
 };
 
-// ─── GET /payroll/:id/compliance-pdf ──────────────────────────────────────────
 exports.downloadCompliancePDF = async (req, res) => {
   try {
     const payrollRun = await PayrollRun.findOne({
@@ -372,7 +403,6 @@ exports.downloadCompliancePDF = async (req, res) => {
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="compliance_summary_${period}.pdf"`);
-
     generateCompliancePDF(payrollRun, companyUser, res);
   } catch (err) {
     console.error('Download compliance PDF error:', err);

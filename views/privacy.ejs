@@ -1,0 +1,156 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+  .nm-legal-wrapper { flex:1; padding:40px 24px 72px; }
+  .nm-legal-inner   { max-width:760px; margin:0 auto; }
+  .nm-legal-header { margin-bottom:44px; padding-bottom:28px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .nm-legal-eyebrow { font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f5a623; margin-bottom:10px; }
+  .nm-legal-title   { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin:0 0 10px; }
+  .nm-legal-meta    { font-size:0.82rem; color:rgba(255,255,255,0.28); }
+  .nm-legal-section { margin-bottom:40px; scroll-margin-top:80px; }
+  .nm-legal-section h2 { font-family:'Sora',sans-serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,0.88); margin:0 0 14px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .nm-legal-section p  { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.8; margin-bottom:12px; }
+  .nm-legal-section p:last-child { margin-bottom:0; }
+  .nm-legal-section ul { padding-left:20px; margin:0 0 12px; display:flex; flex-direction:column; gap:6px; }
+  .nm-legal-section ul li { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.6; }
+  .nm-legal-section strong { color:rgba(255,255,255,0.72); font-weight:600; }
+  .nm-legal-contact { background:#0d1b2a; border:1px solid rgba(245,166,35,0.15); border-radius:12px; padding:20px 24px; margin-top:44px; }
+  .nm-legal-contact p { font-size:0.855rem; color:rgba(255,255,255,0.45); margin:0 0 6px; }
+  .nm-legal-contact a { color:#f5a623; text-decoration:none; }
+
+  /* Data table */
+  .nm-data-table { width:100%; border-collapse:collapse; font-size:0.845rem; margin:14px 0; }
+  .nm-data-table th { padding:10px 14px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.3); background:#112235; text-align:left; }
+  .nm-data-table td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.5); vertical-align:top; }
+  .nm-data-table tr:last-child td { border-bottom:none; }
+  .nm-data-table { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:10px; overflow:hidden; }
+</style>
+
+<div class="nm-legal-wrapper">
+  <div class="nm-legal-inner">
+
+    <div class="nm-legal-header">
+      <div class="nm-legal-eyebrow">Legal</div>
+      <h1 class="nm-legal-title">Privacy Policy</h1>
+      <div class="nm-legal-meta">Last updated: January 2025 &nbsp;·&nbsp; Effective date: January 2025</div>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Who We Are</h2>
+      <p>NamPayroll ("we", "us", "our") is a payroll management platform for Namibian businesses. This policy explains what personal information we collect, how we use it, and your rights regarding that information.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Information We Collect</h2>
+      <table class="nm-data-table">
+        <thead>
+          <tr><th>Category</th><th>Data Collected</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Account data</strong></td>
+            <td>Company name, owner name, email, phone, company logo</td>
+            <td>Account creation and identification</td>
+          </tr>
+          <tr>
+            <td><strong>Employee data</strong></td>
+            <td>Full name, Namibian ID number, email, phone, position, department, salary, leave balances</td>
+            <td>Payroll processing and payslip generation</td>
+          </tr>
+          <tr>
+            <td><strong>Payroll data</strong></td>
+            <td>Monthly salary figures, allowances, deductions, overtime, tax calculations</td>
+            <td>Payroll runs and statutory reporting</td>
+          </tr>
+          <tr>
+            <td><strong>Payment data</strong></td>
+            <td>Bank transfer references, proof of payment files, subscription plan details</td>
+            <td>Subscription management and verification</td>
+          </tr>
+          <tr>
+            <td><strong>Usage data</strong></td>
+            <td>Login timestamps, session data</td>
+            <td>Security and fraud prevention</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>How We Use Your Information</h2>
+      <ul>
+        <li>To provide and operate the payroll processing service</li>
+        <li>To calculate statutory deductions (P.A.Y.E, SSC, ECF) and generate payslips and compliance reports</li>
+        <li>To manage your subscription and verify payments</li>
+        <li>To send transactional emails (account verification, payment confirmation, payslip notifications)</li>
+        <li>To maintain the security and integrity of the platform</li>
+      </ul>
+      <p>We do <strong>not</strong> use your data for advertising, profiling, or sale to third parties. We do not display advertisements in our products.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Data Storage & Security</h2>
+      <p>Your data is stored on secure cloud servers. We implement the following measures to protect it:</p>
+      <ul>
+        <li>Passwords are hashed using bcrypt — we never store plain-text passwords</li>
+        <li>All data in transit is encrypted via HTTPS/TLS</li>
+        <li>Employee data is strictly scoped — companies can only access their own employee records</li>
+        <li>Session tokens are signed and expire on logout</li>
+      </ul>
+      <p>Despite these measures, no system is completely immune to breaches. We encourage you to use a strong password and to log out from shared devices.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Employee Data & the Employee Portal</h2>
+      <p>Employee personal data is entered by the employer (company account). Employees may access their own payslips and leave balances via the Employee Portal using credentials set by the employer.</p>
+      <p>Employees may contact their employer directly to request correction or deletion of their personal data. We will action deletion requests received directly from employees within 30 days, subject to the employer's confirmation.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Data Retention</h2>
+      <p>We retain your data for as long as your account is active. Upon account cancellation or expiry:</p>
+      <ul>
+        <li>Your data is retained for <strong>90 days</strong> to allow for reactivation or export</li>
+        <li>After 90 days, all company and employee data is permanently and irreversibly deleted from our servers</li>
+        <li>Payslip PDFs generated and downloaded by users are not stored on our servers after download</li>
+      </ul>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Your Rights</h2>
+      <p>Under applicable data protection principles, you have the right to:</p>
+      <ul>
+        <li><strong>Access</strong> — request a copy of the personal data we hold about you</li>
+        <li><strong>Rectification</strong> — correct inaccurate data (most data can be edited directly in the platform)</li>
+        <li><strong>Deletion</strong> — request deletion of your account and associated data</li>
+        <li><strong>Portability</strong> — export your payroll data in CSV format at any time from the platform</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <strong>support@nampayroll.com</strong>.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Third-Party Services</h2>
+      <p>NamPayroll uses the following third-party services in its operation:</p>
+      <ul>
+        <li><strong>Gmail (Google):</strong> Transactional email delivery (verification emails, notifications)</li>
+        <li><strong>MongoDB Atlas:</strong> Encrypted cloud database hosting</li>
+      </ul>
+      <p>These providers are subject to their own privacy policies and are used solely to operate the service.</p>
+    </div>
+
+    <div class="nm-legal-section">
+      <h2>Changes to This Policy</h2>
+      <p>We may update this policy periodically. We will notify you of material changes via email or a notice on the platform. Continued use of NamPayroll after changes are posted constitutes acceptance of the revised policy.</p>
+    </div>
+
+    <div class="nm-legal-contact">
+      <p><strong style="color:rgba(255,255,255,0.6);">Privacy questions or data requests?</strong></p>
+      <p>Email: <a href="mailto:support@nampayroll.com">support@nampayroll.com</a></p>
+      <p>We aim to respond to all privacy requests within <strong style="color:rgba(255,255,255,0.5);">5 business days</strong>.</p>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

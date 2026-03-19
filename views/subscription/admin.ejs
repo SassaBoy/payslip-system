@@ -1,0 +1,218 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<style>
+  .nm-page-wrapper { flex:1; padding:32px 24px 64px; }
+  .nm-page-inner   { max-width:1200px; margin:0 auto; }
+  .nm-page-title   { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; color:#fff; margin:0 0 4px; letter-spacing:-0.02em; }
+  .nm-page-sub     { font-size:0.875rem; color:rgba(255,255,255,0.35); margin:0 0 28px; }
+
+  .nm-section-label { font-size:0.67rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.25); margin:0 0 10px 2px; }
+
+  .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:24px; }
+  .nm-panel-header { display:flex; align-items:center; justify-content:space-between; padding:13px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; }
+  .nm-panel-title  { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.85); display:flex; align-items:center; gap:8px; }
+
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.845rem; }
+  .nm-table thead th { padding:11px 16px; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); background:#112235; text-align:left; white-space:nowrap; }
+  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.12s; }
+  .nm-table tbody tr:last-child { border-bottom:none; }
+  .nm-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+  .nm-table td { padding:14px 16px; vertical-align:middle; color:rgba(255,255,255,0.6); }
+
+  .nm-company-name { font-weight:600; color:rgba(255,255,255,0.9); font-size:0.875rem; }
+  .nm-company-meta { font-size:0.72rem; color:rgba(255,255,255,0.28); margin-top:2px; }
+
+  .nm-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+  .nm-badge.active          { background:rgba(46,204,138,0.1);  border:1px solid rgba(46,204,138,0.2);  color:#2ecc8a; }
+  .nm-badge.trial           { background:rgba(245,166,35,0.1);  border:1px solid rgba(245,166,35,0.2);  color:#f5a623; }
+  .nm-badge.monthly         { background:rgba(96,165,250,0.1);  border:1px solid rgba(96,165,250,0.2);  color:#60a5fa; }
+  .nm-badge.annual          { background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.2); color:#a78bfa; }
+  .nm-badge.pending         { background:rgba(96,165,250,0.1);  border:1px solid rgba(96,165,250,0.2);  color:#60a5fa; }
+  .nm-badge.expired         { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
+  .nm-badge.cancelled       { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
+  .nm-badge.pending_payment { background:rgba(96,165,250,0.1);  border:1px solid rgba(96,165,250,0.2);  color:#60a5fa; }
+
+  .nm-proof-link { display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; color:#60a5fa; text-decoration:none; }
+  .nm-proof-link:hover { color:#fff; }
+
+  .nm-action-form { display:inline-flex; align-items:center; gap:6px; }
+  .nm-btn-approve { padding:6px 14px; border-radius:8px; background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; font-size:0.78rem; font-weight:700; cursor:pointer; transition:0.16s; }
+  .nm-btn-approve:hover { background:rgba(46,204,138,0.2); }
+  .nm-btn-reject  { padding:6px 14px; border-radius:8px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); color:#f87171; font-size:0.78rem; font-weight:700; cursor:pointer; transition:0.16s; }
+  .nm-btn-reject:hover { background:rgba(248,113,113,0.15); }
+
+  .nm-empty { text-align:center; padding:48px 24px; color:rgba(255,255,255,0.25); }
+  .nm-empty i { font-size:2rem; display:block; margin-bottom:12px; opacity:0.15; }
+
+  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:20px; transition:opacity 0.5s ease; }
+  .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
+  .nm-alert-error   { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
+</style>
+
+<div class="nm-page-wrapper">
+  <div class="nm-page-inner">
+
+    <%# typeof check — same pattern used in register.ejs to prevent "not defined" crash %>
+    <% if (typeof success !== 'undefined' && success.length > 0) { %>
+      <div class="nm-alert nm-alert-success" id="successAlert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span><%= success[0] %></span>
+      </div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error.length > 0) { %>
+      <div class="nm-alert nm-alert-error" id="errorAlert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <div><% error.forEach(e => { %><div><%= typeof e === 'object' ? e.msg : e %></div><% }) %></div>
+      </div>
+    <% } %>
+
+    <h1 class="nm-page-title">Subscription Management</h1>
+    <p class="nm-page-sub">Review and approve payment submissions from companies.</p>
+
+    <!-- ── Pending approvals ── -->
+    <div class="nm-section-label">Pending Approval (<%= pending.length %>)</div>
+    <div class="nm-panel">
+      <div class="nm-panel-header">
+        <div class="nm-panel-title"><i class="bi bi-clock-history" style="color:#60a5fa;"></i> Awaiting Verification</div>
+      </div>
+      <% if (pending.length === 0) { %>
+        <div class="nm-empty"><i class="bi bi-check2-all"></i><p>No pending approvals — you're all caught up.</p></div>
+      <% } else { %>
+      <div class="table-responsive">
+        <table class="nm-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Plan Requested</th>
+              <th>Amount (NAD)</th>
+              <th>Reference</th>
+              <th>Submitted</th>
+              <th>Proof</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% pending.forEach(sub => { %>
+              <tr>
+                <td>
+                  <div class="nm-company-name"><%= sub.company?.companyName || 'Unknown' %></div>
+                  <div class="nm-company-meta"><%= sub.company?.email %></div>
+                </td>
+                <td>
+                  <span class="nm-badge <%= sub.pendingRequest?.plan || 'pending' %>"><%= sub.pendingRequest?.plan || '—' %></span>
+                </td>
+                <td style="font-family:'Sora',sans-serif;font-weight:600;color:rgba(255,255,255,0.8);">
+                  N$ <%= Number(sub.pendingRequest?.amount || 0).toFixed(2) %>
+                </td>
+                <td style="font-family:monospace;font-size:0.82rem;color:#f5a623;">
+                  <%= sub.pendingRequest?.reference || '—' %>
+                </td>
+                <td style="font-size:0.8rem;color:rgba(255,255,255,0.35);">
+                  <%= sub.pendingRequest?.submittedAt ? moment(sub.pendingRequest.submittedAt).format('DD MMM YYYY, HH:mm') : '—' %>
+                </td>
+                <td>
+                  <% if (sub.pendingRequest?.proofUrl) { %>
+                    <a href="<%= sub.pendingRequest.proofUrl %>" target="_blank" class="nm-proof-link">
+                      <i class="bi bi-file-earmark-image"></i> View Proof
+                    </a>
+                  <% } else { %>
+                    <span style="font-size:0.78rem;color:rgba(255,255,255,0.2);">No file</span>
+                  <% } %>
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <form action="/admin/subscriptions/<%= sub._id %>/approve" method="POST" class="nm-action-form">
+                      <button type="submit" class="nm-btn-approve" onclick="return confirm('Approve this payment and activate their plan?')">
+                        <i class="bi bi-check-lg"></i> Approve
+                      </button>
+                    </form>
+                    <form action="/admin/subscriptions/<%= sub._id %>/reject" method="POST" class="nm-action-form">
+                      <input type="hidden" name="note" value="Payment could not be verified.">
+                      <button type="submit" class="nm-btn-reject" onclick="return confirm('Reject this payment? The company will be notified.')">
+                        <i class="bi bi-x-lg"></i> Reject
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- ── All subscriptions ── -->
+    <div class="nm-section-label" style="margin-top:8px;">All Companies (<%= all.length %>)</div>
+    <div class="nm-panel">
+      <div class="nm-panel-header">
+        <div class="nm-panel-title"><i class="bi bi-buildings" style="color:#f5a623;"></i> Subscription Overview</div>
+      </div>
+      <div class="table-responsive">
+        <table class="nm-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Payslips Used</th>
+              <th>Period Ends</th>
+              <th>Payments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% all.forEach(sub => { %>
+              <tr>
+                <td>
+                  <div class="nm-company-name"><%= sub.company?.companyName || 'Unknown' %></div>
+                  <div class="nm-company-meta"><%= sub.company?.email %></div>
+                </td>
+                <td><span class="nm-badge <%= sub.plan %>"><%= sub.plan %></span></td>
+                <td>
+                  <%
+                    const statusClass = sub.status === 'active' ? 'active'
+                      : sub.status === 'pending_payment' ? 'pending'
+                      : sub.status === 'expired'         ? 'expired'
+                      : 'expired';
+                  %>
+                  <span class="nm-badge <%= statusClass %>"><%= sub.status.replace(/_/g, ' ') %></span>
+                </td>
+                <td style="font-family:'Sora',sans-serif;font-weight:600;color:rgba(255,255,255,0.7);">
+                  <%= sub.payslipsUsed %>
+                  <% if (sub.plan === 'trial') { %>
+                    <span style="font-size:0.72rem;color:rgba(255,255,255,0.25);"> / 5</span>
+                  <% } %>
+                </td>
+                <td style="font-size:0.8rem;color:rgba(255,255,255,0.35);">
+                  <%= sub.currentPeriodEnd ? moment(sub.currentPeriodEnd).format('DD MMM YYYY') : '—' %>
+                </td>
+                <td style="font-size:0.8rem;color:rgba(255,255,255,0.35);">
+                  <%= sub.payments?.length || 0 %> payment<%= (sub.payments?.length || 0) !== 1 ? 's' : '' %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Auto-hide alerts after 4 seconds — same behaviour as register.ejs
+  document.addEventListener('DOMContentLoaded', () => {
+    ['successAlert', 'errorAlert'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => el.style.display = 'none', 500);
+        }, 4000);
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,20 +1,19 @@
 <%- include('../partials/header') %>
 
 <style>
-  /* ── Portal navbar ────────────────────────────────── */
+  /* ── Portal navbar ──────────────────────────────────────────────────────── */
   .nm-portal-nav {
     position:sticky; top:0; z-index:1030;
-    height:62px;
-    background:#0d1b2a;
+    height:62px; background:#0d1b2a;
     border-bottom:1px solid rgba(255,255,255,0.07);
     box-shadow:0 4px 24px rgba(0,0,0,0.3);
   }
   .nm-portal-nav::before {
     content:''; position:absolute; inset:0 0 auto 0; height:2px;
-    background:linear-gradient(90deg,transparent,#2563eb 30%,#2563eb 70%,transparent);
-    opacity:0.55;
+    background:linear-gradient(90deg, transparent, #2563eb 30%, #60a5fa 70%, transparent);
+    opacity:0.6;
   }
-  .nm-portal-nav .container-fluid { height:100%; padding-inline:24px; display:flex; align-items:center; }
+  .nm-portal-nav .container-fluid { height:100%; padding-inline:24px; display:flex; align-items:center; gap:12px; }
 
   .nm-portal-brand {
     display:flex; align-items:center; gap:10px; text-decoration:none;
@@ -25,118 +24,203 @@
     width:32px; height:32px; border-radius:8px;
     background:linear-gradient(135deg,#2563eb,#60a5fa);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 2px 8px rgba(96,165,250,0.3);
+    box-shadow:0 2px 10px rgba(96,165,250,0.3);
   }
   .nm-portal-brand-icon i { font-size:0.95rem; color:#fff; }
+  .nm-portal-brand-label { line-height:1; }
+  .nm-portal-brand-name  { font-size:0.95rem; font-weight:700; color:rgba(255,255,255,0.9); display:block; }
+  .nm-portal-brand-sub   { font-size:0.68rem; color:rgba(255,255,255,0.3); font-weight:400; font-family:'DM Sans',sans-serif; display:block; margin-top:1px; }
 
   .nm-portal-right { display:flex; align-items:center; gap:10px; margin-left:auto; }
-  .nm-portal-company { font-size:0.82rem; color:rgba(255,255,255,0.4); }
-
+  .nm-portal-company {
+    font-size:0.8rem; color:rgba(255,255,255,0.35);
+    padding:5px 12px; background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.07); border-radius:7px;
+  }
   .nm-portal-logout {
     display:inline-flex; align-items:center; gap:7px;
     padding:7px 14px; border-radius:8px;
-    border:1px solid rgba(255,255,255,0.1); background:transparent;
-    color:rgba(255,255,255,0.65); font-size:0.835rem; font-weight:500;
-    cursor:pointer; transition:background 0.16s,color 0.16s,border-color 0.16s;
+    border:1px solid rgba(255,255,255,0.09); background:transparent;
+    color:rgba(255,255,255,0.55); font-size:0.82rem; font-weight:500;
+    cursor:pointer; transition:0.16s;
   }
-  .nm-portal-logout:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.92); border-color:rgba(255,255,255,0.18); }
+  .nm-portal-logout:hover { background:rgba(248,113,113,0.08); color:#f87171; border-color:rgba(248,113,113,0.2); }
 
-  /* ── Page ─────────────────────────────────────────── */
-  .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-page-inner   { max-width:900px; margin:0 auto; }
+  /* ── Page ───────────────────────────────────────────────────────────────── */
+  .nm-page-wrapper { flex:1; padding:32px 24px 64px; }
+  .nm-page-inner   { max-width:860px; margin:0 auto; }
 
+  /* ── Alert ──────────────────────────────────────────────────────────────── */
   .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
   .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
+  .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
 
-  /* ── Welcome header ───────────────────────────────── */
-  .nm-welcome { display:flex; align-items:center; gap:16px; margin-bottom:28px; }
+  /* ── Welcome hero ───────────────────────────────────────────────────────── */
+  .nm-welcome-hero {
+    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
+    border-radius:16px; padding:24px 28px;
+    display:flex; align-items:center; gap:20px;
+    margin-bottom:20px; position:relative; overflow:hidden;
+  }
+  .nm-welcome-hero::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
   .nm-welcome-avatar {
-    width:52px; height:52px; border-radius:14px;
-    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    width:56px; height:56px; border-radius:14px; flex-shrink:0;
+    background:linear-gradient(135deg,#1d4ed8,#60a5fa);
     display:flex; align-items:center; justify-content:center;
-    font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:700;
-    color:#fff; flex-shrink:0; box-shadow:0 4px 14px rgba(96,165,250,0.3);
+    font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700;
+    color:#fff; box-shadow:0 4px 16px rgba(96,165,250,0.25);
   }
-  .nm-welcome-name { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
-  .nm-welcome-role { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:4px 0 0; }
+  .nm-welcome-name { font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
+  .nm-welcome-meta { font-size:0.855rem; color:rgba(255,255,255,0.38); margin:5px 0 0; }
+  .nm-welcome-meta strong { color:rgba(255,255,255,0.55); font-weight:600; }
 
-  /* ── Leave cards ──────────────────────────────────── */
-  .nm-leave-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+  /* ── Leave balance cards ────────────────────────────────────────────────── */
+  .nm-leave-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+
   .nm-leave-card {
-    border-radius:14px; padding:20px;
-    border:1px solid rgba(255,255,255,0.07); background:#0d1b2a;
+    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
+    border-radius:14px; padding:20px 22px;
     display:flex; align-items:center; gap:16px;
-    position:relative; overflow:hidden;
-    transition:transform 0.18s,box-shadow 0.18s;
+    position:relative; overflow:hidden; transition:transform 0.18s, box-shadow 0.18s;
   }
-  .nm-leave-card:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,0.35); }
-  .nm-leave-card::before { content:''; position:absolute; top:-30px; right:-30px; width:90px; height:90px; border-radius:50%; opacity:0.08; }
-  .nm-leave-card.green::before { background:#2ecc8a; }
+  .nm-leave-card:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,0.3); }
+  .nm-leave-card::after {
+    content:''; position:absolute; bottom:0; left:0; right:0;
+    height:2px;
+  }
+  .nm-leave-card.green::after  { background:linear-gradient(90deg, transparent, #2ecc8a, transparent); }
+  .nm-leave-card.orange::after { background:linear-gradient(90deg, transparent, #f5a623, transparent); }
+
+  /* Faint circle decoration */
+  .nm-leave-card::before { content:''; position:absolute; top:-30px; right:-30px; width:100px; height:100px; border-radius:50%; opacity:0.06; }
+  .nm-leave-card.green::before  { background:#2ecc8a; }
   .nm-leave-card.orange::before { background:#f5a623; }
 
   .nm-leave-icon {
-    width:44px; height:44px; border-radius:11px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; font-size:1.15rem;
+    width:46px; height:46px; border-radius:12px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem;
   }
-  .nm-leave-card.green  .nm-leave-icon { background:rgba(46,204,138,0.12);  color:#2ecc8a;  border:1px solid rgba(46,204,138,0.2); }
-  .nm-leave-card.orange .nm-leave-icon { background:rgba(245,166,35,0.12);  color:#f5a623;  border:1px solid rgba(245,166,35,0.2); }
+  .nm-leave-card.green  .nm-leave-icon { background:rgba(46,204,138,0.1);  color:#2ecc8a;  border:1px solid rgba(46,204,138,0.18); }
+  .nm-leave-card.orange .nm-leave-icon { background:rgba(245,166,35,0.1);  color:#f5a623;  border:1px solid rgba(245,166,35,0.18); }
 
-  .nm-leave-label { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.4); margin-bottom:5px; }
-  .nm-leave-value { font-family:'Sora',sans-serif; font-size:1.6rem; font-weight:700; color:rgba(255,255,255,0.92); line-height:1; }
-  .nm-leave-unit  { font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:400; color:rgba(255,255,255,0.45); margin-left:5px; }
+  .nm-leave-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.35); margin-bottom:6px; }
+  .nm-leave-value { font-family:'Sora',sans-serif; font-size:1.7rem; font-weight:700; color:rgba(255,255,255,0.92); line-height:1; }
+  .nm-leave-unit  { font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:400; color:rgba(255,255,255,0.4); margin-left:5px; }
+  .nm-leave-note  { font-size:0.72rem; color:rgba(255,255,255,0.22); margin-top:5px; }
 
-  /* ── Panel ────────────────────────────────────────── */
+  /* ── Section label ──────────────────────────────────────────────────────── */
+  .nm-section-label {
+    font-size:0.67rem; font-weight:700; letter-spacing:0.1em;
+    text-transform:uppercase; color:rgba(255,255,255,0.25);
+    margin:0 0 10px 2px;
+  }
+
+  /* ── Panel ──────────────────────────────────────────────────────────────── */
   .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; }
-  .nm-panel-header { display:flex; align-items:center; gap:9px; padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); }
+  .nm-panel-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07);
+    background:#112235;
+  }
+  .nm-panel-title { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.85); display:flex; align-items:center; gap:8px; }
   .nm-panel-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.15); }
+  .nm-panel-meta { font-size:0.75rem; color:rgba(255,255,255,0.25); }
 
-  /* ── Table ────────────────────────────────────────── */
-  .nm-table { width:100%; border-collapse:collapse; font-size:0.865rem; }
-  .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table thead th { padding:12px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); white-space:nowrap; background:#112235; }
-  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.14s; }
+  /* ── Payslip table ──────────────────────────────────────────────────────── */
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
+  .nm-table thead th {
+    padding:11px 16px; font-size:0.67rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.07em;
+    color:rgba(255,255,255,0.28); background:#112235;
+    text-align:left; white-space:nowrap;
+  }
+  .nm-table thead th .th-sub {
+    display:block; font-size:0.6rem; font-weight:400;
+    letter-spacing:0; text-transform:none;
+    color:rgba(255,255,255,0.16); margin-top:2px;
+  }
+  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.12s; }
   .nm-table tbody tr:last-child { border-bottom:none; }
   .nm-table tbody tr:hover { background:rgba(255,255,255,0.025); }
-  .nm-table td { padding:14px 16px; vertical-align:middle; color:rgba(255,255,255,0.65); }
+  .nm-table td { padding:14px 16px; vertical-align:middle; }
 
-  .nm-period  { font-family:'Sora',sans-serif; font-weight:700; font-size:0.875rem; color:rgba(255,255,255,0.92); }
-  .nm-money   { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; }
+  .nm-period     { font-family:'Sora',sans-serif; font-weight:700; font-size:0.875rem; color:rgba(255,255,255,0.9); display:block; }
+  .nm-period-ref { font-size:0.7rem; color:rgba(255,255,255,0.22); font-family:monospace; display:block; margin-top:2px; }
+
+  .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; font-size:0.875rem; }
   .nm-money.green  { color:#2ecc8a; }
   .nm-money.red    { color:#f87171; }
   .nm-money.orange { color:#f5a623; }
-  .nm-money.plain  { color:rgba(255,255,255,0.88); }
+  .nm-money.plain  { color:rgba(255,255,255,0.82); }
 
-  .nm-pdf-btn { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:7px; border:1px solid rgba(248,113,113,0.25); background:rgba(248,113,113,0.08); color:#f87171; font-size:0.8rem; font-weight:600; text-decoration:none; transition:background 0.14s,border-color 0.14s; }
-  .nm-pdf-btn:hover { background:rgba(248,113,113,0.15); border-color:rgba(248,113,113,0.4); color:#f87171; }
+  /* Net pay highlight */
+  .nm-net-chip {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.18);
+    border-radius:8px; padding:5px 10px;
+    font-family:'Sora',sans-serif; font-weight:700; font-size:0.875rem; color:#2ecc8a;
+    white-space:nowrap;
+  }
 
-  .nm-empty { text-align:center; padding:56px 24px; color:rgba(255,255,255,0.3); }
-  .nm-empty i { font-size:2.5rem; display:block; margin-bottom:14px; opacity:0.3; }
-  .nm-empty p { font-size:0.9rem; margin:0; }
+  /* PDF button */
+  .nm-pdf-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:6px 12px; border-radius:8px;
+    border:1px solid rgba(248,113,113,0.2);
+    background:rgba(248,113,113,0.07); color:#f87171;
+    font-size:0.78rem; font-weight:600; text-decoration:none; transition:0.16s;
+  }
+  .nm-pdf-btn:hover { background:rgba(248,113,113,0.14); border-color:rgba(248,113,113,0.35); color:#f87171; }
 
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); line-height:1.5; }
-  .nm-disclaimer i { color:#f5a623; flex-shrink:0; margin-top:1px; }
+  /* ── Empty state ────────────────────────────────────────────────────────── */
+  .nm-empty { text-align:center; padding:60px 24px; color:rgba(255,255,255,0.25); }
+  .nm-empty i { font-size:2.5rem; display:block; margin-bottom:14px; opacity:0.15; }
+  .nm-empty h3 { font-family:'Sora',sans-serif; font-size:0.95rem; font-weight:600; color:rgba(255,255,255,0.38); margin-bottom:6px; }
+  .nm-empty p  { font-size:0.82rem; margin:0; }
 
-  @media (max-width:575.98px) {
-    .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-leave-grid   { grid-template-columns:1fr; }
+  /* ── Disclaimer ─────────────────────────────────────────────────────────── */
+  .nm-disclaimer {
+    display:flex; align-items:flex-start; gap:10px;
+    background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.12);
+    border-radius:10px; padding:13px 18px; margin-top:20px;
+    font-size:0.78rem; color:rgba(255,255,255,0.35); line-height:1.6;
+  }
+  .nm-disclaimer i { color:#f5a623; font-size:0.85rem; flex-shrink:0; margin-top:2px; }
+
+  /* ── Responsive ─────────────────────────────────────────────────────────── */
+  @media (max-width:575px) {
+    .nm-page-wrapper  { padding:20px 16px 48px; }
+    .nm-leave-grid    { grid-template-columns:1fr; }
     .nm-portal-company { display:none; }
     .nm-table thead th:nth-child(3),
-    .nm-table td:nth-child(3) { display:none; }
+    .nm-table td:nth-child(3),
+    .nm-table thead th:nth-child(4),
+    .nm-table td:nth-child(4) { display:none; }
   }
 </style>
 
+<!-- ── Portal navbar ─────────────────────────────────────────────────────── -->
 <nav class="nm-portal-nav navbar navbar-dark">
   <div class="container-fluid">
     <a class="nm-portal-brand" href="/portal/dashboard">
       <span class="nm-portal-brand-icon"><i class="bi bi-person-badge"></i></span>
-      Employee Portal
+      <span class="nm-portal-brand-label">
+        <span class="nm-portal-brand-name">Employee Portal</span>
+        <span class="nm-portal-brand-sub">NamPayroll</span>
+      </span>
     </a>
     <div class="nm-portal-right">
-      <span class="nm-portal-company"><%= employee.companyName || '' %></span>
+      <% if (employee.companyName) { %>
+        <span class="nm-portal-company"><i class="bi bi-building me-1" style="opacity:0.5;"></i><%= employee.companyName %></span>
+      <% } %>
       <form action="/portal/logout" method="POST" class="d-inline">
         <button type="submit" class="nm-portal-logout">
-          <i class="bi bi-box-arrow-right"></i>Logout
+          <i class="bi bi-box-arrow-right"></i> Logout
         </button>
       </form>
     </div>
@@ -154,44 +238,60 @@
       </div>
     <% } %>
 
-    <!-- Welcome header -->
-    <div class="nm-welcome">
+    <!-- ── Welcome hero ──────────────────────────────────────────────────── -->
+    <div class="nm-welcome-hero">
       <div class="nm-welcome-avatar"><%= employee.fullName.charAt(0).toUpperCase() %></div>
-      <div>
-        <h1 class="nm-welcome-name">Welcome, <%= employee.fullName.split(' ')[0] %>!</h1>
-        <p class="nm-welcome-role"><%= employee.position || '' %><%= employee.department ? ' &bull; ' + employee.department : '' %></p>
+      <div style="flex:1; min-width:0;">
+        <h1 class="nm-welcome-name">Welcome back, <%= employee.fullName.split(' ')[0] %>!</h1>
+        <p class="nm-welcome-meta">
+          <% if (employee.position) { %><strong><%= employee.position %></strong><% } %>
+          <% if (employee.department) { %> &bull; <%= employee.department %><% } %>
+          <% if (myPayslips.length > 0) { %>
+            &bull; <%= myPayslips.length %> payslip<%= myPayslips.length !== 1 ? 's' : '' %> available
+          <% } %>
+        </p>
       </div>
     </div>
 
-    <!-- Leave Balance Cards -->
+    <!-- ── Leave balances ────────────────────────────────────────────────── -->
+    <div class="nm-section-label">Your Leave Balances</div>
     <div class="nm-leave-grid">
       <div class="nm-leave-card green">
         <div class="nm-leave-icon"><i class="bi bi-calendar-check-fill"></i></div>
         <div>
-          <div class="nm-leave-label">Annual Leave Balance</div>
+          <div class="nm-leave-label">Annual Leave</div>
           <div class="nm-leave-value"><%= employee.annualLeaveBalance %><span class="nm-leave-unit">days</span></div>
+          <div class="nm-leave-note">Remaining balance this year</div>
         </div>
       </div>
       <div class="nm-leave-card orange">
         <div class="nm-leave-icon"><i class="bi bi-heart-pulse-fill"></i></div>
         <div>
-          <div class="nm-leave-label">Sick Leave Balance</div>
+          <div class="nm-leave-label">Sick Leave</div>
           <div class="nm-leave-value"><%= employee.sickLeaveBalance %><span class="nm-leave-unit">days</span></div>
+          <div class="nm-leave-note">Remaining balance this year</div>
         </div>
       </div>
     </div>
 
-    <!-- Payslips -->
+    <!-- ── Payslip history ───────────────────────────────────────────────── -->
+    <div class="nm-section-label" style="margin-top:24px;">Payslip History</div>
     <div class="nm-panel">
       <div class="nm-panel-header">
-        <span class="nm-panel-icon"><i class="bi bi-receipt"></i></span>
-        My Payslips
+        <div class="nm-panel-title">
+          <span class="nm-panel-icon"><i class="bi bi-receipt"></i></span>
+          My Payslips
+        </div>
+        <span class="nm-panel-meta">
+          <% if (myPayslips.length > 0) { %><%= myPayslips.length %> record<%= myPayslips.length !== 1 ? 's' : '' %><% } %>
+        </span>
       </div>
 
       <% if (myPayslips.length === 0) { %>
         <div class="nm-empty">
           <i class="bi bi-inbox"></i>
-          <p>No payslips found yet. Your employer hasn't run payroll yet.</p>
+          <h3>No payslips yet</h3>
+          <p>Your payslips will appear here once your employer processes payroll.</p>
         </div>
       <% } else { %>
         <div class="table-responsive">
@@ -199,24 +299,46 @@
             <thead>
               <tr>
                 <th>Period</th>
-                <th>Gross Pay</th>
-                <th>PAYE</th>
-                <th>SSC</th>
-                <th>Net Pay</th>
+                <th>
+                  Gross Pay
+                  <span class="th-sub">Before deductions</span>
+                </th>
+                <th>
+                  PAYE
+                  <span class="th-sub">Income tax</span>
+                </th>
+                <th>
+                  SSC
+                  <span class="th-sub">Social security</span>
+                </th>
+                <th>
+                  Net Pay
+                  <span class="th-sub">Amount received</span>
+                </th>
                 <th>Download</th>
               </tr>
             </thead>
             <tbody>
-              <% myPayslips.forEach(ps => { %>
+              <% myPayslips.forEach(ps => {
+                const periodRef = `PS-${ps.year}${String(ps.month).padStart(2,'0')}`;
+              %>
                 <tr>
-                  <td><span class="nm-period"><%= moment(`${ps.year}-${String(ps.month).padStart(2,'0')}-01`).format('MMMM YYYY') %></span></td>
-                  <td><span class="nm-money plain">N$ <%= Number(ps.grossPay).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money red">N$ <%= Number(ps.paye).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money orange">N$ <%= Number(ps.sscEmployee).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money green">N$ <%= Number(ps.netPay).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
+                  <td>
+                    <span class="nm-period"><%= moment(`${ps.year}-${String(ps.month).padStart(2,'0')}-01`).format('MMMM YYYY') %></span>
+                    <span class="nm-period-ref"><%= periodRef %></span>
+                  </td>
+                  <td><span class="nm-money plain">N$ <%= Number(ps.grossPay).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span></td>
+                  <td><span class="nm-money red">N$ <%= Number(ps.paye).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span></td>
+                  <td><span class="nm-money orange">N$ <%= Number(ps.sscEmployee).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span></td>
+                  <td>
+                    <span class="nm-net-chip">
+                      <i class="bi bi-check-circle-fill" style="font-size:0.75rem;"></i>
+                      N$ <%= Number(ps.netPay).toLocaleString('en-NA',{minimumFractionDigits:2}) %>
+                    </span>
+                  </td>
                   <td>
                     <a href="/portal/payslip/<%= ps.runId %>/<%= ps.payslipId %>/pdf" class="nm-pdf-btn">
-                      <i class="bi bi-file-earmark-pdf"></i>PDF
+                      <i class="bi bi-file-earmark-pdf"></i> PDF
                     </a>
                   </td>
                 </tr>
@@ -227,9 +349,12 @@
       <% } %>
     </div>
 
+    <!-- ── Disclaimer ────────────────────────────────────────────────────── -->
     <div class="nm-disclaimer">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <strong>Disclaimer:</strong> Payroll calculations are for guidance only. Always verify with NamRA and Social Security before final submission.
+      <i class="bi bi-info-circle-fill"></i>
+      <div>
+        These figures are generated from your employer's payroll records. If you have questions about your pay or deductions, please contact your HR or payroll administrator directly.
+      </div>
     </div>
 
   </div>

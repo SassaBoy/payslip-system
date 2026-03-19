@@ -2,63 +2,162 @@
 <%- include('../partials/navbar') %>
 
 <style>
-  .nm-page-wrapper { flex:1; padding:32px 24px 48px; }
-  .nm-page-inner   { max-width:1350px; margin:0 auto; } 
+  /* ── Base ───────────────────────────────────────────────────────────────── */
+  .nm-page-wrapper { flex:1; padding:32px 24px 64px; }
+  .nm-page-inner   { max-width:1350px; margin:0 auto; }
 
+  /* ── Alerts ─────────────────────────────────────────────────────────────── */
   .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
   .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
-  .nm-alert-success { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.25); color:#2ecc8a; }
+  .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
 
+  /* ── Page header ────────────────────────────────────────────────────────── */
   .nm-page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
   .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0; letter-spacing:-0.02em; }
-  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.4); margin:5px 0 0; }
+  .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.38); margin:5px 0 0; }
 
-  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:600; border:none; cursor:pointer; text-decoration:none; white-space:nowrap; transition:background 0.16s,box-shadow 0.16s,transform 0.1s; }
-  .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; box-shadow:0 4px 16px rgba(245,166,35,0.25); transform:translateY(-1px); }
+  /* ── Buttons ────────────────────────────────────────────────────────────── */
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 22px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:700; border:none; cursor:pointer; text-decoration:none; white-space:nowrap; transition:background 0.16s,box-shadow 0.16s,transform 0.1s; }
+  .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; box-shadow:0 4px 18px rgba(245,166,35,0.25); transform:translateY(-1px); }
+  .nm-btn-outline { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:9px; background:transparent; color:rgba(255,255,255,0.5); font-size:0.875rem; font-weight:500; border:1px solid rgba(255,255,255,0.08); cursor:pointer; text-decoration:none; white-space:nowrap; transition:0.16s; }
+  .nm-btn-outline:hover { background:rgba(255,255,255,0.04); color:#fff; border-color:rgba(255,255,255,0.15); }
 
+  /* ── Summary stat cards ─────────────────────────────────────────────────── */
+  .nm-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  @media (max-width:992px) { .nm-stats-row { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:576px)  { .nm-stats-row { grid-template-columns:1fr 1fr; } }
+
+  .nm-stat-card {
+    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
+    border-radius:12px; padding:16px 18px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .nm-stat-label {
+    font-size:0.68rem; font-weight:700; letter-spacing:0.09em;
+    text-transform:uppercase; color:rgba(255,255,255,0.3);
+    display:flex; align-items:center; gap:6px;
+  }
+  .nm-stat-label i { font-size:0.75rem; }
+  .nm-stat-value {
+    font-family:'Sora',sans-serif; font-size:1.2rem;
+    font-weight:700; letter-spacing:-0.02em; line-height:1;
+  }
+  .nm-stat-value.amber { color:#f5a623; }
+  .nm-stat-value.green { color:#2ecc8a; }
+  .nm-stat-value.red   { color:#f87171; }
+  .nm-stat-value.blue  { color:#60a5fa; }
+  .nm-stat-sub { font-size:0.75rem; color:rgba(255,255,255,0.25); margin-top:1px; }
+
+  /* ── Panel ──────────────────────────────────────────────────────────────── */
   .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; }
+  .nm-panel-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07);
+    background:#112235;
+  }
+  .nm-panel-title { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:8px; }
+  .nm-panel-meta  { font-size:0.78rem; color:rgba(255,255,255,0.28); }
 
-  .nm-table { width:100%; border-collapse:collapse; font-size:0.865rem; }
+  /* ── Table ──────────────────────────────────────────────────────────────── */
+  .nm-table { width:100%; border-collapse:collapse; font-size:0.855rem; }
   .nm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.07); }
-  .nm-table thead th { padding:13px 16px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.35); white-space:nowrap; background:#112235; }
-  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.14s; }
+  .nm-table thead th { padding:11px 16px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.3); white-space:nowrap; background:#112235; }
+  .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.12s; }
+  .nm-table tbody tr:last-child { border-bottom:none; }
   .nm-table tbody tr:hover { background:rgba(255,255,255,0.025); }
-  .nm-table td { padding:15px 16px; vertical-align:middle; color:rgba(255,255,255,0.65); }
+  .nm-table td { padding:15px 16px; vertical-align:middle; }
 
-  .nm-period { font-family:'Sora',sans-serif; font-weight:700; font-size:0.9rem; color:rgba(255,255,255,0.92); }
-  .nm-emp-pill { display:inline-flex; align-items:center; gap:5px; font-size:0.8rem; color:rgba(96,165,250,0.8); background:rgba(96,165,250,0.1); padding:2px 8px; border-radius:6px; }
-  .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; }
-  .nm-money.green  { color:#2ecc8a; }
-  .nm-money.red    { color:#f87171; }
-  .nm-money.plain  { color:rgba(255,255,255,0.88); }
+  /* Period cell */
+  .nm-period { font-family:'Sora',sans-serif; font-weight:700; font-size:0.9rem; color:rgba(255,255,255,0.92); display:block; }
+  .nm-period-ref { font-size:0.72rem; color:rgba(255,255,255,0.25); margin-top:2px; display:block; font-family:monospace; }
+
+  /* Staff pill */
+  .nm-emp-pill { display:inline-flex; align-items:center; gap:5px; font-size:0.8rem; color:rgba(96,165,250,0.85); background:rgba(96,165,250,0.1); padding:4px 10px; border-radius:20px; font-weight:600; }
+
+  /* Money cells */
+  .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; font-size:0.875rem; display:block; }
+  .nm-money.green { color:#2ecc8a; }
+  .nm-money.red   { color:#f87171; }
+  .nm-money.plain { color:rgba(255,255,255,0.82); }
+  .nm-money.purple{ color:#a78bfa; }
+  .nm-money-label { font-size:0.68rem; color:rgba(255,255,255,0.22); margin-top:1px; display:block; }
+
+  /* Date */
   .nm-date { font-size:0.8rem; color:rgba(255,255,255,0.35); }
 
-  .nm-actions { display:flex; align-items:center; gap:6px; }
-  .nm-action-btn { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; text-decoration:none; border:1px solid rgba(255,255,255,0.07); background:transparent; cursor:pointer; transition: 0.14s; }
-  .nm-action-btn.view { color:#60a5fa; }
-  .nm-action-btn.view:hover { background:rgba(96,165,250,0.1); border-color:#60a5fa; }
-  .nm-action-btn.zip  { color:rgba(255,255,255,0.5); }
-  .nm-action-btn.zip:hover  { background:rgba(255,255,255,0.05); color:#fff; }
-  .nm-action-btn.pdf  { color:#f87171; }
-  .nm-action-btn.pdf:hover  { background:rgba(248,113,113,0.1); border-color:#f87171; }
+  /* Status badge */
+  .nm-status { display:inline-flex; align-items:center; gap:5px; font-size:0.7rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+  .nm-status.finalised { background:rgba(46,204,138,0.1); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
+  .nm-status.draft     { background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623; }
 
-  .nm-empty { text-align:center; padding:80px 24px; color:rgba(255,255,255,0.3); }
-  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.16); border-radius:10px; padding:12px 18px; margin-top:24px; font-size:0.815rem; color:rgba(245,166,35,0.8); }
-
-  @media (max-width:992px) {
-    .nm-table thead th:nth-child(5), .nm-table td:nth-child(5) { display:none; }
+  /* Action buttons */
+  .nm-actions { display:flex; align-items:center; gap:5px; justify-content:flex-end; }
+  .nm-action-btn {
+    width:32px; height:32px; border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.82rem; text-decoration:none;
+    border:1px solid rgba(255,255,255,0.07);
+    background:transparent; cursor:pointer; transition:0.14s;
+    position:relative;
   }
-  @media (max-width:767.98px) {
-    .nm-page-wrapper { padding:20px 16px 40px; }
-    .nm-table thead th:nth-child(3), .nm-table td:nth-child(3),
-    .nm-table thead th:nth-child(6), .nm-table td:nth-child(6) { display:none; }
+  .nm-action-btn.view   { color:#60a5fa; }
+  .nm-action-btn.view:hover  { background:rgba(96,165,250,0.12); border-color:rgba(96,165,250,0.3); }
+  .nm-action-btn.zip    { color:rgba(255,255,255,0.45); }
+  .nm-action-btn.zip:hover   { background:rgba(255,255,255,0.06); color:#fff; border-color:rgba(255,255,255,0.15); }
+  .nm-action-btn.pdf    { color:#f87171; }
+  .nm-action-btn.pdf:hover   { background:rgba(248,113,113,0.1); border-color:rgba(248,113,113,0.3); }
+
+  /* Tooltip */
+  .nm-action-btn::after {
+    content: attr(data-tip);
+    position:absolute; bottom:calc(100% + 7px); left:50%; transform:translateX(-50%);
+    background:#1a2f45; color:rgba(255,255,255,0.8);
+    font-size:0.7rem; font-weight:500; white-space:nowrap;
+    padding:4px 9px; border-radius:6px;
+    border:1px solid rgba(255,255,255,0.08);
+    opacity:0; pointer-events:none; transition:opacity 0.15s;
+    font-family:'DM Sans',sans-serif;
+  }
+  .nm-action-btn:hover::after { opacity:1; }
+
+  /* ── Empty state ────────────────────────────────────────────────────────── */
+  .nm-empty { text-align:center; padding:72px 24px; color:rgba(255,255,255,0.28); }
+  .nm-empty-icon { font-size:2.8rem; opacity:0.12; display:block; margin-bottom:16px; }
+  .nm-empty h3 { font-family:'Sora',sans-serif; font-size:1rem; font-weight:600; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+  .nm-empty p  { font-size:0.85rem; margin-bottom:20px; max-width:320px; margin-inline:auto; }
+
+  /* ── Legend row ─────────────────────────────────────────────────────────── */
+  .nm-legend {
+    display:flex; align-items:center; flex-wrap:wrap; gap:16px;
+    padding:12px 20px; background:#071421;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:0.75rem; color:rgba(255,255,255,0.3);
+  }
+  .nm-legend-item { display:flex; align-items:center; gap:6px; }
+  .nm-legend-dot  { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* ── Disclaimer ─────────────────────────────────────────────────────────── */
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.14); border-radius:10px; padding:14px 18px; margin-top:20px; font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.6; }
+  .nm-disclaimer i { color:#f5a623; font-size:0.9rem; flex-shrink:0; margin-top:2px; }
+  .nm-disclaimer strong { color:rgba(245,166,35,0.8); }
+
+  /* ── Responsive ─────────────────────────────────────────────────────────── */
+  @media (max-width:992px) {
+    .nm-table thead th:nth-child(5),
+    .nm-table td:nth-child(5) { display:none; }
+  }
+  @media (max-width:767px) {
+    .nm-page-wrapper { padding:20px 16px 48px; }
+    .nm-stats-row { grid-template-columns:1fr 1fr; }
+    .nm-table thead th:nth-child(6),
+    .nm-table td:nth-child(6) { display:none; }
   }
 </style>
 
 <div class="nm-page-wrapper">
   <div class="nm-page-inner">
 
-    <% if (success && success.length > 0) { %>
+    <% if (typeof success !== 'undefined' && success.length > 0) { %>
       <div class="nm-alert nm-alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle-fill"></i>
         <span><%= success[0] %></span>
@@ -66,80 +165,197 @@
       </div>
     <% } %>
 
+    <!-- ── Page header ──────────────────────────────────────────────────────── -->
     <div class="nm-page-header">
       <div>
         <h1 class="nm-page-title">Payroll History</h1>
-        <p class="nm-page-subtitle">Total records: <%= payrolls.length %></p>
+        <p class="nm-page-subtitle">
+          <% if (payrolls.length > 0) { %>
+            <%= payrolls.length %> payroll run<%= payrolls.length !== 1 ? 's' : '' %> processed
+            &nbsp;·&nbsp; click any row's eye icon to view the full report
+          <% } else { %>
+            No payroll runs yet — start your first run below
+          <% } %>
+        </p>
       </div>
       <a href="/payroll/run" class="nm-btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>New Payroll Run
+        <i class="bi bi-plus-lg"></i> New Payroll Run
       </a>
     </div>
 
-    <% if (payrolls.length === 0) { %>
-      <div class="nm-panel">
-        <div class="nm-empty">
-          <i class="bi bi-stack" style="font-size: 3rem; opacity: 0.1; display: block; margin-bottom: 20px;"></i>
-          <p>You haven't processed any payroll runs yet.</p>
-          <a href="/payroll/run" class="nm-btn-primary" style="background: transparent; border: 1px solid #f5a623; color: #f5a623;">Start First Run</a>
-        </div>
+    <% if (payrolls.length > 0) { %>
+
+    <!-- ── Summary stat cards ─────────────────────────────────────────────── -->
+    <%
+      const totalGross = payrolls.reduce((s,r) => s + (r.totalGrossPay || 0), 0);
+      const totalNet   = payrolls.reduce((s,r) => s + (r.totalNetPay   || 0), 0);
+      const totalPaye  = payrolls.reduce((s,r) => s + (r.totalPAYE     || 0), 0);
+      const totalCost  = payrolls.reduce((s,r) => s + (r.totalEmployerCost || 0), 0);
+    %>
+    <div class="nm-stats-row">
+      <div class="nm-stat-card">
+        <div class="nm-stat-label"><i class="bi bi-stack text-info"></i> Total Runs</div>
+        <div class="nm-stat-value amber"><%= payrolls.length %></div>
+        <div class="nm-stat-sub">All-time payroll periods</div>
       </div>
-    <% } else { %>
-      <div class="nm-panel">
-        <div class="table-responsive">
-          <table class="nm-table">
-            <thead>
+      <div class="nm-stat-card">
+        <div class="nm-stat-label"><i class="bi bi-cash-coin"></i> Total Gross Paid</div>
+        <div class="nm-stat-value plain" style="color:rgba(255,255,255,0.82);font-size:1rem;">N$ <%= totalGross.toLocaleString('en-NA',{minimumFractionDigits:2}) %></div>
+        <div class="nm-stat-sub">Combined gross across all runs</div>
+      </div>
+      <div class="nm-stat-card">
+        <div class="nm-stat-label"><i class="bi bi-arrow-down-circle" style="color:#2ecc8a"></i> Total Net Paid</div>
+        <div class="nm-stat-value green" style="font-size:1rem;">N$ <%= totalNet.toLocaleString('en-NA',{minimumFractionDigits:2}) %></div>
+        <div class="nm-stat-sub">Actual amount sent to employees</div>
+      </div>
+      <div class="nm-stat-card">
+        <div class="nm-stat-label"><i class="bi bi-bank" style="color:#f87171"></i> Total PAYE Liability</div>
+        <div class="nm-stat-value red" style="font-size:1rem;">N$ <%= totalPaye.toLocaleString('en-NA',{minimumFractionDigits:2}) %></div>
+        <div class="nm-stat-sub">Remit to NamRA in full</div>
+      </div>
+    </div>
+
+    <!-- ── History table ──────────────────────────────────────────────────── -->
+    <div class="nm-panel">
+      <div class="nm-panel-header">
+        <div class="nm-panel-title">
+          <i class="bi bi-clock-history" style="color:#f5a623;"></i>
+          All Payroll Runs
+        </div>
+        <span class="nm-panel-meta">Sorted newest first</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="nm-table">
+          <thead>
+            <tr>
+              <th>Pay Period</th>
+              <th>Staff</th>
+              <th>
+                Gross Pay
+                <span style="display:block;font-size:0.62rem;color:rgba(255,255,255,0.2);font-weight:400;letter-spacing:0;text-transform:none;">Before deductions</span>
+              </th>
+              <th>
+                Net Pay
+                <span style="display:block;font-size:0.62rem;color:rgba(255,255,255,0.2);font-weight:400;letter-spacing:0;text-transform:none;">Paid to employees</span>
+              </th>
+              <th>
+                PAYE Due
+                <span style="display:block;font-size:0.62rem;color:rgba(255,255,255,0.2);font-weight:400;letter-spacing:0;text-transform:none;">Remit to NamRA</span>
+              </th>
+              <th>
+                Company Cost
+                <span style="display:block;font-size:0.62rem;color:rgba(255,255,255,0.2);font-weight:400;letter-spacing:0;text-transform:none;">Incl. SSC + ECF</span>
+              </th>
+              <th>Processed</th>
+              <th class="text-end" style="padding-right:20px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% payrolls.sort((a,b) => b.year - a.year || b.month - a.month).forEach(run => {
+              const periodRef = `PR-${run.year}${String(run.month).padStart(2,'0')}`;
+            %>
               <tr>
-                <th>Pay Period</th>
-                <th>Staff</th>
-                <th>Total Gross</th>
-                <th>Total Net</th>
-                <th>Total PAYE</th>
-                <th>Total Co. Cost</th>
-                <th>Processed On</th>
-                <th class="text-end">Actions</th>
+
+                <!-- Period -->
+                <td>
+                  <span class="nm-period">
+                    <%= moment(`${run.year}-${String(run.month).padStart(2,'0')}-01`).format('MMMM YYYY') %>
+                  </span>
+                  <span class="nm-period-ref"><%= periodRef %></span>
+                </td>
+
+                <!-- Staff count -->
+                <td>
+                  <span class="nm-emp-pill">
+                    <i class="bi bi-people-fill"></i> <%= run.employeeCount %>
+                  </span>
+                </td>
+
+                <!-- Gross pay -->
+                <td>
+                  <span class="nm-money plain">N$ <%= (run.totalGrossPay || 0).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span>
+                </td>
+
+                <!-- Net pay -->
+                <td>
+                  <span class="nm-money green">N$ <%= (run.totalNetPay || 0).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span>
+                </td>
+
+                <!-- PAYE -->
+                <td>
+                  <span class="nm-money red">N$ <%= (run.totalPAYE || 0).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span>
+                </td>
+
+                <!-- Company cost -->
+                <td>
+                  <span class="nm-money purple">N$ <%= (run.totalEmployerCost || 0).toLocaleString('en-NA',{minimumFractionDigits:2}) %></span>
+                </td>
+
+                <!-- Date -->
+                <td>
+                  <span class="nm-date"><%= moment(run.processedAt).format('DD MMM YYYY') %></span>
+                </td>
+
+                <!-- Actions -->
+                <td>
+                  <div class="nm-actions">
+                    <a href="/payroll/<%= run._id %>"
+                       class="nm-action-btn view"
+                       data-tip="View Full Report">
+                      <i class="bi bi-eye-fill"></i>
+                    </a>
+                    <a href="/payroll/<%= run._id %>/zip"
+                       class="nm-action-btn zip"
+                       data-tip="Download All Payslips (ZIP)">
+                      <i class="bi bi-file-earmark-zip-fill"></i>
+                    </a>
+                    <a href="/payroll/<%= run._id %>/compliance-pdf"
+                       class="nm-action-btn pdf"
+                       data-tip="Compliance Report (PDF)">
+                      <i class="bi bi-file-earmark-check-fill"></i>
+                    </a>
+                  </div>
+                </td>
+
               </tr>
-            </thead>
-            <tbody>
-              <% payrolls.sort((a,b) => b.year - a.year || b.month - a.month).forEach(run => { %>
-                <tr>
-                  <td>
-                    <span class="nm-period">
-                      <%= moment(`${run.year}-${String(run.month).padStart(2,'0')}-01`).format('MMMM YYYY') %>
-                    </span>
-                  </td>
-                  <td>
-                    <span class="nm-emp-pill">
-                      <i class="bi bi-people-fill"></i><%= run.employeeCount %>
-                    </span>
-                  </td>
-                  <td><span class="nm-money plain">N$ <%= (run.totalGrossPay || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money green">N$ <%= (run.totalNetPay || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td><span class="nm-money red">N$ <%= (run.totalPAYE || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %></span></td>
-                  <td>
-                    <span class="nm-money plain" style="color: #a78bfa;">
-                      N$ <%= (run.totalEmployerCost || 0).toLocaleString('en-NA', {minimumFractionDigits:2}) %>
-                    </span>
-                  </td>
-                  <td><span class="nm-date"><%= moment(run.processedAt).format('DD MMM YYYY') %></span></td>
-                  <td>
-                    <div class="nm-actions justify-content-end">
-                      <a href="/payroll/<%= run._id %>" class="nm-action-btn view" title="View Detailed Report"><i class="bi bi-eye-fill"></i></a>
-                      <a href="/payroll/<%= run._id %>/zip" class="nm-action-btn zip" title="Download ZIP Payslips"><i class="bi bi-file-earmark-zip-fill"></i></a>
-                      <a href="/payroll/<%= run._id %>/compliance-pdf" class="nm-action-btn pdf" title="Compliance Summary"><i class="bi bi-file-earmark-check-fill"></i></a>
-                    </div>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        </div>
+            <% }) %>
+          </tbody>
+        </table>
       </div>
+
+      <!-- Column legend -->
+      <div class="nm-legend">
+        <span style="color:rgba(255,255,255,0.2);font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Column guide:</span>
+        <span class="nm-legend-item"><span class="nm-legend-dot" style="background:rgba(255,255,255,0.5);"></span>Gross — total earnings before any deductions</span>
+        <span class="nm-legend-item"><span class="nm-legend-dot" style="background:#2ecc8a;"></span>Net — actual amount deposited to employees</span>
+        <span class="nm-legend-item"><span class="nm-legend-dot" style="background:#f87171;"></span>PAYE — income tax to remit to NamRA by the 20th</span>
+        <span class="nm-legend-item"><span class="nm-legend-dot" style="background:#a78bfa;"></span>Company Cost — gross + employer SSC + ECF</span>
+      </div>
+    </div>
+
+    <% } else { %>
+
+    <!-- ── Empty state ────────────────────────────────────────────────────── -->
+    <div class="nm-panel">
+      <div class="nm-empty">
+        <i class="bi bi-stack nm-empty-icon"></i>
+        <h3>No payroll runs yet</h3>
+        <p>Once you process your first payroll, all runs will appear here with full reports and download options.</p>
+        <a href="/payroll/run" class="nm-btn-primary">
+          <i class="bi bi-plus-lg"></i> Start First Payroll Run
+        </a>
+      </div>
+    </div>
+
     <% } %>
 
+    <!-- ── Compliance reminder ─────────────────────────────────────────────── -->
     <div class="nm-disclaimer">
       <i class="bi bi-shield-check"></i>
-      <strong>Namibia Payroll Compliance:</strong> Ensure your VET Levy and Social Security submissions match these processed totals for the corresponding period.
+      <div>
+        <strong>Namibia Payroll Compliance Reminder:</strong> PAYE must be remitted to NamRA by the <strong>20th of each following month</strong>. SSC contributions (employer + employee) are due to the Social Security Commission by the <strong>end of each month</strong>. Ensure your VET Levy submissions also match these processed totals.
+      </div>
     </div>
 
   </div>

@@ -1,13 +1,291 @@
 <%- include('partials/header') %>
-<div class="d-flex align-items-center justify-content-center min-vh-100">
-  <div class="text-center">
-    <h1 class="display-1 fw-bold text-danger">500</h1>
-    <h2 class="mb-3">Server Error</h2>
-    <p class="text-muted mb-4">Something went wrong on our end. Please try again.</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
+
+  .err-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #06111c;
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient background glow */
+  .err-page::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(220, 60, 60, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Faint grid lines for depth */
+  .err-page::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  .err-card {
+    position: relative;
+    z-index: 1;
+    max-width: 580px;
+    width: 100%;
+    background: #0d1b2a;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 52px 48px 44px;
+    animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Top accent strip */
+  .err-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(220,60,60,0.6) 40%, rgba(245,166,35,0.4) 70%, transparent);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .err-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: rgba(220,60,60,0.08);
+    border: 1px solid rgba(220,60,60,0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    animation: cardIn 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-icon-wrap svg {
+    width: 30px;
+    height: 30px;
+    color: #e05555;
+  }
+
+  .err-code {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e05555;
+    margin-bottom: 10px;
+    animation: cardIn 0.5s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    animation: cardIn 0.5s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.65;
+    margin-bottom: 32px;
+    animation: cardIn 0.5s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Error detail block */
+  .err-detail {
+    background: #071421;
+    border: 1px solid rgba(220,60,60,0.15);
+    border-left: 3px solid rgba(220,60,60,0.5);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 32px;
+    animation: cardIn 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-detail-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(220,60,60,0.6);
+    margin-bottom: 6px;
+  }
+
+  .err-detail pre {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.45);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Divider */
+  .err-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin: 0 0 28px;
+  }
+
+  /* Actions */
+  .err-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: cardIn 0.5s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .btn-primary-nm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    background: #f5a623;
+    color: #1a0e00;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .btn-primary-nm:hover {
+    background: #e8981e;
+    color: #1a0e00;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(245,166,35,0.22);
+  }
+
+  .btn-ghost-nm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: transparent;
+    color: rgba(255,255,255,0.45);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .btn-ghost-nm:hover {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  /* Brand watermark top-left */
+  .err-brand {
+    position: absolute;
+    top: 28px;
+    left: 40px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    animation: cardIn 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .err-brand-logo {
+    width: 30px; height: 30px;
+    background: #f5a623;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .err-brand-logo svg { width: 16px; height: 16px; }
+  .err-brand-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: -0.01em;
+  }
+</style>
+
+<div class="err-page">
+
+  <!-- Brand top-left -->
+  <a href="/dashboard" class="err-brand">
+    <div class="err-brand-logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L3 7V12C3 16.55 6.84 20.74 12 22C17.16 20.74 21 16.55 21 12V7L12 2Z" fill="#1a0e00"/>
+        <path d="M9 12L11 14L15 10" stroke="#1a0e00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="err-brand-name">NamPayroll</span>
+  </a>
+
+  <div class="err-card">
+
+    <div class="err-icon-wrap">
+      <!-- Server/warning icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 9v4M12 17h.01"/>
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      </svg>
+    </div>
+
+    <div class="err-code">Error 500</div>
+    <h1 class="err-title">Something went wrong<br>on our end.</h1>
+    <p class="err-desc">
+      An unexpected server error occurred. Our team has been notified.<br>
+      Please try again — if the problem persists, contact support.
+    </p>
+
     <% if (error && error.message) { %>
-      <pre class="text-start bg-light p-3 rounded small mb-4" style="max-width:600px;margin:0 auto"><%= error.message %></pre>
+      <div class="err-detail">
+        <div class="err-detail-label">Error Detail</div>
+        <pre><%= error.message %></pre>
+      </div>
     <% } %>
-    <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+
+    <hr class="err-divider" />
+
+    <div class="err-actions">
+      <a href="/dashboard" class="btn-primary-nm">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Go to Dashboard
+      </a>
+      <a href="javascript:history.back()" class="btn-ghost-nm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Go Back
+      </a>
+    </div>
+
   </div>
 </div>
+
 <%- include('partials/footer') %>

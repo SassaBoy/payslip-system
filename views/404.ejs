@@ -1,10 +1,263 @@
 <%- include('partials/header') %>
-<div class="d-flex align-items-center justify-content-center min-vh-100">
-  <div class="text-center">
-    <h1 class="display-1 fw-bold text-primary">404</h1>
-    <h2 class="mb-3">Page Not Found</h2>
-    <p class="text-muted mb-4">The page you're looking for doesn't exist.</p>
-    <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
+
+  .err-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #06111c;
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient blue glow — distinct from 500's red */
+  .err-page::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 400px;
+    background: radial-gradient(ellipse at center, rgba(56, 130, 246, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Faint grid */
+  .err-page::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  .err-card {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    width: 100%;
+    background: #0d1b2a;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 52px 48px 44px;
+    animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Top accent — amber only, softer than 500 */
+  .err-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(245,166,35,0.5) 40%, rgba(245,166,35,0.2) 75%, transparent);
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* Large ghost "404" watermark behind content */
+  .err-watermark {
+    position: absolute;
+    top: 18px;
+    right: 32px;
+    font-family: 'Sora', sans-serif;
+    font-size: 7rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .err-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: rgba(245,166,35,0.07);
+    border: 1px solid rgba(245,166,35,0.18);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    animation: cardIn 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-icon-wrap svg {
+    width: 28px;
+    height: 28px;
+    color: #f5a623;
+  }
+
+  .err-code {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #f5a623;
+    margin-bottom: 10px;
+    animation: cardIn 0.5s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    animation: cardIn 0.5s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.65;
+    margin-bottom: 36px;
+    animation: cardIn 0.5s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .err-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin: 0 0 28px;
+  }
+
+  .err-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: cardIn 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .btn-primary-nm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    background: #f5a623;
+    color: #1a0e00;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+  }
+  .btn-primary-nm:hover {
+    background: #e8981e;
+    color: #1a0e00;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(245,166,35,0.22);
+  }
+
+  .btn-ghost-nm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: transparent;
+    color: rgba(255,255,255,0.45);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .btn-ghost-nm:hover {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  /* Brand top-left */
+  .err-brand {
+    position: absolute;
+    top: 28px;
+    left: 40px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    animation: cardIn 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .err-brand-logo {
+    width: 30px; height: 30px;
+    background: #f5a623;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .err-brand-logo svg { width: 16px; height: 16px; }
+  .err-brand-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: -0.01em;
+  }
+</style>
+
+<div class="err-page">
+
+  <a href="/dashboard" class="err-brand">
+    <div class="err-brand-logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L3 7V12C3 16.55 6.84 20.74 12 22C17.16 20.74 21 16.55 21 12V7L12 2Z" fill="#1a0e00"/>
+        <path d="M9 12L11 14L15 10" stroke="#1a0e00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="err-brand-name">NamPayroll</span>
+  </a>
+
+  <div class="err-card">
+    <div class="err-watermark">404</div>
+
+    <div class="err-icon-wrap">
+      <!-- Compass / lost icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+    </div>
+
+    <div class="err-code">Error 404</div>
+    <h1 class="err-title">This page doesn't<br>exist.</h1>
+    <p class="err-desc">
+      The link may be broken, or the page may have been moved or removed.<br>
+      Head back to your dashboard to get your bearings.
+    </p>
+
+    <hr class="err-divider" />
+
+    <div class="err-actions">
+      <a href="/dashboard" class="btn-primary-nm">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Go to Dashboard
+      </a>
+      <a href="javascript:history.back()" class="btn-ghost-nm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Go Back
+      </a>
+    </div>
   </div>
 </div>
+
 <%- include('partials/footer') %>

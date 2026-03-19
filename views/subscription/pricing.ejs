@@ -1,0 +1,380 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<style>
+  .nm-page-wrapper { flex:1; padding:40px 24px 72px; }
+  .nm-page-inner   { max-width:960px; margin:0 auto; }
+
+  .nm-pricing-header { text-align:center; margin-bottom:48px; }
+  .nm-pricing-eyebrow {
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    color:#f5a623; background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.18);
+    padding:5px 14px; border-radius:20px; margin-bottom:16px;
+  }
+  .nm-pricing-title { font-family:'Sora',sans-serif; font-size:2rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin:0 0 12px; }
+  .nm-pricing-sub   { font-size:0.95rem; color:rgba(255,255,255,0.4); max-width:480px; margin:0 auto; line-height:1.6; }
+
+  .nm-status-banner {
+    display:flex; align-items:center; gap:12px;
+    padding:14px 20px; border-radius:12px; margin-bottom:36px;
+    font-size:0.875rem; font-weight:500;
+  }
+  .nm-status-banner.trial   { background:rgba(245,166,35,0.07); border:1px solid rgba(245,166,35,0.2); color:rgba(245,166,35,0.9); }
+  .nm-status-banner.active  { background:rgba(46,204,138,0.07); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
+  .nm-status-banner.expired { background:rgba(248,113,113,0.07); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
+  .nm-status-banner.pending { background:rgba(96,165,250,0.07); border:1px solid rgba(96,165,250,0.2); color:#60a5fa; }
+  .nm-status-banner i { font-size:1.1rem; flex-shrink:0; }
+  .nm-status-banner .ms-auto { font-size:0.78rem; opacity:0.7; }
+
+  .nm-plans-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:44px; }
+  @media (max-width:768px) { .nm-plans-grid { grid-template-columns:1fr; } }
+
+  .nm-plan-card {
+    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
+    border-radius:16px; padding:28px 24px; position:relative;
+    transition:transform 0.18s, box-shadow 0.18s;
+  }
+  .nm-plan-card:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(0,0,0,0.35); }
+  .nm-plan-card.featured {
+    border-color:rgba(245,166,35,0.35);
+    background:linear-gradient(160deg, #0f2038 0%, #0d1b2a 100%);
+    box-shadow:0 0 0 1px rgba(245,166,35,0.15), 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .nm-plan-badge {
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    font-size:0.65rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;
+    padding:4px 14px; border-radius:20px; white-space:nowrap;
+    background:#f5a623; color:#1a0e00;
+  }
+  .nm-plan-name  { font-family:'Sora',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:14px; }
+  .nm-plan-price { font-family:'Sora',sans-serif; font-size:2.2rem; font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1; }
+  .nm-plan-price sup { font-size:1rem; font-weight:600; vertical-align:super; color:rgba(255,255,255,0.5); }
+  .nm-plan-price .period { font-size:0.85rem; font-weight:400; color:rgba(255,255,255,0.35); margin-left:4px; }
+  .nm-plan-saving { font-size:0.75rem; color:#2ecc8a; font-weight:600; margin-top:6px; }
+  .nm-plan-divider { border:none; border-top:1px solid rgba(255,255,255,0.06); margin:20px 0; }
+  .nm-plan-features { list-style:none; padding:0; margin:0 0 24px; display:flex; flex-direction:column; gap:10px; }
+  .nm-plan-features li { display:flex; align-items:flex-start; gap:9px; font-size:0.855rem; color:rgba(255,255,255,0.6); line-height:1.4; }
+  .nm-plan-features li i { font-size:0.82rem; flex-shrink:0; margin-top:2px; }
+  .nm-plan-features li i.check { color:#2ecc8a; }
+  .nm-plan-features li i.cross { color:rgba(255,255,255,0.2); }
+  .nm-plan-features li.muted   { color:rgba(255,255,255,0.3); }
+  .nm-plan-cta {
+    display:block; width:100%; padding:11px; border-radius:10px;
+    font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:700;
+    text-align:center; cursor:pointer; border:none; transition:0.18s;
+    text-decoration:none;
+  }
+  .nm-plan-cta.amber   { background:#f5a623; color:#1a0e00; }
+  .nm-plan-cta.amber:hover  { background:#e8981e; box-shadow:0 6px 20px rgba(245,166,35,0.25); }
+  .nm-plan-cta.outline { background:transparent; color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.12); }
+  .nm-plan-cta.outline:hover { background:rgba(255,255,255,0.05); color:#fff; }
+  .nm-plan-cta.disabled { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.25); cursor:default; border:1px solid rgba(255,255,255,0.07); }
+
+  .nm-payment-section { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:16px; overflow:hidden; margin-bottom:28px; }
+  .nm-payment-header  { padding:16px 24px; background:#112235; border-bottom:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; gap:10px; }
+  .nm-payment-title   { font-family:'Sora',sans-serif; font-size:0.9rem; font-weight:600; color:rgba(255,255,255,0.88); }
+  .nm-payment-body    { padding:24px; }
+
+  .nm-bank-card { background:#071421; border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:18px 20px; margin-bottom:20px; }
+  .nm-bank-row  { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .nm-bank-row:last-child { border-bottom:none; padding-bottom:0; }
+  .nm-bank-label { font-size:0.75rem; color:rgba(255,255,255,0.3); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+  .nm-bank-val   { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:700; color:rgba(255,255,255,0.82); }
+  .nm-bank-val.ref { color:#f5a623; }
+
+  .nm-label  { display:block; font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.55); margin-bottom:7px; letter-spacing:0.01em; }
+  .nm-input  { width:100%; padding:9px 13px; background:#071421; border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:rgba(255,255,255,0.88); font-size:0.875rem; outline:none; transition:0.16s; }
+  .nm-input:focus { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 3px rgba(245,166,35,0.07); }
+  .nm-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='rgba(255,255,255,0.3)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+
+  .nm-upload-area {
+    border:2px dashed rgba(255,255,255,0.1); border-radius:10px;
+    padding:24px; text-align:center; cursor:pointer; transition:0.18s;
+    background:#071421;
+  }
+  .nm-upload-area:hover { border-color:rgba(245,166,35,0.3); background:rgba(245,166,35,0.03); }
+  .nm-upload-area input { display:none; }
+  .nm-upload-icon { font-size:1.6rem; color:rgba(255,255,255,0.2); margin-bottom:8px; }
+  .nm-upload-text { font-size:0.82rem; color:rgba(255,255,255,0.35); }
+  .nm-upload-text strong { color:rgba(245,166,35,0.7); }
+  .nm-upload-preview { font-size:0.78rem; color:#2ecc8a; margin-top:8px; display:none; }
+
+  .nm-btn-submit { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; border-radius:10px; background:#f5a623; color:#1a0e00; font-family:'Sora',sans-serif; font-size:0.9rem; font-weight:700; border:none; cursor:pointer; transition:0.18s; }
+  .nm-btn-submit:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 6px 20px rgba(245,166,35,0.25); }
+
+  .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; transition:opacity 0.5s ease; }
+  .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
+  .nm-alert-error   { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
+
+  .nm-faq { margin-top:12px; }
+  .nm-faq-item { border-bottom:1px solid rgba(255,255,255,0.05); padding:16px 0; }
+  .nm-faq-item:last-child { border-bottom:none; }
+  .nm-faq-q { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.8); margin-bottom:6px; }
+  .nm-faq-a { font-size:0.82rem; color:rgba(255,255,255,0.4); line-height:1.65; }
+</style>
+
+<div class="nm-page-wrapper">
+  <div class="nm-page-inner">
+
+    <%# typeof check — same pattern used in register.ejs to prevent "not defined" crash %>
+    <% if (typeof success !== 'undefined' && success.length > 0) { %>
+      <div class="nm-alert nm-alert-success" id="successAlert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span><%= success[0] %></span>
+      </div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error.length > 0) { %>
+      <div class="nm-alert nm-alert-error" id="errorAlert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <div><% error.forEach(e => { %><div><%= typeof e === 'object' ? e.msg : e %></div><% }) %></div>
+      </div>
+    <% } %>
+
+    <!-- ── Header ── -->
+    <div class="nm-pricing-header">
+      <div class="nm-pricing-eyebrow"><i class="bi bi-lightning-charge-fill"></i> NamPayroll Plans</div>
+      <h1 class="nm-pricing-title">Simple, transparent pricing</h1>
+      <p class="nm-pricing-sub">All plans include unlimited employees. Pay monthly or save with an annual plan. No hidden fees.</p>
+    </div>
+
+    <!-- ── Current status banner ── -->
+    <%
+      const isTrialActive = subscription.plan === 'trial' && subscription.status === 'active' && subscription.payslipsUsed < trialLimit;
+      const isPaid        = subscription.plan !== 'trial' && subscription.status === 'active';
+      const isPending     = subscription.status === 'pending_payment';
+      const isExpired     = subscription.status === 'expired';
+    %>
+
+    <% if (isPending) { %>
+      <div class="nm-status-banner pending">
+        <i class="bi bi-clock-history"></i>
+        <div><strong>Payment under review.</strong> We've received your proof of payment and will verify within 1 business day. You'll receive an email once approved.</div>
+      </div>
+    <% } else if (isPaid) { %>
+      <div class="nm-status-banner active">
+        <i class="bi bi-check-circle-fill"></i>
+        <div>
+          <strong><%= subscription.plan === 'annual' ? 'Annual' : 'Monthly' %> Plan — Active.</strong>
+          Your plan is active until <%= subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString('en-NA', {day:'numeric', month:'long', year:'numeric'}) : '—' %>.
+        </div>
+        <span class="ms-auto"><%= subscription.daysUntilExpiry %> day(s) remaining</span>
+      </div>
+    <% } else if (isTrialActive) { %>
+      <div class="nm-status-banner trial">
+        <i class="bi bi-hourglass-split"></i>
+        <div><strong>Free Trial — <%= subscription.trialRemaining %> of <%= trialLimit %> payslips remaining.</strong> Upgrade before your trial ends to avoid interruption.</div>
+      </div>
+    <% } else if (isExpired) { %>
+      <div class="nm-status-banner expired">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div><strong>Plan expired.</strong> Your payroll processing is paused. Select a plan below and submit proof of payment to reactivate.</div>
+      </div>
+    <% } else { %>
+      <div class="nm-status-banner expired">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div><strong>Trial ended.</strong> You've used all 2 free payslips. Upgrade to continue.</div>
+      </div>
+    <% } %>
+
+    <!-- ── Plan cards ── -->
+    <div class="nm-plans-grid">
+
+      <!-- Trial -->
+      <div class="nm-plan-card">
+        <div class="nm-plan-name">Free Trial</div>
+        <div class="nm-plan-price"><sup>N$</sup>0</div>
+        <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:8px 0 0;">5 payslips total, forever free</p>
+        <hr class="nm-plan-divider">
+        <ul class="nm-plan-features">
+          <li><i class="bi bi-check-circle-fill check"></i>2 payslips total</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Full payslip PDF generation</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Compliance reports</li>
+          <li class="muted"><i class="bi bi-x-circle cross"></i>Unlimited employees</li>
+          <li class="muted"><i class="bi bi-x-circle cross"></i>CSV exports</li>
+        </ul>
+        <span class="nm-plan-cta disabled">
+          <% if (subscription.plan === 'trial') { %>Current Plan<% } else { %>Trial Ended<% } %>
+        </span>
+      </div>
+
+      <!-- Monthly -->
+      <div class="nm-plan-card featured">
+        <div class="nm-plan-badge">Most Popular</div>
+        <div class="nm-plan-name">Monthly</div>
+        <div class="nm-plan-price"><sup>N$</sup><%= plans.monthly.price %><span class="period">/mo</span></div>
+        <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:8px 0 0;">Billed each month, cancel anytime</p>
+        <hr class="nm-plan-divider">
+        <ul class="nm-plan-features">
+          <li><i class="bi bi-check-circle-fill check"></i>Unlimited payslips</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Unlimited employees</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Full PDF payslips</li>
+          <li><i class="bi bi-check-circle-fill check"></i>CSV bank transfer files</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Compliance reports</li>
+        </ul>
+        <% if (isPaid && subscription.plan === 'monthly') { %>
+          <span class="nm-plan-cta disabled">Current Plan</span>
+        <% } else if (isPending) { %>
+          <span class="nm-plan-cta disabled">Pending Approval</span>
+        <% } else { %>
+          <a href="#payment-form" onclick="selectPlan('monthly')" class="nm-plan-cta amber">Choose Monthly</a>
+        <% } %>
+      </div>
+
+      <!-- Annual -->
+      <div class="nm-plan-card">
+        <div class="nm-plan-name">Annual</div>
+        <div class="nm-plan-price"><sup>N$</sup><%= Math.round(plans.annual.price / 12) %><span class="period">/mo</span></div>
+        <div class="nm-plan-saving"><i class="bi bi-tag-fill"></i> Save N$<%= (plans.monthly.price * 12) - plans.annual.price %> vs monthly — N$<%= plans.annual.price %>/yr</div>
+        <hr class="nm-plan-divider">
+        <ul class="nm-plan-features">
+          <li><i class="bi bi-check-circle-fill check"></i>Everything in Monthly</li>
+          <li><i class="bi bi-check-circle-fill check"></i>2 months free</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Priority email support</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Early access to new features</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Single annual payment</li>
+        </ul>
+        <% if (isPaid && subscription.plan === 'annual') { %>
+          <span class="nm-plan-cta disabled">Current Plan</span>
+        <% } else if (isPending) { %>
+          <span class="nm-plan-cta disabled">Pending Approval</span>
+        <% } else { %>
+          <a href="#payment-form" onclick="selectPlan('annual')" class="nm-plan-cta outline">Choose Annual</a>
+        <% } %>
+      </div>
+
+    </div>
+
+    <!-- ── Payment section (only shown when not paid and not pending) ── -->
+    <% if (!isPaid && !isPending) { %>
+    <div class="nm-payment-section" id="payment-form">
+      <div class="nm-payment-header">
+        <i class="bi bi-bank" style="color:#f5a623;font-size:1rem;"></i>
+        <div class="nm-payment-title">Pay via Bank Transfer</div>
+      </div>
+      <div class="nm-payment-body">
+        <p style="font-size:0.855rem;color:rgba(255,255,255,0.4);margin:0 0 20px;line-height:1.6;">
+          Transfer the amount for your chosen plan to the account below, then upload your proof of payment.
+          We'll verify and activate your plan within <strong style="color:rgba(255,255,255,0.6);">1 business day</strong>.
+        </p>
+
+        <div class="nm-bank-card">
+          <div class="nm-bank-row">
+            <span class="nm-bank-label">Bank</span>
+            <span class="nm-bank-val"><%= bankDetails.bankName %></span>
+          </div>
+          <div class="nm-bank-row">
+            <span class="nm-bank-label">Account Name</span>
+            <span class="nm-bank-val"><%= bankDetails.accountName %></span>
+          </div>
+          <div class="nm-bank-row">
+            <span class="nm-bank-label">Account Number</span>
+            <span class="nm-bank-val"><%= bankDetails.accountNumber %></span>
+          </div>
+          <div class="nm-bank-row">
+            <span class="nm-bank-label">Branch Code</span>
+            <span class="nm-bank-val"><%= bankDetails.branchCode %></span>
+          </div>
+          <div class="nm-bank-row">
+            <span class="nm-bank-label">Your Reference</span>
+            <span class="nm-bank-val ref"><strong><%= bankDetails.reference %></strong></span>
+          </div>
+        </div>
+
+        <form action="/subscribe/request" method="POST" enctype="multipart/form-data">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="nm-label">Plan <span style="color:#f5a623;">*</span></label>
+              <select name="plan" id="planSelect" class="nm-input nm-select" required>
+                <option value="">Select a plan…</option>
+                <option value="monthly">Monthly — N$<%= plans.monthly.price %>/mo</option>
+                <option value="annual">Annual — N$<%= plans.annual.price %>/yr (save N$<%= (plans.monthly.price * 12) - plans.annual.price %>)</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="nm-label">Your Bank Reference <span style="color:#f5a623;">*</span></label>
+              <input type="text" name="reference" class="nm-input" placeholder="e.g. <%= bankDetails.reference %>" required />
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.25);margin-top:5px;">Use the exact reference shown above when making the transfer.</div>
+            </div>
+            <div class="col-md-4">
+              <label class="nm-label">Proof of Payment <span style="color:#f5a623;">*</span></label>
+              <div class="nm-upload-area" onclick="document.getElementById('proofFile').click()">
+                <input type="file" id="proofFile" name="proofFile" accept=".jpg,.jpeg,.png,.pdf" onchange="showPreview(this)">
+                <div class="nm-upload-icon"><i class="bi bi-cloud-upload"></i></div>
+                <div class="nm-upload-text"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG or PDF — max 5MB</div>
+                <div class="nm-upload-preview" id="uploadPreview"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:24px;">
+            <button type="submit" class="nm-btn-submit">
+              <i class="bi bi-send-fill"></i> Submit Payment Proof
+            </button>
+            <span style="font-size:0.78rem;color:rgba(255,255,255,0.25);margin-left:14px;">We'll email you once verified.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ── FAQ ── -->
+    <div class="nm-payment-section">
+      <div class="nm-payment-header">
+        <i class="bi bi-question-circle" style="color:#60a5fa;font-size:1rem;"></i>
+        <div class="nm-payment-title">Frequently Asked Questions</div>
+      </div>
+      <div class="nm-payment-body">
+        <div class="nm-faq">
+          <div class="nm-faq-item">
+            <div class="nm-faq-q">How long does activation take?</div>
+            <div class="nm-faq-a">Once you submit your proof of payment, we verify manually within 1 business day. You'll receive an email confirmation as soon as your plan is active.</div>
+          </div>
+          <div class="nm-faq-item">
+            <div class="nm-faq-q">Can I cancel my plan?</div>
+            <div class="nm-faq-a">Yes. Contact us at support and we'll cancel your plan. No further charges will be made. Your plan remains active until the end of the paid period.</div>
+          </div>
+          <div class="nm-faq-item">
+            <div class="nm-faq-q">What happens to my data if I don't renew?</div>
+            <div class="nm-faq-a">Your data is never deleted. You can still view past payroll history after expiry, but payroll processing will be paused until you renew.</div>
+          </div>
+          <div class="nm-faq-item">
+            <div class="nm-faq-q">Is there a per-employee fee?</div>
+            <div class="nm-faq-a">No. All plans support unlimited employees. The flat monthly or annual rate covers your entire company regardless of headcount.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Auto-hide alerts after 4 seconds — same behaviour as register.ejs
+  document.addEventListener('DOMContentLoaded', () => {
+    ['successAlert', 'errorAlert'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => el.style.display = 'none', 500);
+        }, 4000);
+      }
+    });
+  });
+
+  function selectPlan(plan) {
+    const sel = document.getElementById('planSelect');
+    if (sel) sel.value = plan;
+    document.getElementById('payment-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showPreview(input) {
+    const preview = document.getElementById('uploadPreview');
+    if (input.files && input.files[0]) {
+      preview.textContent = '✓ ' + input.files[0].name;
+      preview.style.display = 'block';
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>

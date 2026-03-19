@@ -1,0 +1,192 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+  .nm-page-wrapper { flex:1; padding:40px 24px 72px; }
+  .nm-page-inner   { max-width:900px; margin:0 auto; }
+
+  .nm-support-header { text-align:center; margin-bottom:48px; }
+  .nm-support-eyebrow { font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#f5a623; margin-bottom:12px; }
+  .nm-support-title   { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin:0 0 10px; }
+  .nm-support-sub     { font-size:0.9rem; color:rgba(255,255,255,0.38); max-width:500px; margin:0 auto; line-height:1.6; }
+
+  /* ── Contact cards ── */
+  .nm-contact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:44px; }
+  @media (max-width:768px) { .nm-contact-grid { grid-template-columns:1fr; } }
+
+  .nm-contact-card {
+    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
+    border-radius:14px; padding:24px; text-align:center;
+    transition:transform 0.18s, box-shadow 0.18s;
+  }
+  .nm-contact-card:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+  .nm-contact-icon {
+    width:48px; height:48px; border-radius:12px; margin:0 auto 16px;
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+  .nm-contact-icon.email  { background:rgba(245,166,35,0.1); color:#f5a623; border:1px solid rgba(245,166,35,0.18); }
+  .nm-contact-icon.phone  { background:rgba(46,204,138,0.1); color:#2ecc8a; border:1px solid rgba(46,204,138,0.18); }
+  .nm-contact-icon.hours  { background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.18); }
+  .nm-contact-label { font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:700; color:rgba(255,255,255,0.8); margin-bottom:6px; }
+  .nm-contact-value { font-size:0.875rem; color:rgba(255,255,255,0.45); line-height:1.5; }
+  .nm-contact-value a { color:#f5a623; text-decoration:none; font-weight:600; }
+  .nm-contact-value a:hover { text-decoration:underline; }
+
+  /* ── FAQ section ── */
+  .nm-section-label { font-family:'Sora',sans-serif; font-size:0.67rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.25); margin:0 0 14px 2px; }
+
+  .nm-faq-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:24px; }
+
+  details.nm-faq-item { border-bottom:1px solid rgba(255,255,255,0.05); }
+  details.nm-faq-item:last-child { border-bottom:none; }
+  details.nm-faq-item summary {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px; cursor:pointer; list-style:none;
+    font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600;
+    color:rgba(255,255,255,0.82); transition:background 0.14s;
+    user-select:none;
+  }
+  details.nm-faq-item summary:hover { background:rgba(255,255,255,0.02); }
+  details.nm-faq-item summary::-webkit-details-marker { display:none; }
+  details.nm-faq-item summary .faq-icon { font-size:0.82rem; color:rgba(255,255,255,0.3); transition:transform 0.2s; flex-shrink:0; margin-left:16px; }
+  details.nm-faq-item[open] summary .faq-icon { transform:rotate(45deg); color:#f5a623; }
+  details.nm-faq-item[open] summary { color:#fff; }
+
+  .nm-faq-answer {
+    padding:0 24px 20px;
+    font-size:0.865rem; color:rgba(255,255,255,0.45); line-height:1.75;
+  }
+  .nm-faq-answer p { margin:0 0 8px; }
+  .nm-faq-answer p:last-child { margin-bottom:0; }
+  .nm-faq-answer a { color:#f5a623; text-decoration:none; }
+
+  /* ── Response time banner ── */
+  .nm-response-banner {
+    display:flex; align-items:center; gap:14px;
+    background:#0d1b2a; border:1px solid rgba(46,204,138,0.2);
+    border-radius:12px; padding:16px 22px; margin-bottom:36px;
+    font-size:0.855rem; color:rgba(255,255,255,0.5);
+  }
+  .nm-response-banner i { font-size:1.2rem; color:#2ecc8a; flex-shrink:0; }
+  .nm-response-banner strong { color:rgba(255,255,255,0.75); }
+</style>
+
+<div class="nm-page-wrapper">
+  <div class="nm-page-inner">
+
+    <div class="nm-support-header">
+      <div class="nm-support-eyebrow">Help & Support</div>
+      <h1 class="nm-support-title">How can we help?</h1>
+      <p class="nm-support-sub">Find answers to common questions below or reach out to us directly. We're a small team and we actually reply.</p>
+    </div>
+
+    <!-- ── Response time ── -->
+    <div class="nm-response-banner">
+      <i class="bi bi-lightning-charge-fill"></i>
+      <div><strong>Typical response time: 1 business day.</strong> We operate Monday – Friday, 08:00 – 17:00 WAT (Windhoek time). Urgent billing issues are prioritised.</div>
+    </div>
+
+    <!-- ── Contact options ── -->
+    <div class="nm-contact-grid">
+      <div class="nm-contact-card">
+        <div class="nm-contact-icon email"><i class="bi bi-envelope-fill"></i></div>
+        <div class="nm-contact-label">Email Support</div>
+        <div class="nm-contact-value">
+          <a href="mailto:support@nampayroll.com">support@nampayroll.com</a><br>
+          <span style="font-size:0.78rem;color:rgba(255,255,255,0.25);margin-top:4px;display:block;">Best for billing, account, and technical issues</span>
+        </div>
+      </div>
+      <div class="nm-contact-card">
+        <div class="nm-contact-icon phone"><i class="bi bi-telephone-fill"></i></div>
+        <div class="nm-contact-label">WhatsApp</div>
+        <div class="nm-contact-value">
+          <a href="https://wa.me/264810000000">+264 81 000 0000</a><br>
+          <span style="font-size:0.78rem;color:rgba(255,255,255,0.25);margin-top:4px;display:block;">Quick questions, Mon–Fri business hours</span>
+        </div>
+      </div>
+      <div class="nm-contact-card">
+        <div class="nm-contact-icon hours"><i class="bi bi-clock-fill"></i></div>
+        <div class="nm-contact-label">Support Hours</div>
+        <div class="nm-contact-value">
+          Mon – Fri<br>08:00 – 17:00 WAT<br>
+          <span style="font-size:0.78rem;color:rgba(255,255,255,0.25);margin-top:4px;display:block;">Namibia (UTC+2)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FAQ ── -->
+    <div class="nm-section-label">Frequently Asked Questions</div>
+    <div class="nm-faq-panel">
+
+      <details class="nm-faq-item">
+        <summary>How do I upgrade from the free trial? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>Go to <a href="/subscribe">Billing & Upgrade</a>, select your plan (Monthly or Annual), transfer the amount to our bank account using your unique reference number, then upload your proof of payment. We'll verify and activate your plan within 1 business day.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>My payment was submitted but my plan isn't active yet. <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>Payment verification is done manually and takes up to 1 business day. If it's been longer than that, email us at <a href="mailto:support@nampayroll.com">support@nampayroll.com</a> with your company name and bank reference number and we'll sort it out quickly.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>How do I add or remove employees? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>Go to the <a href="/employees">Employees</a> section from the main navigation. You can add new employees, edit existing records, or soft-delete (deactivate) employees who have left. Deactivated employees are excluded from future payroll runs but their history is preserved.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>Why does my payslip show the wrong PAYE amount? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>PAYE is calculated on annualised taxable income using NamRA's current tax brackets. Ensure that the employee's <strong>basic salary</strong>, <strong>taxable allowances</strong>, and <strong>overtime pay</strong> entered for the month are correct. If you believe a tax bracket is wrong, contact support — bracket updates are managed centrally by NamPayroll.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>Can employees see their own payslips? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>Yes. When adding an employee, you can optionally set a portal password for them. They can then log in at <a href="/portal/login">/portal/login</a> using their email and that password to view and download their payslips and leave balances. They'll be asked to verify their email on first login.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>What is the SSC monthly cap and how do I set it? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>The Social Security Commission caps contributions at a maximum monthly salary of N$11,000 (standard). Go to <a href="/settings">Settings</a> to review and update your SSC rate, cap, and maximum contribution values. Changes apply from the next payroll run.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>How do I download all payslips for a given month? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>From <a href="/payroll">Payroll History</a>, click the ZIP icon on any completed payroll run. This downloads a ZIP archive containing individual PDF payslips for every employee in that run.</p>
+        </div>
+      </details>
+
+      <details class="nm-faq-item">
+        <summary>What happens to my data if I stop using NamPayroll? <i class="bi bi-plus-circle faq-icon"></i></summary>
+        <div class="nm-faq-answer">
+          <p>Your data is retained for 90 days after your account expires or is cancelled. During this period you can export your data in CSV format from the Payroll History page. After 90 days, all data is permanently deleted. See our <a href="/privacy">Privacy Policy</a> for more details.</p>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- ── Still need help ── -->
+    <div style="text-align:center;margin-top:12px;padding:32px 24px;background:#0d1b2a;border:1px solid rgba(255,255,255,0.06);border-radius:14px;">
+      <div style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:8px;">Still need help?</div>
+      <p style="font-size:0.875rem;color:rgba(255,255,255,0.35);margin-bottom:20px;">Drop us an email and we'll get back to you within 1 business day.</p>
+      <a href="mailto:support@nampayroll.com"
+         style="display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:10px;background:#f5a623;color:#1a0e00;font-family:'Sora',sans-serif;font-size:0.875rem;font-weight:700;text-decoration:none;transition:background 0.16s;">
+        <i class="bi bi-envelope-fill"></i> Email Support
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>
