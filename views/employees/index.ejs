@@ -156,9 +156,15 @@
         <h1 class="nm-page-title">Employees</h1>
         <p class="nm-page-subtitle"><%= employees.length %> active employee<%= employees.length !== 1 ? 's' : '' %></p>
       </div>
-      <a href="/employees/new" class="nm-btn-primary">
-        <i class="bi bi-person-plus"></i>Add Employee
-      </a>
+      <% if (subscription && subscription.plan === 'trial' && employees.length >= 3) { %>
+        <a href="/subscribe" class="nm-btn-primary">
+          <i class="bi bi-lock-fill"></i>Upgrade to Add More
+        </a>
+      <% } else { %>
+        <a href="/employees/new" class="nm-btn-primary">
+          <i class="bi bi-person-plus"></i>Add Employee
+        </a>
+      <% } %>
     </div>
 
     <!-- Search -->

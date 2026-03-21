@@ -135,15 +135,15 @@
     <div class="nm-pricing-header">
       <div class="nm-pricing-eyebrow"><i class="bi bi-lightning-charge-fill"></i> NamPayroll Plans</div>
       <h1 class="nm-pricing-title">Simple, transparent pricing</h1>
-      <p class="nm-pricing-sub">All plans include unlimited employees. Pay monthly or save with an annual plan. No hidden fees.</p>
+      <p class="nm-pricing-sub">Free trial includes up to 3 employees. Paid plans include unlimited employees. No hidden fees.</p>
     </div>
 
     <!-- ── Current status banner ── -->
     <%
-      const isTrialActive = subscription.plan === 'trial' && subscription.status === 'active' && subscription.payslipsUsed < trialLimit;
       const isPaid        = subscription.plan !== 'trial' && subscription.status === 'active';
       const isPending     = subscription.status === 'pending_payment';
       const isExpired     = subscription.status === 'expired';
+      const isTrialActive = subscription.plan === 'trial' && subscription.status === 'active';
     %>
 
     <% if (isPending) { %>
@@ -163,7 +163,7 @@
     <% } else if (isTrialActive) { %>
       <div class="nm-status-banner trial">
         <i class="bi bi-hourglass-split"></i>
-        <div><strong>Free Trial — <%= subscription.trialRemaining %> of <%= trialLimit %> payslips remaining.</strong> Upgrade before your trial ends to avoid interruption.</div>
+        <div><strong>Free Trial</strong> — Limited to 3 employees. Upgrade to unlock unlimited employees and runs.</div>
       </div>
     <% } else if (isExpired) { %>
       <div class="nm-status-banner expired">
@@ -173,7 +173,7 @@
     <% } else { %>
       <div class="nm-status-banner expired">
         <i class="bi bi-exclamation-triangle-fill"></i>
-        <div><strong>Trial ended.</strong> You've used all 2 free payslips. Upgrade to continue.</div>
+        <div><strong>Trial ended.</strong> You've reached the free trial limit of 3 employees. Upgrade to continue.</div>
       </div>
     <% } %>
 
@@ -184,10 +184,10 @@
       <div class="nm-plan-card">
         <div class="nm-plan-name">Free Trial</div>
         <div class="nm-plan-price"><sup>N$</sup>0</div>
-        <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:8px 0 0;">5 payslips total, forever free</p>
+        <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin:8px 0 0;">Free, no credit card needed</p>
         <hr class="nm-plan-divider">
         <ul class="nm-plan-features">
-          <li><i class="bi bi-check-circle-fill check"></i>2 payslips total</li>
+          <li><i class="bi bi-check-circle-fill check"></i>Up to 3 employees</li>
           <li><i class="bi bi-check-circle-fill check"></i>Full payslip PDF generation</li>
           <li><i class="bi bi-check-circle-fill check"></i>Compliance reports</li>
           <li class="muted"><i class="bi bi-x-circle cross"></i>Unlimited employees</li>
@@ -339,7 +339,7 @@
           </div>
           <div class="nm-faq-item">
             <div class="nm-faq-q">Is there a per-employee fee?</div>
-            <div class="nm-faq-a">No. All plans support unlimited employees. The flat monthly or annual rate covers your entire company regardless of headcount.</div>
+            <div class="nm-faq-a">No. All paid plans support unlimited employees. The flat monthly or annual rate covers your entire company regardless of headcount.</div>
           </div>
         </div>
       </div>

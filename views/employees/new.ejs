@@ -2,246 +2,631 @@
 <%- include('../partials/navbar') %>
 
 <style>
-  .nm-page-wrapper { flex: 1; padding: 32px 24px 48px; }
-  .nm-form-page   { max-width: 860px; margin: 0 auto; }
+  .nm-page-wrapper { flex: 1; padding: 32px 24px 80px; }
+  .nm-form-page    { max-width: 960px; margin: 0 auto; }
 
-  .nm-form-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
-  .nm-page-title  { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: rgba(255,255,255,0.92); margin: 0; letter-spacing: -0.02em; }
+  .nm-form-header  { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+  .nm-page-title   { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: rgba(255,255,255,0.92); margin: 0; letter-spacing: -0.02em; }
   .nm-page-subtitle { font-size: 0.875rem; color: rgba(255,255,255,0.4); margin: 4px 0 0; }
 
-  /* Autocomplete Styling */
+  /* Autofill override */
   input:-webkit-autofill,
-  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
     -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
     -webkit-box-shadow: 0 0 0px 1000px #112235 inset !important;
-    transition: background-color 5000s ease-in-out 0s;
   }
 
-  .nm-back-btn { width: 38px; height: 38px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.07); background: #1a2f45; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.65); text-decoration: none; transition: 0.16s; }
-  .nm-back-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.92); }
+  .nm-back-btn { width:38px; height:38px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); background:#1a2f45; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.65); text-decoration:none; transition:0.16s; flex-shrink:0; }
+  .nm-back-btn:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.92); }
 
-  .nm-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9px; background: #f5a623; color: #1a0e00; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
-  .nm-btn-primary:hover { background: #e8981e; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(245,166,35,0.2); }
-  .nm-btn-ghost { padding: 9px 18px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.875rem; transition: 0.16s; }
-  .nm-btn-ghost:hover { background: rgba(255,255,255,0.04); color: #fff; }
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:10px 24px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:700; border:none; cursor:pointer; transition:0.2s; }
+  .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 4px 15px rgba(245,166,35,0.2); }
+  .nm-btn-ghost   { padding:9px 18px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.65); text-decoration:none; font-size:0.875rem; transition:0.16s; display:inline-flex; align-items:center; gap:7px; }
+  .nm-btn-ghost:hover { background:rgba(255,255,255,0.04); color:#fff; }
 
-  .nm-form-card { background: #0d1b2a; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; margin-bottom: 24px; overflow: hidden; }
-  .nm-form-card-header { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.07); font-weight: 600; color: rgba(255,255,255,0.92); background: #112235; font-family: 'Sora', sans-serif; }
-  .nm-form-card-body { padding: 24px; }
-
-  .nm-label { display: block; font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .nm-required { color: #f5a623; margin-left: 2px; }
-  
-  .nm-input { display: block; width: 100%; padding: 10px 14px; background: #112235; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.9rem; transition: 0.2s; outline: none; }
-  .nm-input:focus { border-color: #f5a623; background: #162a41; box-shadow: 0 0 0 3px rgba(245,166,35,0.08); }
-
-  .nm-input-group { display: flex; align-items: stretch; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
-  .nm-input-group:focus-within { border-color: #f5a623; box-shadow: 0 0 0 3px rgba(245,166,35,0.08); }
-  .nm-input-prefix { background: #1a2f45; padding: 0 14px; display: flex; align-items: center; color: rgba(255,255,255,0.4); font-weight: 700; border-right: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
-  .nm-input-group .nm-input { border: none; border-radius: 0; }
-
-  .nm-error-banner { display: none; background: rgba(248,113,113,0.1); border: 1px solid #f87171; color: #f87171; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 0.85rem; }
-  .nm-hint { font-size: 0.775rem; color: rgba(255,255,255,0.3); margin-top: 6px; }
-/* Password Toggle Styling */
-  .nm-password-wrapper { position: relative; }
-  .nm-password-toggle {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    transition: color 0.2s;
+  /* ── CSV import toolbar ─────────────────────────────────────────────────── */
+  .nm-import-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #071421; border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 11px; padding: 12px 18px; margin-bottom: 24px; gap: 12px;
+    flex-wrap: wrap;
   }
-  .nm-password-toggle:hover { color: #f5a623; }
-  .nm-password-wrapper .nm-input { padding-right: 40px; }
+  .nm-import-bar-left { display:flex; align-items:center; gap:10px; }
+  .nm-import-bar-title { font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.75); }
+  .nm-import-bar-sub   { font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:2px; }
+  .nm-import-icon { width:36px; height:36px; background:rgba(96,165,250,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#60a5fa; flex-shrink:0; font-size:1rem; }
+
+  /* ── Form cards ─────────────────────────────────────────────────────────── */
+  .nm-form-card { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; margin-bottom:20px; overflow:hidden; }
+  .nm-form-card-header { display:flex; align-items:center; gap:10px; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); font-weight:600; color:rgba(255,255,255,0.92); background:#112235; font-family:'Sora',sans-serif; font-size:0.9rem; }
+  .nm-form-card-header .badge { font-size:0.65rem; font-weight:700; padding:3px 8px; border-radius:20px; margin-left:auto; }
+  .badge-required { background:rgba(245,166,35,0.15); color:#f5a623; border:1px solid rgba(245,166,35,0.25); }
+  .badge-optional { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.3); border:1px solid rgba(255,255,255,0.08); }
+  .nm-form-card-body { padding:22px 24px; }
+
+  /* ── Inputs ─────────────────────────────────────────────────────────────── */
+  .nm-label { display:block; font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.03em; }
+  .nm-required { color:#f5a623; margin-left:2px; }
+  .nm-input { display:block; width:100%; padding:10px 14px; background:#112235; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:0.9rem; transition:0.2s; outline:none; box-sizing:border-box; }
+  .nm-input:focus { border-color:#f5a623; background:#162a41; box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+  .nm-input::placeholder { color:rgba(255,255,255,0.2); }
+  .nm-select { display:block; width:100%; padding:10px 14px; background:#112235; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:0.9rem; outline:none; cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.3)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; transition:0.2s; }
+  .nm-select:focus { border-color:#f5a623; box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+  .nm-input-group { display:flex; align-items:stretch; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); transition:0.2s; }
+  .nm-input-group:focus-within { border-color:#f5a623; box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+  .nm-input-prefix { background:#1a2f45; padding:0 14px; display:flex; align-items:center; color:rgba(255,255,255,0.4); font-weight:700; border-right:1px solid rgba(255,255,255,0.1); font-size:0.85rem; white-space:nowrap; }
+  .nm-input-group .nm-input { border:none; border-radius:0; box-shadow:none; }
+  .nm-hint { font-size:0.75rem; color:rgba(255,255,255,0.28); margin-top:5px; line-height:1.5; }
+  .nm-hint.warn { color:rgba(245,166,35,0.6); }
+
+  /* inline validation feedback */
+  .nm-field-error { font-size:0.76rem; color:#f87171; margin-top:5px; display:none; }
+  .nm-input.invalid { border-color:rgba(248,113,113,0.5); }
+  .nm-input.valid   { border-color:rgba(52,211,153,0.4); }
+
+  /* Password toggle */
+  .nm-password-wrapper { position:relative; }
+  .nm-password-toggle  { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; padding:4px; display:flex; align-items:center; transition:color 0.2s; }
+  .nm-password-toggle:hover { color:#f5a623; }
+  .nm-password-wrapper .nm-input { padding-right:40px; }
+
+  /* checkbox toggle row */
+  .nm-check-row { display:flex; align-items:center; gap:10px; }
+  .nm-check-row input[type=checkbox] { width:16px; height:16px; accent-color:#f5a623; cursor:pointer; flex-shrink:0; }
+  .nm-check-row label { font-size:0.875rem; color:rgba(255,255,255,0.7); cursor:pointer; }
+
+  /* ── Error banner ───────────────────────────────────────────────────────── */
+  .nm-error-banner { display:none; background:rgba(248,113,113,0.1); border:1px solid #f87171; color:#f87171; padding:12px 16px; border-radius:10px; margin-bottom:20px; font-size:0.85rem; }
+
+  /* ── Form actions ───────────────────────────────────────────────────────── */
+  .nm-form-actions { display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; }
+
+  /* ── Section divider ────────────────────────────────────────────────────── */
+  .nm-section-note {
+    font-size:0.78rem; color:rgba(255,255,255,0.28); padding:10px 24px 0;
+    display:flex; align-items:center; gap:7px;
+  }
 </style>
 
 <div class="nm-page-wrapper">
   <div class="nm-form-page">
 
+    <!-- Header -->
     <div class="nm-form-header">
       <a href="/employees" class="nm-back-btn"><i class="bi bi-arrow-left"></i></a>
       <div>
         <h1 class="nm-page-title">Add New Employee</h1>
-        <p class="nm-page-subtitle">Standardized Namibian Payroll Entry</p>
+        <p class="nm-page-subtitle">Namibian Payroll — NamRA &amp; SSC Compliant Entry</p>
       </div>
     </div>
 
+    <!-- CSV Bulk Import Bar -->
+    <div class="nm-import-bar">
+      <div class="nm-import-bar-left">
+        <div class="nm-import-icon"><i class="bi bi-file-earmark-spreadsheet-fill"></i></div>
+        <div>
+          <div class="nm-import-bar-title">Bulk Import Employees via CSV</div>
+          <div class="nm-import-bar-sub">Add multiple employees at once using the template below</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" onclick="downloadCSVTemplate()" class="nm-btn-ghost">
+          <i class="bi bi-download"></i> Download Template
+        </button>
+        <button type="button" class="nm-btn-ghost" style="color:#60a5fa; border-color:rgba(96,165,250,0.25);"
+          onclick="document.getElementById('csvBulkInput').click()">
+          <i class="bi bi-upload"></i> Import CSV
+        </button>
+        <form id="csvImportForm" action="/employees/import-csv" method="POST" enctype="multipart/form-data" style="display:none;">
+          <input type="file" id="csvBulkInput" name="csvFile" accept=".csv" onchange="submitCSVImport()">
+        </form>
+      </div>
+    </div>
+
+    <!-- Error banners -->
     <div id="duplicateError" class="nm-error-banner">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i> 
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
       <strong>Duplicate ID:</strong> This Namibian ID is already registered in the system.
     </div>
 
     <% if (errors && errors.length > 0) { %>
-      <div class="nm-error-banner" style="display: block;">
-        <% errors.forEach(e => { %> <div><%= e.msg %></div> <% }) %>
+      <div class="nm-error-banner" style="display:block;">
+        <% errors.forEach(e => { %><div>• <%= e.msg %></div><% }) %>
       </div>
     <% } %>
 
-    <form action="/employees" method="POST" id="employeeForm">
-      
+    <form action="/employees" method="POST" id="employeeForm" novalidate>
+
+      <!-- ══ 1. PERSONAL DETAILS ══════════════════════════════════════════════ -->
       <div class="nm-form-card">
-        <div class="nm-form-card-header"><i class="bi bi-person-fill me-2"></i> Personal Details</div>
+        <div class="nm-form-card-header">
+          <i class="bi bi-person-fill" style="color:#60a5fa;"></i>
+          Personal Details
+          <span class="badge badge-required">Required</span>
+        </div>
         <div class="nm-form-card-body">
           <div class="row g-4">
+
             <div class="col-md-6">
               <label class="nm-label">Full Name <span class="nm-required">*</span></label>
-              <input type="text" name="fullName" class="nm-input" value="<%= formData.fullName || '' %>" placeholder="Johannes Nghifikepunye" required autofocus />
+              <input type="text" name="fullName" class="nm-input" id="fullNameField"
+                value="<%= formData.fullName || '' %>"
+                placeholder="e.g. Johannes Nghifikepunye Mutorwa" required autofocus />
             </div>
+
             <div class="col-md-6">
               <label class="nm-label">Namibian ID Number <span class="nm-required">*</span></label>
-              <input type="text" name="idNumber" id="idNumberField" class="nm-input" value="<%= formData.idNumber || '' %>" placeholder="95010100000" required />
+              <input type="text" name="idNumber" id="idNumberField" class="nm-input"
+                value="<%= formData.idNumber || '' %>"
+                placeholder="e.g. 95010100453"
+                maxlength="11" inputmode="numeric" required />
+              <div class="nm-hint">11-digit Namibian national ID (format: YYMMDDSSSSQ)</div>
+              <div class="nm-field-error" id="idError"></div>
             </div>
+
+            <div class="col-md-6">
+              <label class="nm-label">NamRA Tax Identification No. (TIN)</label>
+              <input type="text" name="tinNumber" class="nm-input" id="tinField"
+                value="<%= formData.tinNumber || '' %>"
+                placeholder="e.g. 1234567890"
+                maxlength="10" inputmode="numeric" />
+              <div class="nm-hint">10-digit TIN issued by NamRA — required for ETX/PAYE4 submission</div>
+              <div class="nm-field-error" id="tinError"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="nm-label">SSC Registration Number</label>
+              <input type="text" name="socialSecurityNumber" class="nm-input"
+                value="<%= formData.socialSecurityNumber || '' %>"
+                placeholder="Social Security Commission No." />
+              <div class="nm-hint">Required for Form 10(a) SSC contributions submission</div>
+            </div>
+
             <div class="col-md-6">
               <label class="nm-label">Email Address <span class="nm-required">*</span></label>
-              <input type="email" name="email" class="nm-input" value="<%= formData.email || '' %>" placeholder="employee@company.com" required />
+              <input type="email" name="email" class="nm-input"
+                value="<%= formData.email || '' %>"
+                placeholder="employee@company.com" required />
             </div>
+
             <div class="col-md-6">
               <label class="nm-label">Phone Number</label>
               <div class="nm-input-group">
                 <span class="nm-input-prefix">+264</span>
-                <input type="tel" name="phone" class="nm-input" value="<%= formData.phone || '' %>" placeholder="81 000 0000" />
+                <input type="tel" name="phone" id="phoneField" class="nm-input"
+                  value="<%= formData.phone ? formData.phone.replace(/^\+264/, '') : '' %>"
+                  placeholder="81 234 5678"
+                  maxlength="10" inputmode="numeric" />
               </div>
+              <div class="nm-hint">MTC: 081/085 · TN Mobile: 060/061 — enter without leading 0</div>
+              <div class="nm-field-error" id="phoneError"></div>
             </div>
+
           </div>
         </div>
       </div>
 
+      <!-- ══ 2. EMPLOYMENT DETAILS ════════════════════════════════════════════ -->
       <div class="nm-form-card">
-        <div class="nm-form-card-header"><i class="bi bi-briefcase-fill me-2"></i> Employment Details</div>
+        <div class="nm-form-card-header">
+          <i class="bi bi-briefcase-fill" style="color:#a78bfa;"></i>
+          Employment Details
+          <span class="badge badge-required">Required</span>
+        </div>
         <div class="nm-form-card-body">
           <div class="row g-4">
+
             <div class="col-md-6">
               <label class="nm-label">Position / Job Title</label>
-              <input type="text" name="position" class="nm-input" value="<%= formData.position || '' %>" placeholder="e.g. Farm Manager" />
+              <input type="text" name="position" class="nm-input"
+                value="<%= formData.position || '' %>"
+                placeholder="e.g. Farm Manager" />
             </div>
+
             <div class="col-md-6">
               <label class="nm-label">Department</label>
-              <input type="text" name="department" class="nm-input" value="<%= formData.department || '' %>" placeholder="e.g. Operations" />
+              <input type="text" name="department" class="nm-input"
+                value="<%= formData.department || '' %>"
+                placeholder="e.g. Operations" />
             </div>
+
             <div class="col-md-6">
               <label class="nm-label">Basic Monthly Salary (NAD) <span class="nm-required">*</span></label>
               <div class="nm-input-group">
                 <span class="nm-input-prefix">N$</span>
-                <input type="number" name="basicSalary" class="nm-input" step="0.01" value="<%= formData.basicSalary || '' %>" placeholder="0.00" required />
+                <input type="number" name="basicSalary" class="nm-input"
+                  step="0.01" min="0"
+                  value="<%= formData.basicSalary || '' %>"
+                  placeholder="0.00" required />
               </div>
             </div>
+
             <div class="col-md-6">
               <label class="nm-label">Date Joined <span class="nm-required">*</span></label>
-              <input type="date" name="dateJoined" id="dateJoined" class="nm-input" value="<%= formData.dateJoined ? new Date(formData.dateJoined).toISOString().split('T')[0] : '' %>" required />
+              <input type="date" name="dateJoined" id="dateJoined" class="nm-input"
+                value="<%= formData.dateJoined ? new Date(formData.dateJoined).toISOString().split('T')[0] : '' %>"
+                required />
             </div>
+
           </div>
         </div>
       </div>
 
+      <!-- ══ 3. TAX & FRINGE BENEFITS (NamRA PAYE4) ══════════════════════════ -->
       <div class="nm-form-card">
-        <div class="nm-form-card-header"><i class="bi bi-calendar-check-fill me-2"></i> Leave Balances</div>
+        <div class="nm-form-card-header">
+          <i class="bi bi-receipt-cutoff" style="color:#f5a623;"></i>
+          Tax, Pension &amp; Fund Details
+          <span class="badge badge-optional">NamRA ETX / PAYE4</span>
+        </div>
+        <div class="nm-section-note">
+          <i class="bi bi-info-circle"></i>
+          These details are used when generating the annual ETX reconciliation file for NamRA.
+        </div>
+        <div class="nm-form-card-body">
+          <div class="row g-4">
+
+            <!-- Pension Fund -->
+            <div class="col-12"><div style="font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.07em; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.06);">Pension Fund</div></div>
+
+            <div class="col-md-5">
+              <label class="nm-label">Pension Fund Name</label>
+              <input type="text" name="pensionFundName" class="nm-input"
+                value="<%= formData.pensionFundName || '' %>"
+                placeholder="e.g. GIPF, Debmarine Pension Fund" />
+            </div>
+            <div class="col-md-4">
+              <label class="nm-label">Fund Registration No.</label>
+              <input type="text" name="pensionFundRegNo" class="nm-input"
+                value="<%= formData.pensionFundRegNo || '' %>"
+                placeholder="Fund reg. number" />
+            </div>
+            <div class="col-md-3">
+              <label class="nm-label">Monthly Contribution (N$)</label>
+              <input type="number" name="pensionContribution" class="nm-input"
+                step="0.01" min="0"
+                value="<%= formData.pensionContribution || 0 %>"
+                placeholder="0.00" />
+              <div class="nm-hint">Tax-deductible — reduces PAYE</div>
+            </div>
+
+            <!-- Medical Aid -->
+            <div class="col-12"><div style="font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.07em; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.06);">Medical Aid</div></div>
+
+            <div class="col-md-5">
+              <label class="nm-label">Medical Aid Fund Name</label>
+              <input type="text" name="medicalAidFundName" class="nm-input"
+                value="<%= formData.medicalAidFundName || '' %>"
+                placeholder="e.g. Namibia Medical Care, NHP" />
+            </div>
+            <div class="col-md-4">
+              <label class="nm-label">Member / Policy No.</label>
+              <input type="text" name="medicalAidMemberNo" class="nm-input"
+                value="<%= formData.medicalAidMemberNo || '' %>"
+                placeholder="Member number" />
+            </div>
+            <div class="col-md-3">
+              <label class="nm-label">Monthly Contribution (N$)</label>
+              <input type="number" name="medicalAidContribution" class="nm-input"
+                step="0.01" min="0"
+                value="<%= formData.medicalAidContribution || 0 %>"
+                placeholder="0.00" />
+            </div>
+
+            <!-- Fringe Benefits -->
+            <div class="col-12"><div style="font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.07em; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.06);">Fringe Benefits</div></div>
+
+            <div class="col-md-6">
+              <label class="nm-label">Company Housing</label>
+              <select name="housingType" class="nm-select">
+                <option value="none"       <%= (formData.housingType||'none') === 'none'       ? 'selected' : '' %>>No housing benefit</option>
+                <option value="free"       <%= formData.housingType === 'free'       ? 'selected' : '' %>>Free housing (full fringe benefit)</option>
+                <option value="subsidised" <%= formData.housingType === 'subsidised' ? 'selected' : '' %>>Subsidised housing</option>
+              </select>
+              <div class="nm-hint">Affects PAYE4 "Housing Type" and fringe benefit calculation</div>
+            </div>
+
+            <div class="col-md-6" style="display:flex; align-items:flex-end; padding-bottom:4px;">
+              <div>
+                <label class="nm-label">Company Vehicle</label>
+                <div class="nm-check-row" style="margin-top:10px;">
+                  <input type="checkbox" name="hasCompanyVehicle" id="hasVehicle"
+                    <%= formData.hasCompanyVehicle ? 'checked' : '' %> />
+                  <label for="hasVehicle">Employee has a company vehicle (fringe benefit applies)</label>
+                </div>
+                <div class="nm-hint warn">A vehicle fringe benefit value will be calculated during payroll run</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 4. BANKING DETAILS ═══════════════════════════════════════════════ -->
+      <div class="nm-form-card">
+        <div class="nm-form-card-header">
+          <i class="bi bi-bank" style="color:#34d399;"></i>
+          Banking Details
+          <span class="badge badge-optional">For Net Pay Transfer</span>
+        </div>
+        <div class="nm-form-card-body">
+          <div class="row g-4">
+
+            <div class="col-md-6">
+              <label class="nm-label">Bank Name</label>
+              <select name="bankName" class="nm-select">
+                <option value="" <%= !formData.bankName ? 'selected' : '' %>>— Select bank —</option>
+                <option value="First National Bank (FNB)"         <%= formData.bankName === 'First National Bank (FNB)'         ? 'selected' : '' %>>First National Bank (FNB)</option>
+                <option value="Standard Bank Namibia"             <%= formData.bankName === 'Standard Bank Namibia'             ? 'selected' : '' %>>Standard Bank Namibia</option>
+                <option value="Bank Windhoek"                     <%= formData.bankName === 'Bank Windhoek'                     ? 'selected' : '' %>>Bank Windhoek</option>
+                <option value="Nedbank Namibia"                   <%= formData.bankName === 'Nedbank Namibia'                   ? 'selected' : '' %>>Nedbank Namibia</option>
+                <option value="Letshego Bank Namibia"             <%= formData.bankName === 'Letshego Bank Namibia'             ? 'selected' : '' %>>Letshego Bank Namibia</option>
+                <option value="Development Bank of Namibia (DBN)" <%= formData.bankName === 'Development Bank of Namibia (DBN)' ? 'selected' : '' %>>Development Bank of Namibia (DBN)</option>
+                <option value="Other"                             <%= formData.bankName === 'Other'                             ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="nm-label">Account Type</label>
+              <select name="accountType" class="nm-select">
+                <option value=""            <%= !formData.accountType ? 'selected' : '' %>>— Select type —</option>
+                <option value="cheque"      <%= formData.accountType === 'cheque'      ? 'selected' : '' %>>Cheque / Current</option>
+                <option value="savings"     <%= formData.accountType === 'savings'     ? 'selected' : '' %>>Savings</option>
+                <option value="transmission"<%= formData.accountType === 'transmission'? 'selected' : '' %>>Transmission</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="nm-label">Account Number</label>
+              <input type="text" name="bankAccountNumber" class="nm-input"
+                value="<%= formData.bankAccountNumber || '' %>"
+                placeholder="e.g. 62012345678" inputmode="numeric" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="nm-label">Branch Code</label>
+              <input type="text" name="bankBranchCode" class="nm-input"
+                value="<%= formData.bankBranchCode || '' %>"
+                placeholder="e.g. 280172 (FNB Windhoek)" inputmode="numeric" />
+              <div class="nm-hint">Universal branch codes: FNB 280172 · Standard 082772 · Bank Windhoek 483872 · Nedbank 461609</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 5. LEAVE BALANCES ════════════════════════════════════════════════ -->
+      <div class="nm-form-card">
+        <div class="nm-form-card-header">
+          <i class="bi bi-calendar-check-fill" style="color:#60a5fa;"></i>
+          Leave Balances
+          <span class="badge badge-optional">Namibia Labour Act defaults</span>
+        </div>
         <div class="nm-form-card-body">
           <div class="row g-4">
             <div class="col-md-6">
               <label class="nm-label">Annual Leave Balance (days)</label>
-              <input type="number" name="annualLeaveBalance" class="nm-input" min="0" value="<%= formData.annualLeaveBalance !== undefined ? formData.annualLeaveBalance : 24 %>" />
-              <div class="nm-hint">Standard default: 24 days</div>
+              <input type="number" name="annualLeaveBalance" class="nm-input" min="0"
+                value="<%= formData.annualLeaveBalance !== undefined ? formData.annualLeaveBalance : 24 %>" />
+              <div class="nm-hint">Labour Act default: 24 days per year</div>
             </div>
             <div class="col-md-6">
               <label class="nm-label">Sick Leave Balance (days)</label>
-              <input type="number" name="sickLeaveBalance" class="nm-input" min="0" value="<%= formData.sickLeaveBalance !== undefined ? formData.sickLeaveBalance : 30 %>" />
-              <div class="nm-hint">Standard default: 30 days</div>
+              <input type="number" name="sickLeaveBalance" class="nm-input" min="0"
+                value="<%= formData.sickLeaveBalance !== undefined ? formData.sickLeaveBalance : 30 %>" />
+              <div class="nm-hint">Labour Act default: 30 days per 3-year cycle</div>
             </div>
           </div>
         </div>
       </div>
 
-    <div class="nm-form-card">
-        <div class="nm-form-card-header"><i class="bi bi-shield-lock-fill me-2"></i> Employee Portal Access</div>
+      <!-- ══ 6. PORTAL ACCESS ═════════════════════════════════════════════════ -->
+      <div class="nm-form-card">
+        <div class="nm-form-card-header">
+          <i class="bi bi-shield-lock-fill" style="color:#a78bfa;"></i>
+          Employee Portal Access
+          <span class="badge badge-optional">Optional</span>
+        </div>
         <div class="nm-form-card-body">
-          <p class="nm-hint mb-3">Optional: Setting a password enables the employee to log in and download their own payslips.</p>
+          <p class="nm-hint mb-3" style="margin-bottom:14px;">Setting a password enables the employee to log in, view their payslips, and check leave balances.</p>
           <div class="col-md-6">
             <label class="nm-label">Initial Portal Password</label>
             <div class="nm-password-wrapper">
-              <input type="password" name="portalPassword" id="portalPassword" class="nm-input" placeholder="Minimum 6 characters" />
+              <input type="password" name="portalPassword" id="portalPassword" class="nm-input"
+                placeholder="Minimum 6 characters" />
               <button type="button" class="nm-password-toggle" onclick="togglePassword()">
                 <i class="bi bi-eye-slash" id="toggleIcon"></i>
               </button>
             </div>
-            <div class="nm-hint">The employee will be asked to verify their email upon first login.</div>
+            <div class="nm-hint">The employee will be asked to verify their email on first login.</div>
           </div>
         </div>
       </div>
 
+      <!-- ══ Submit bar ══════════════════════════════════════════════════════ -->
       <div class="nm-form-actions">
         <button type="submit" class="nm-btn-primary" id="submitBtn">
           <i class="bi bi-check-circle-fill"></i> Add Employee
         </button>
-        <a href="/employees" class="nm-btn-ghost">Cancel and Return</a>
+        <a href="/employees" class="nm-btn-ghost">
+          <i class="bi bi-x-circle"></i> Cancel
+        </a>
       </div>
+
     </form>
   </div>
 </div>
 
 <script>
-  // 1. DUPLICATE ID DATA
-  const existingIDs = <%- JSON.stringify(employees.map(e => e.idNumber)) %>;
+// ── Existing IDs for duplicate check ─────────────────────────────────────────
+const existingIDs = <%- JSON.stringify(employees.map(e => e.idNumber)) %>;
 
-  const idField = document.getElementById('idNumberField');
-  const errorBanner = document.getElementById('duplicateError');
-  const submitBtn = document.getElementById('submitBtn');
-  const dateField = document.getElementById('dateJoined');
+const idField    = document.getElementById('idNumberField');
+const idError    = document.getElementById('idError');
+const dupBanner  = document.getElementById('duplicateError');
+const tinField   = document.getElementById('tinField');
+const tinError   = document.getElementById('tinError');
+const phoneField = document.getElementById('phoneField');
+const phoneError = document.getElementById('phoneError');
+const submitBtn  = document.getElementById('submitBtn');
+const dateField  = document.getElementById('dateJoined');
 
-  // 2. SET DEFAULT DATE
-  if (!dateField.value) dateField.valueAsDate = new Date();
+// Default date to today
+if (!dateField.value) dateField.valueAsDate = new Date();
 
-  // 3. REAL-TIME VALIDATION
-  idField.addEventListener('input', function() {
-    const val = this.value.trim();
-    if (val !== "" && existingIDs.includes(val)) {
-      errorBanner.style.display = 'block';
-      this.style.borderColor = '#f87171';
-      submitBtn.disabled = true;
-      submitBtn.style.opacity = '0.4';
-    } else {
-      errorBanner.style.display = 'none';
-      this.style.borderColor = '';
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
+// ── Namibian ID validation (11 digits, YYMMDDSSSSQ) ───────────────────────────
+idField.addEventListener('input', function () {
+  const val = this.value.replace(/\D/g, '');
+  this.value = val; // strip non-digits live
+
+  idError.style.display = 'none';
+  this.classList.remove('invalid', 'valid');
+  dupBanner.style.display = 'none';
+  submitBtn.disabled = false;
+  submitBtn.style.opacity = '1';
+
+  if (!val) return;
+
+  if (val.length !== 11) {
+    idError.textContent = `Namibian ID must be exactly 11 digits (currently ${val.length}).`;
+    idError.style.display = 'block';
+    this.classList.add('invalid');
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.45';
+    return;
+  }
+
+  // Basic date sanity: first 6 digits are YYMMDD
+  const mm = parseInt(val.slice(2, 4), 10);
+  const dd = parseInt(val.slice(4, 6), 10);
+  if (mm < 1 || mm > 12 || dd < 1 || dd > 31) {
+    idError.textContent = 'ID number contains an invalid birth date portion (YYMMDD).';
+    idError.style.display = 'block';
+    this.classList.add('invalid');
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.45';
+    return;
+  }
+
+  if (existingIDs.includes(val)) {
+    dupBanner.style.display = 'block';
+    this.classList.add('invalid');
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.45';
+    return;
+  }
+
+  this.classList.add('valid');
+});
+
+// ── TIN validation (10 digits) ────────────────────────────────────────────────
+tinField.addEventListener('input', function () {
+  const val = this.value.replace(/\D/g, '');
+  this.value = val;
+  tinError.style.display = 'none';
+  this.classList.remove('invalid', 'valid');
+  if (!val) return;
+  if (val.length !== 10) {
+    tinError.textContent = `TIN must be exactly 10 digits (currently ${val.length}).`;
+    tinError.style.display = 'block';
+    this.classList.add('invalid');
+  } else {
+    this.classList.add('valid');
+  }
+});
+
+// ── Phone validation (Namibian, 8–9 digits after +264) ───────────────────────
+phoneField.addEventListener('input', function () {
+  const val = this.value.replace(/\D/g, '');
+  this.value = val;
+  phoneError.style.display = 'none';
+  this.classList.remove('invalid', 'valid');
+  if (!val) return;
+
+  // Valid Namibian prefixes (after +264): 81, 85 (MTC) · 60, 61 (TN Mobile) · 64 (landline Windhoek) · 63, 65, 67 etc.
+  const validPrefixes = ['81','85','86','87','60','61','62','63','64','65','66','67'];
+  const prefix2 = val.slice(0, 2);
+  if (!validPrefixes.includes(prefix2)) {
+    phoneError.textContent = 'Unrecognised Namibian number prefix. Valid: 81, 85 (MTC) · 60, 61 (TN Mobile).';
+    phoneError.style.display = 'block';
+    this.classList.add('invalid');
+    return;
+  }
+  if (val.length < 8 || val.length > 9) {
+    phoneError.textContent = `Namibian numbers are 8–9 digits after +264 (currently ${val.length}).`;
+    phoneError.style.display = 'block';
+    this.classList.add('invalid');
+    return;
+  }
+  this.classList.add('valid');
+});
+
+// ── Enter key navigation ──────────────────────────────────────────────────────
+const allInputs = Array.from(document.querySelectorAll('.nm-input, .nm-select'));
+allInputs.forEach((input, i) => {
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && input.type !== 'submit' && input.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      const next = allInputs[i + 1];
+      if (next) next.focus();
     }
   });
+});
 
-  // 4. ENTER KEY NAVIGATION
-  const inputs = Array.from(document.querySelectorAll('.nm-input'));
-  inputs.forEach((input, index) => {
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        if (index < inputs.length - 1 && input.type !== 'submit') {
-          e.preventDefault();
-          inputs[index + 1].focus();
-        }
-      }
-    });
-  });
-
- function togglePassword() {
-  const passwordInput = document.getElementById('portalPassword');
-  const toggleIcon = document.getElementById('toggleIcon');
-  
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    // Password is now VISIBLE - show the OPEN eye
-    toggleIcon.classList.remove('bi-eye-slash');
-    toggleIcon.classList.add('bi-eye');
+// ── Password toggle ───────────────────────────────────────────────────────────
+function togglePassword() {
+  const p    = document.getElementById('portalPassword');
+  const icon = document.getElementById('toggleIcon');
+  if (p.type === 'password') {
+    p.type = 'text';
+    icon.classList.replace('bi-eye-slash', 'bi-eye');
   } else {
-    passwordInput.type = 'password';
-    // Password is now HIDDEN - show the SLASHED eye
-    toggleIcon.classList.remove('bi-eye');
-    toggleIcon.classList.add('bi-eye-slash');
+    p.type = 'password';
+    icon.classList.replace('bi-eye', 'bi-eye-slash');
   }
+}
+
+// ── CSV bulk import ───────────────────────────────────────────────────────────
+function submitCSVImport() {
+  const input = document.getElementById('csvBulkInput');
+  if (input.files.length > 0) {
+    document.getElementById('csvImportForm').submit();
+  }
+}
+
+function downloadCSVTemplate() {
+  const header = [
+    'Full Name','ID Number','TIN','SSC Number','Email','Phone',
+    'Position','Department','Basic Salary','Date Joined',
+    'Annual Leave','Sick Leave',
+    'Pension Fund','Pension Reg No','Pension Contribution',
+    'Medical Aid Fund','Medical Aid No','Medical Aid Contribution',
+    'Has Vehicle (yes/no)','Housing Type (none/free/subsidised)',
+    'Bank Name','Account Number','Branch Code','Account Type (cheque/savings/transmission)'
+  ].join(',');
+
+  const example = [
+    'Johannes Nghifikepunye','95010100453','1234567890','SSC123456',
+    'johannes@company.na','81234567',
+    'Farm Manager','Operations','15000','2024-01-15',
+    '24','30',
+    'GIPF','REG001','750',
+    'NHP','M12345','300',
+    'no','none',
+    'First National Bank (FNB)','62012345678','280172','cheque'
+  ].join(',');
+
+  const csv  = header + '\n' + example + '\n';
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'nampayroll_employee_import_template.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 

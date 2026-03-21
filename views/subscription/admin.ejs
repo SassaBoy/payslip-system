@@ -156,7 +156,7 @@
               <th>Company</th>
               <th>Plan</th>
               <th>Status</th>
-              <th>Payslips Used</th>
+              <th>Employees</th>
               <th>Period Ends</th>
               <th>Payments</th>
             </tr>
@@ -179,9 +179,10 @@
                   <span class="nm-badge <%= statusClass %>"><%= sub.status.replace(/_/g, ' ') %></span>
                 </td>
                 <td style="font-family:'Sora',sans-serif;font-weight:600;color:rgba(255,255,255,0.7);">
-                  <%= sub.payslipsUsed %>
                   <% if (sub.plan === 'trial') { %>
-                    <span style="font-size:0.72rem;color:rgba(255,255,255,0.25);"> / 5</span>
+                    <span style="font-size:0.78rem;color:rgba(255,255,255,0.5);">Max 3</span>
+                  <% } else { %>
+                    <span style="font-size:0.78rem;color:rgba(255,255,255,0.5);">Unlimited</span>
                   <% } %>
                 </td>
                 <td style="font-size:0.8rem;color:rgba(255,255,255,0.35);">

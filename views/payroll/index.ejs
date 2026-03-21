@@ -3,6 +3,7 @@
 
 <% const period = moment(`${payrollRun.year}-${String(payrollRun.month).padStart(2,'0')}-01`).format('MMMM YYYY') %>
 <% const fmt = (n) => 'N$ ' + Number(n || 0).toLocaleString('en-NA', {minimumFractionDigits:2, maximumFractionDigits:2}) %>
+<% const taxYear = payrollRun.month >= 3 ? payrollRun.year : payrollRun.year - 1 %>
 
 <style>
   /* ── Base ───────────────────────────────────────────────────────────────── */
@@ -10,40 +11,17 @@
   .nm-page-inner   { max-width:1380px; margin:0 auto; }
 
   /* ── Page header ────────────────────────────────────────────────────────── */
-  .nm-page-header {
-    display:flex; align-items:flex-start;
-    justify-content:space-between; gap:16px;
-    margin-bottom:28px; flex-wrap:wrap;
-  }
+  .nm-page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
   .nm-header-left { display:flex; align-items:center; gap:14px; }
-  .nm-back-btn {
-    width:40px; height:40px; border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    background:#1a2f45; border:1px solid rgba(255,255,255,0.07);
-    color:rgba(255,255,255,0.6); text-decoration:none; flex-shrink:0; transition:0.16s;
-  }
+  .nm-back-btn { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#1a2f45; border:1px solid rgba(255,255,255,0.07); color:rgba(255,255,255,0.6); text-decoration:none; flex-shrink:0; transition:0.16s; }
   .nm-back-btn:hover { background:rgba(255,255,255,0.08); color:#fff; }
   .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; color:#fff; margin:0; letter-spacing:-0.02em; }
   .nm-page-subtitle { font-size:0.855rem; color:rgba(255,255,255,0.35); margin:4px 0 0; }
 
   /* ── Buttons ────────────────────────────────────────────────────────────── */
-  .nm-btn-primary {
-    display:inline-flex; align-items:center; gap:7px;
-    padding:10px 20px; border-radius:9px;
-    background:#f5a623; color:#1a0e00;
-    font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:700;
-    border:none; cursor:pointer; text-decoration:none; white-space:nowrap;
-    transition:background 0.16s, transform 0.12s, box-shadow 0.16s;
-  }
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:700; border:none; cursor:pointer; text-decoration:none; white-space:nowrap; transition:background 0.16s, transform 0.12s, box-shadow 0.16s; }
   .nm-btn-primary:hover { background:#e8981e; color:#1a0e00; transform:translateY(-1px); box-shadow:0 4px 16px rgba(245,166,35,0.22); }
-
-  .nm-btn-outline {
-    display:inline-flex; align-items:center; gap:7px;
-    padding:9px 18px; border-radius:9px;
-    background:transparent; color:rgba(255,255,255,0.5);
-    font-size:0.855rem; border:1px solid rgba(255,255,255,0.1);
-    text-decoration:none; white-space:nowrap; transition:0.16s;
-  }
+  .nm-btn-outline { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:9px; background:transparent; color:rgba(255,255,255,0.5); font-size:0.855rem; border:1px solid rgba(255,255,255,0.1); text-decoration:none; white-space:nowrap; transition:0.16s; }
   .nm-btn-outline:hover { background:rgba(255,255,255,0.04); color:#fff; border-color:rgba(255,255,255,0.18); }
 
   /* ── KPI strip ──────────────────────────────────────────────────────────── */
@@ -51,21 +29,9 @@
   @media (max-width:1100px) { .nm-kpi-strip { grid-template-columns:repeat(3,1fr); } }
   @media (max-width:600px)  { .nm-kpi-strip { grid-template-columns:repeat(2,1fr); } }
 
-  .nm-kpi {
-    background:#0d1b2a; border:1px solid rgba(255,255,255,0.07);
-    border-radius:12px; padding:16px 18px;
-    border-left-width:3px; border-left-style:solid;
-    display:flex; flex-direction:column; gap:6px;
-  }
-  .nm-kpi-label {
-    font-size:0.66rem; font-weight:700; letter-spacing:0.09em;
-    text-transform:uppercase; color:rgba(255,255,255,0.3);
-    display:flex; align-items:center; gap:5px;
-  }
-  .nm-kpi-val {
-    font-family:'Sora',sans-serif; font-weight:700;
-    color:#fff; line-height:1.1; letter-spacing:-0.02em;
-  }
+  .nm-kpi { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:16px 18px; border-left-width:3px; border-left-style:solid; display:flex; flex-direction:column; gap:6px; }
+  .nm-kpi-label { font-size:0.66rem; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:rgba(255,255,255,0.3); display:flex; align-items:center; gap:5px; }
+  .nm-kpi-val { font-family:'Sora',sans-serif; font-weight:700; color:#fff; line-height:1.1; letter-spacing:-0.02em; }
   .nm-kpi-val.lg { font-size:1.6rem; }
   .nm-kpi-val.md { font-size:1rem; }
   .nm-kpi-sub { font-size:0.72rem; color:rgba(255,255,255,0.22); margin-top:1px; }
@@ -79,74 +45,85 @@
 
   /* ── Panel ──────────────────────────────────────────────────────────────── */
   .nm-panel { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:20px; }
-  .nm-panel-header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07);
-    background:#112235;
-  }
-  .nm-panel-title {
-    font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600;
-    color:rgba(255,255,255,0.85); display:flex; align-items:center; gap:9px;
-  }
-  .nm-panel-icon {
-    width:28px; height:28px; border-radius:7px;
-    display:flex; align-items:center; justify-content:center; font-size:0.82rem;
-  }
+  .nm-panel-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; }
+  .nm-panel-title { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.85); display:flex; align-items:center; gap:9px; }
+  .nm-panel-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.82rem; }
   .nm-panel-icon.blue   { background:rgba(96,165,250,0.12);  color:#60a5fa; }
   .nm-panel-icon.green  { background:rgba(46,204,138,0.12);  color:#2ecc8a; }
   .nm-panel-icon.orange { background:rgba(245,166,35,0.12);  color:#f5a623; }
+  .nm-panel-icon.purple { background:rgba(167,139,250,0.12); color:#a78bfa; }
   .nm-panel-meta { font-size:0.75rem; color:rgba(255,255,255,0.25); }
 
-  /* ── Breakdown table ────────────────────────────────────────────────────── */
+  /* ── Table ──────────────────────────────────────────────────────────────── */
   .nm-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
-  .nm-table thead th {
-    padding:11px 14px; font-size:0.67rem; font-weight:700;
-    text-transform:uppercase; letter-spacing:0.07em;
-    color:rgba(255,255,255,0.28); background:#112235;
-    text-align:left; white-space:nowrap;
-  }
-  .nm-table thead th .th-sub {
-    display:block; font-size:0.6rem; font-weight:400;
-    letter-spacing:0; text-transform:none;
-    color:rgba(255,255,255,0.16); margin-top:2px;
-  }
+  .nm-table thead th { padding:11px 14px; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:rgba(255,255,255,0.28); background:#112235; text-align:left; white-space:nowrap; }
+  .nm-table thead th .th-sub { display:block; font-size:0.6rem; font-weight:400; letter-spacing:0; text-transform:none; color:rgba(255,255,255,0.16); margin-top:2px; }
   .nm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.12s; }
   .nm-table tbody tr:last-child { border-bottom:none; }
   .nm-table tbody tr:hover { background:rgba(255,255,255,0.02); }
   .nm-table td { padding:13px 14px; vertical-align:middle; }
   .nm-table tfoot tr { border-top:2px solid rgba(255,255,255,0.09); }
-  .nm-table tfoot td {
-    padding:14px 14px; background:#071421;
-    font-family:'Sora',sans-serif; font-weight:700;
-    font-size:0.8rem; color:rgba(255,255,255,0.5);
-  }
+  .nm-table tfoot td { padding:14px 14px; background:#071421; font-family:'Sora',sans-serif; font-weight:700; font-size:0.8rem; color:rgba(255,255,255,0.5); }
 
-  /* Money */
   .nm-money { font-family:'Sora',sans-serif; font-weight:600; white-space:nowrap; font-size:0.855rem; }
   .nm-money.green  { color:#2ecc8a; }
   .nm-money.red    { color:#f87171; }
   .nm-money.orange { color:#f5a623; }
   .nm-money.plain  { color:rgba(255,255,255,0.82); }
   .nm-money.muted  { color:rgba(255,255,255,0.3); }
-
-  /* Employee cell */
   .nm-emp-name { font-weight:600; color:rgba(255,255,255,0.92); font-size:0.875rem; white-space:nowrap; }
   .nm-sub-info { font-size:0.7rem; color:rgba(255,255,255,0.28); margin-top:2px; }
-
-  /* Allow breakdown pill */
   .nm-allow-detail { font-size:0.68rem; color:rgba(52,211,153,0.6); margin-top:3px; }
 
-  /* PDF button */
-  .nm-pdf-btn {
-    display:inline-flex; align-items:center; gap:5px;
-    padding:5px 11px; border-radius:7px;
-    border:1px solid rgba(248,113,113,0.2);
-    background:rgba(248,113,113,0.07); color:#f87171;
-    font-size:0.78rem; font-weight:600; text-decoration:none; transition:0.16s;
+  /* ── Download card grid ─────────────────────────────────────────────────── */
+  .nm-doc-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; padding:20px; }
+  @media (max-width:700px) { .nm-doc-grid { grid-template-columns:1fr; } }
+
+  .nm-doc-card {
+    background:#071421; border:1px solid rgba(255,255,255,0.07);
+    border-radius:11px; padding:16px 18px;
+    display:flex; align-items:flex-start; gap:14px;
+    transition:border-color 0.16s, background 0.16s;
   }
+  .nm-doc-card:hover { border-color:rgba(255,255,255,0.13); background:#0a1c2e; }
+
+  .nm-doc-icon {
+    width:40px; height:40px; border-radius:10px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  }
+  .nm-doc-icon.xlsx  { background:rgba(46,204,138,0.12);  color:#2ecc8a; }
+  .nm-doc-icon.pdf   { background:rgba(248,113,113,0.12);  color:#f87171; }
+  .nm-doc-icon.blue  { background:rgba(96,165,250,0.12);   color:#60a5fa; }
+  .nm-doc-icon.amber { background:rgba(245,166,35,0.12);   color:#f5a623; }
+  .nm-doc-icon.purple{ background:rgba(167,139,250,0.12);  color:#a78bfa; }
+
+  .nm-doc-body { flex:1; min-width:0; }
+  .nm-doc-title { font-size:0.875rem; font-weight:700; color:rgba(255,255,255,0.88); margin-bottom:3px; }
+  .nm-doc-desc  { font-size:0.75rem; color:rgba(255,255,255,0.3); line-height:1.5; margin-bottom:10px; }
+  .nm-doc-badge { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-bottom:10px; }
+  .nm-doc-badge.namra { background:rgba(245,166,35,0.1); color:#f5a623; border:1px solid rgba(245,166,35,0.2); }
+  .nm-doc-badge.ssc   { background:rgba(96,165,250,0.1);  color:#60a5fa; border:1px solid rgba(96,165,250,0.2); }
+  .nm-doc-badge.pay   { background:rgba(46,204,138,0.1);  color:#2ecc8a; border:1px solid rgba(46,204,138,0.2); }
+  .nm-doc-badge.annual{ background:rgba(167,139,250,0.1); color:#a78bfa; border:1px solid rgba(167,139,250,0.2); }
+
+  .nm-doc-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .nm-doc-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 14px; border-radius:7px; font-size:0.8rem; font-weight:600;
+    text-decoration:none; border:none; cursor:pointer; transition:0.15s;
+    white-space:nowrap;
+  }
+  .nm-doc-btn.primary { background:#f5a623; color:#1a0e00; }
+  .nm-doc-btn.primary:hover { background:#e8981e; }
+  .nm-doc-btn.ghost   { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.08); }
+  .nm-doc-btn.ghost:hover { background:rgba(255,255,255,0.09); color:#fff; }
+  .nm-doc-btn.red    { background:rgba(248,113,113,0.1); color:#f87171; border:1px solid rgba(248,113,113,0.2); }
+  .nm-doc-btn.red:hover { background:rgba(248,113,113,0.18); }
+
+  .nm-pdf-btn { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:7px; border:1px solid rgba(248,113,113,0.2); background:rgba(248,113,113,0.07); color:#f87171; font-size:0.78rem; font-weight:600; text-decoration:none; transition:0.16s; }
   .nm-pdf-btn:hover { background:rgba(248,113,113,0.14); border-color:rgba(248,113,113,0.4); color:#f87171; }
 
-  /* ── Compliance cards ───────────────────────────────────────────────────── */
+  /* ── Compliance grid ────────────────────────────────────────────────────── */
   .nm-compliance-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; }
   .nm-compliance-grid > * { border-right:1px solid rgba(255,255,255,0.05); }
   .nm-compliance-grid > *:last-child { border-right:none; }
@@ -158,43 +135,19 @@
 
   .nm-comp-card { padding:22px 24px; }
   .nm-comp-card.highlight { background:rgba(245,166,35,0.04); }
-
   .nm-comp-label { font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:8px; }
   .nm-comp-val   { font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:700; color:#fff; letter-spacing:-0.02em; margin-bottom:4px; }
   .nm-comp-val.amber { color:#f5a623; }
   .nm-comp-note  { font-size:0.75rem; color:rgba(255,255,255,0.25); line-height:1.5; }
-
-  /* Deadline badge */
-  .nm-deadline {
-    display:inline-flex; align-items:center; gap:5px;
-    font-size:0.7rem; font-weight:600;
-    padding:3px 9px; border-radius:20px; margin-top:8px;
-    background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.2);
-    color:#f87171;
-  }
+  .nm-deadline   { display:inline-flex; align-items:center; gap:5px; font-size:0.7rem; font-weight:600; padding:3px 9px; border-radius:20px; margin-top:8px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.2); color:#f87171; }
 
   /* ── Disclaimer ─────────────────────────────────────────────────────────── */
-  .nm-disclaimer {
-    display:flex; align-items:flex-start; gap:10px;
-    background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.14);
-    border-radius:10px; padding:14px 18px;
-    font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.65;
-  }
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:10px; background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.14); border-radius:10px; padding:14px 18px; font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.65; }
   .nm-disclaimer i { color:#f5a623; font-size:0.9rem; flex-shrink:0; margin-top:2px; }
   .nm-disclaimer strong { color:rgba(245,166,35,0.8); }
 
-  /* ── Responsive ─────────────────────────────────────────────────────────── */
-  @media (max-width:1024px) {
-    .nm-table thead th:nth-child(6),
-    .nm-table td:nth-child(6),
-    .nm-table tfoot td:nth-child(6) { display:none; }
-  }
-  @media (max-width:767px) {
-    .nm-page-wrapper { padding:20px 16px 48px; }
-    .nm-table thead th:nth-child(3),
-    .nm-table td:nth-child(3),
-    .nm-table tfoot td:nth-child(3) { display:none; }
-  }
+  @media (max-width:1024px) { .nm-table thead th:nth-child(6), .nm-table td:nth-child(6), .nm-table tfoot td:nth-child(6) { display:none; } }
+  @media (max-width:767px)  { .nm-page-wrapper { padding:20px 16px 48px; } .nm-table thead th:nth-child(3), .nm-table td:nth-child(3), .nm-table tfoot td:nth-child(3) { display:none; } }
 </style>
 
 <div class="nm-page-wrapper">
@@ -210,6 +163,7 @@
             <%= payrollRun.employeeCount %> employee<%= payrollRun.employeeCount !== 1 ? 's' : '' %>
             &nbsp;·&nbsp; Processed <%= moment(payrollRun.processedAt).format('DD MMM YYYY') %>
             &nbsp;·&nbsp; <span style="color:rgba(46,204,138,0.7);font-weight:600;">Finalised</span>
+            &nbsp;·&nbsp; Tax Year: <strong style="color:rgba(255,255,255,0.45);"><%= taxYear %>/<%= taxYear+1 %></strong>
           </p>
         </div>
       </div>
@@ -264,7 +218,7 @@
           <span class="nm-panel-icon blue"><i class="bi bi-table"></i></span>
           Employee Payslip Breakdown
         </div>
-        <span class="nm-panel-meta">Click PDF to download individual payslip</span>
+        <span class="nm-panel-meta">Click PDF to download individual payslip · Click PAYE5 for tax certificate</span>
       </div>
 
       <div class="table-responsive">
@@ -272,35 +226,14 @@
           <thead>
             <tr>
               <th>Employee</th>
-              <th>
-                Basic Salary
-                <span class="th-sub">Fixed monthly</span>
-              </th>
-              <th>
-                Allowances
-                <span class="th-sub">OT + taxable + exempt</span>
-              </th>
-              <th>
-                Gross Pay
-                <span class="th-sub">Before deductions</span>
-              </th>
-              <th>
-                PAYE
-                <span class="th-sub">Income tax</span>
-              </th>
-              <th>
-                SSC (Emp)
-                <span class="th-sub">0.9% employee share</span>
-              </th>
-              <th>
-                Other Deduct.
-                <span class="th-sub">Loans etc.</span>
-              </th>
-              <th>
-                Net Pay
-                <span class="th-sub">Amount deposited</span>
-              </th>
-              <th class="text-end" style="padding-right:18px;">Payslip</th>
+              <th>Basic Salary <span class="th-sub">Fixed monthly</span></th>
+              <th>Allowances <span class="th-sub">OT + taxable + exempt</span></th>
+              <th>Gross Pay <span class="th-sub">Before deductions</span></th>
+              <th>PAYE <span class="th-sub">Income tax</span></th>
+              <th>SSC (Emp) <span class="th-sub">0.9% employee share</span></th>
+              <th>Other Deduct. <span class="th-sub">Loans etc.</span></th>
+              <th>Net Pay <span class="th-sub">Amount deposited</span></th>
+              <th class="text-end" style="padding-right:18px;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -315,7 +248,7 @@
                 <td><span class="nm-money plain"><%= fmt(ps.basicSalary) %></span></td>
                 <td>
                   <span class="nm-money <%= totalAllow > 0 ? 'green' : 'muted' %>"><%= fmt(totalAllow) %></span>
-                  <% if (ps.overtimePay > 0 || ps.taxableAllowances > 0 || ps.nonTaxableAllowances > 0) { %>
+                  <% if (ps.overtimePay > 0 || ps.taxableAllowances > 0) { %>
                     <div class="nm-allow-detail">
                       <% if (ps.overtimePay > 0) { %>OT: <%= fmt(ps.overtimePay) %><% } %>
                       <% if (ps.taxableAllowances > 0) { %><% if (ps.overtimePay > 0) { %> · <% } %>Tax Allow: <%= fmt(ps.taxableAllowances) %><% } %>
@@ -325,16 +258,20 @@
                 <td><span class="nm-money plain"><%= fmt(ps.grossPay) %></span></td>
                 <td><span class="nm-money red"><%= fmt(ps.paye) %></span></td>
                 <td><span class="nm-money orange"><%= fmt(ps.sscEmployee) %></span></td>
-                <td>
-                  <span class="nm-money <%= (ps.otherDeductions || 0) > 0 ? 'red' : 'muted' %>">
-                    <%= fmt(ps.otherDeductions) %>
-                  </span>
-                </td>
+                <td><span class="nm-money <%= (ps.otherDeductions || 0) > 0 ? 'red' : 'muted' %>"><%= fmt(ps.otherDeductions) %></span></td>
                 <td><span class="nm-money green" style="font-size:0.9rem;"><%= fmt(ps.netPay) %></span></td>
                 <td class="text-end" style="padding-right:14px;">
-                  <a href="/payroll/<%= payrollRun._id %>/payslip/<%= ps._id %>/pdf" class="nm-pdf-btn">
-                    <i class="bi bi-file-earmark-pdf"></i> PDF
-                  </a>
+                  <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
+                    <a href="/payroll/<%= payrollRun._id %>/payslip/<%= ps._id %>/pdf" class="nm-pdf-btn">
+                      <i class="bi bi-file-earmark-pdf"></i> Payslip
+                    </a>
+                    <% if (ps.employee) { %>
+                    <a href="/payroll/<%= payrollRun._id %>/paye5/<%= ps.employee %>"
+                       class="nm-pdf-btn" style="border-color:rgba(167,139,250,0.2);background:rgba(167,139,250,0.07);color:#a78bfa;">
+                      <i class="bi bi-file-earmark-person-fill"></i> PAYE5
+                    </a>
+                    <% } %>
+                  </div>
                 </td>
               </tr>
             <% }) %>
@@ -356,6 +293,106 @@
       </div>
     </div>
 
+    <!-- ── Statutory document downloads ──────────────────────────────────── -->
+    <div class="nm-panel">
+      <div class="nm-panel-header">
+        <div class="nm-panel-title">
+          <span class="nm-panel-icon amber"><i class="bi bi-file-earmark-ruled-fill"></i></span>
+          Statutory & Compliance Documents
+        </div>
+        <span class="nm-panel-meta">NamRA · SSC · Payslips · Annual Certificates</span>
+      </div>
+
+      <div class="nm-doc-grid">
+
+        <!-- 1. ETX / PAYE4 -->
+        <div class="nm-doc-card">
+          <div class="nm-doc-icon xlsx"><i class="bi bi-file-earmark-spreadsheet-fill"></i></div>
+          <div class="nm-doc-body">
+            <div class="nm-doc-title">NamRA ETX / PAYE4 Reconciliation</div>
+            <div class="nm-doc-badge namra"><i class="bi bi-building"></i> NamRA · Annual</div>
+            <div class="nm-doc-desc">
+              Annual employer reconciliation file in the official NamRA ETX XLSX format.
+              Covers the full <strong style="color:rgba(255,255,255,0.55);">
+              <%= taxYear %>/<%= taxYear+1 %></strong> tax year (March–February).
+              Submit this file on the NamRA e-filing portal.
+            </div>
+            <div class="nm-doc-actions">
+              <a href="/payroll/<%= payrollRun._id %>/etx" class="nm-doc-btn primary">
+                <i class="bi bi-download"></i> Download ETX (XLSX)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. SSC Form 10(a) -->
+        <div class="nm-doc-card">
+          <div class="nm-doc-icon pdf"><i class="bi bi-file-earmark-medical-fill"></i></div>
+          <div class="nm-doc-body">
+            <div class="nm-doc-title">SSC Form 10(a) — Monthly Return</div>
+            <div class="nm-doc-badge ssc"><i class="bi bi-shield-fill-check"></i> SSC · Monthly</div>
+            <div class="nm-doc-desc">
+              Pre-filled Social Security Commission Form 10(a) for
+              <strong style="color:rgba(255,255,255,0.55);"><%= period %></strong>.
+              Lists all employees with their SSC numbers, remuneration, and contributions.
+              Sign and submit with payment to the SSC.
+            </div>
+            <div class="nm-doc-actions">
+              <a href="/payroll/<%= payrollRun._id %>/ssc-form" class="nm-doc-btn red">
+                <i class="bi bi-download"></i> Download Form 10(a) (PDF)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Payslips -->
+        <div class="nm-doc-card">
+          <div class="nm-doc-icon blue"><i class="bi bi-receipt-cutoff"></i></div>
+          <div class="nm-doc-body">
+            <div class="nm-doc-title">Employee Payslips — <%= period %></div>
+            <div class="nm-doc-badge pay"><i class="bi bi-people-fill"></i> Payslips · Monthly</div>
+            <div class="nm-doc-desc">
+              Individual payslips for all <strong style="color:rgba(255,255,255,0.55);"><%= payrollRun.employeeCount %> employees</strong>
+              for <%= period %>. Download as a single ZIP archive or per employee
+              using the PDF buttons in the table above.
+            </div>
+            <div class="nm-doc-actions">
+              <a href="/payroll/<%= payrollRun._id %>/zip" class="nm-doc-btn primary">
+                <i class="bi bi-file-earmark-zip-fill"></i> All Payslips (ZIP)
+              </a>
+              <a href="/payroll/<%= payrollRun._id %>/compliance-csv" class="nm-doc-btn ghost">
+                <i class="bi bi-filetype-csv"></i> Compliance CSV
+              </a>
+              <a href="/payroll/<%= payrollRun._id %>/bank-csv" class="nm-doc-btn ghost">
+                <i class="bi bi-bank"></i> Bank Transfer CSV
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PAYE5 / ITA5 Tax Certificates -->
+        <div class="nm-doc-card">
+          <div class="nm-doc-icon purple"><i class="bi bi-file-earmark-person-fill"></i></div>
+          <div class="nm-doc-body">
+            <div class="nm-doc-title">PAYE5 / ITA5 Tax Certificates</div>
+            <div class="nm-doc-badge annual"><i class="bi bi-calendar-check-fill"></i> NamRA · Annual · Per Employee</div>
+            <div class="nm-doc-desc">
+              Official employee income tax certificates (ITA5/PAYE5) for the
+              <strong style="color:rgba(255,255,255,0.55);"><%= taxYear %>/<%= taxYear+1 %></strong> tax year.
+              Aggregates all payroll runs for the full tax year per employee.
+              Employees need this to file their individual tax returns.
+            </div>
+            <div class="nm-doc-actions">
+              <a href="/payroll/<%= payrollRun._id %>/paye5-all" class="nm-doc-btn primary">
+                <i class="bi bi-file-earmark-zip-fill"></i> All Certificates (ZIP)
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- ── Employer compliance ────────────────────────────────────────────── -->
     <div class="nm-panel">
       <div class="nm-panel-header">
@@ -367,29 +404,23 @@
       </div>
 
       <div class="nm-compliance-grid">
-
         <div class="nm-comp-card">
           <div class="nm-comp-label">Social Security — Employer Portion</div>
           <div class="nm-comp-val"><%= fmt(payrollRun.totalSSCEmployer) %></div>
-          <div class="nm-comp-note">0.9% of each employee's basic salary, up to the SSC monthly cap. This is the company's own contribution — separate from what was deducted from employees.</div>
+          <div class="nm-comp-note">0.9% of each employee's basic salary, up to the SSC monthly cap. The company's own contribution — separate from employee deductions.</div>
           <div class="nm-deadline"><i class="bi bi-calendar-event"></i> Due: End of this month</div>
         </div>
-
         <div class="nm-comp-card">
           <div class="nm-comp-label">Employees' Compensation Fund (ECF)</div>
           <div class="nm-comp-val"><%= fmt(payrollRun.totalECF) %></div>
-          <div class="nm-comp-note">Employer-only levy based on your industry risk class as registered with the Employees' Compensation Commissioner. Covers workplace injury claims.</div>
+          <div class="nm-comp-note">Employer-only levy based on your industry risk class. Covers workplace injury claims.</div>
           <div class="nm-deadline"><i class="bi bi-calendar-event"></i> Due: As per ECC schedule</div>
         </div>
-
         <div class="nm-comp-card highlight">
           <div class="nm-comp-label">Total Company Payroll Expenditure</div>
           <div class="nm-comp-val amber"><%= fmt(payrollRun.totalEmployerCost) %></div>
-          <div class="nm-comp-note" style="color:rgba(245,166,35,0.45);">
-            Total gross pay paid out, plus all employer-side statutory contributions (SSC employer share + ECF). This is the true cost of this payroll to the company.
-          </div>
+          <div class="nm-comp-note" style="color:rgba(245,166,35,0.45);">True cost of this payroll: gross pay + employer SSC + ECF.</div>
         </div>
-
       </div>
     </div>
 
@@ -397,7 +428,11 @@
     <div class="nm-disclaimer">
       <i class="bi bi-shield-check"></i>
       <div>
-        <strong>Compliance Reminder:</strong> PAYE of <strong><%= fmt(payrollRun.totalPAYE) %></strong> must be remitted to NamRA by the <strong>20th of next month</strong>. SSC contributions (employee + employer = <strong><%= fmt((payrollRun.totalSSCEmployee||0)+(payrollRun.totalSSCEmployer||0)) %></strong>) are due to the Social Security Commission by the <strong>end of this month</strong>. Keep this report on file for audit purposes.
+        <strong>Compliance Reminder:</strong>
+        PAYE of <strong><%= fmt(payrollRun.totalPAYE) %></strong> must be remitted to NamRA by the <strong>20th of next month</strong>.
+        SSC contributions (employee + employer = <strong><%= fmt((payrollRun.totalSSCEmployee||0)+(payrollRun.totalSSCEmployer||0)) %></strong>) are due to the SSC by the <strong>end of this month</strong>.
+        ETX annual reconciliation is due by <strong>30 June</strong> after each tax year end.
+        PAYE5 certificates must be issued to employees by <strong>28 February</strong> each year.
       </div>
     </div>
 

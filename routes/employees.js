@@ -1,8 +1,11 @@
-const express = require('express');
-const router = express.Router();
+const express  = require('express');
+const router   = express.Router();
+const multer   = require('multer');
 const { body } = require('express-validator');
-const { requireAdmin } = require('../middleware/auth');
-const employeeController = require('../controllers/employeeController');
+const { requireAdmin }     = require('../middleware/auth');
+const employeeController   = require('../controllers/employeeController');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const employeeValidation = [
   body('fullName').trim().notEmpty().withMessage('Full name is required'),
@@ -12,11 +15,15 @@ const employeeValidation = [
   body('dateJoined').notEmpty().withMessage('Date joined is required')
 ];
 
-router.get('/', requireAdmin, employeeController.getEmployees);
+router.get('/',    requireAdmin, employeeController.getEmployees);
 router.get('/new', requireAdmin, employeeController.getNewEmployee);
-router.post('/', requireAdmin, employeeValidation, employeeController.createEmployee);
-router.get('/:id/edit', requireAdmin, employeeController.getEditEmployee);
-router.put('/:id', requireAdmin, employeeValidation, employeeController.updateEmployee);
-router.delete('/:id', requireAdmin, employeeController.deleteEmployee);
+
+// ── CSV bulk import — must be above /:id routes ───────────────────────────────
+router.post('/import-csv', requireAdmin, upload.single('csvFile'), employeeController.importEmployeesCSV);
+
+router.post('/',       requireAdmin, employeeValidation, employeeController.createEmployee);
+router.get('/:id/edit',requireAdmin, employeeController.getEditEmployee);
+router.put('/:id',     requireAdmin, employeeValidation, employeeController.updateEmployee);
+router.delete('/:id',  requireAdmin, employeeController.deleteEmployee);
 
 module.exports = router;

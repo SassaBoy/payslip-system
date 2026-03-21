@@ -1,13 +1,17 @@
+/**
+ * routes/portal.js – NamPayroll Employee Portal Routes
+ */
+
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const { body } = require('express-validator');
 const { requireEmployee, redirectIfEmployee } = require('../middleware/auth');
 const portalController = require('../controllers/portalController');
 
-// Helper: Redirect root portal to login
+// Redirect bare /portal to login
 router.get('/', (req, res) => res.redirect('/portal/login'));
 
-// --- Authentication ---
+// ── Authentication ────────────────────────────────────────────────────────────
 router.get('/login', redirectIfEmployee, portalController.getLogin);
 
 router.post('/login', redirectIfEmployee, [
@@ -15,14 +19,18 @@ router.post('/login', redirectIfEmployee, [
   body('password').notEmpty().withMessage('Password required')
 ], portalController.postLogin);
 
-// NEW: Email Verification Route
-// This matches the link sent in the createEmployee email
+// Email verification link (sent in welcome email)
 router.get('/verify-email', portalController.getVerifyEmail);
 
 router.post('/logout', portalController.logout);
 
-// --- Protected Employee Routes ---
+// ── Protected employee routes ─────────────────────────────────────────────────
 router.get('/dashboard', requireEmployee, portalController.getDashboard);
+
+// Payslip PDF — employee downloads their own
 router.get('/payslip/:runId/:payslipId/pdf', requireEmployee, portalController.downloadPayslipPDF);
+
+// ITA5 / PAYE5 annual tax certificate for a given tax year
+router.get('/paye5/:taxYear', requireEmployee, portalController.downloadPAYE5);
 
 module.exports = router;

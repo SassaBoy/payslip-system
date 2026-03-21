@@ -272,11 +272,9 @@ exports.getRegister = (req, res) => {
     formData: {}
   });
 };
-
-// POST /register
 exports.postRegister = async (req, res) => {
   const errors = validationResult(req);
-
+ 
   if (!errors.isEmpty()) {
     return res.render('auth/register', {
       title: 'Register – NamPayroll',
@@ -284,73 +282,73 @@ exports.postRegister = async (req, res) => {
       formData: req.body
     });
   }
-
+ 
   try {
-    const { firstName, lastName, companyName, numEmployees, email, phone, password } = req.body;
-
+    const {
+      firstName, lastName, companyName, numEmployees, email, phone,
+      physicalAddress, postalAddress,
+      tinNumber, payeRegNo, sscNumber,
+      bankName, bankAccountNumber, bankBranchCode,
+      password
+    } = req.body;
+ 
     // Check if email already exists
     const existing = await User.findOne({ email: email.toLowerCase().trim() });
     if (existing) {
-      // ─── FIX: If account exists but email is NOT verified, resend the
-      //         verification email instead of just showing a dead-end error.
       if (!existing.emailVerified) {
         const newToken = crypto.randomBytes(32).toString('hex');
         existing.verificationToken = newToken;
         await existing.save({ validateBeforeSave: false });
-
+ 
         const verifyUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${newToken}`;
-
-        // Fire-and-forget — never blocks the redirect
         sendMailWithTimeout(buildVerificationEmail({
           to: existing.email,
           firstName: existing.ownerName.split(' ')[0],
           companyName: existing.companyName,
           verifyUrl
         }));
-
+ 
         req.flash('success', `An account with that email already exists but hasn't been verified. We've resent the verification email to ${email}.`);
         return res.redirect('/login');
       }
-
+ 
       return res.render('auth/register', {
         title: 'Register – NamPayroll',
         errors: [{ msg: 'An account with that email already exists.' }],
         formData: req.body
       });
     }
-
+ 
     const verificationToken = crypto.randomBytes(32).toString('hex');
-
-    // Create user - Mapping firstName/lastName to ownerName to match Schema
+ 
     const user = await User.create({
-      ownerName: `${firstName.trim()} ${lastName.trim()}`,
-      companyName: companyName.trim(),
+      ownerName:         `${firstName.trim()} ${lastName.trim()}`,
+      companyName:        companyName.trim(),
       numEmployees,
-      email: email.toLowerCase().trim(),
-      phone: phone.trim(),
+      email:              email.toLowerCase().trim(),
+      phone:              phone.trim(),
+      physicalAddress:    physicalAddress?.trim()     || '',
+      postalAddress:      postalAddress?.trim()       || '',
+      tinNumber:          tinNumber?.trim()           || undefined,
+      payeRegNo:          payeRegNo?.trim()           || undefined,
+      sscNumber:          sscNumber?.trim()           || undefined,
+      bankName:           bankName?.trim()            || '',
+      bankAccountNumber:  bankAccountNumber?.trim()   || '',
+      bankBranchCode:     bankBranchCode?.trim()      || '',
       password,
-      companyLogo: req.file ? `/uploads/logos/${req.file.filename}` : null,
+      companyLogo:        req.file ? `/uploads/logos/${req.file.filename}` : null,
       verificationToken,
-      emailVerified: false
+      emailVerified:      false
     });
-
-    // Create default settings
+ 
     await Settings.create({ company: user._id });
-
+ 
     const verifyUrl = `${req.protocol}://${req.get('host')}/verify-email?token=${verificationToken}`;
-
-    // ─── FIX: Fire-and-forget with timeout — redirect happens immediately,
-    //         email sends in the background without blocking the response.
-    sendMailWithTimeout(buildVerificationEmail({
-      to: email,
-      firstName,
-      companyName,
-      verifyUrl
-    }));
-
+    sendMailWithTimeout(buildVerificationEmail({ to: email, firstName, companyName, verifyUrl }));
+ 
     req.flash('success', `Account created! Check ${email} to verify your account.`);
     res.redirect('/login');
-
+ 
   } catch (err) {
     console.error('Register error:', err);
     res.render('auth/register', {
@@ -360,7 +358,6 @@ exports.postRegister = async (req, res) => {
     });
   }
 };
-
 // GET /login
 exports.getLogin = (req, res) => {
   res.render('auth/login', {

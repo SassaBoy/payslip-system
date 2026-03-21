@@ -2,80 +2,39 @@
 <%- include('../partials/navbar') %>
 
 <style>
-  /* ── Base ───────────────────────────────────────────────────────────────── */
   .nm-page-wrapper  { flex:1; padding:32px 24px 64px; }
   .nm-settings-page { max-width:800px; margin:0 auto; }
 
-  /* ── Page header ────────────────────────────────────────────────────────── */
   .nm-page-header   { margin-bottom:32px; }
   .nm-page-title    { font-family:'Sora',sans-serif; font-size:1.5rem; font-weight:700; color:rgba(255,255,255,0.92); margin:0 0 4px; letter-spacing:-0.02em; }
   .nm-page-subtitle { font-size:0.875rem; color:rgba(255,255,255,0.38); margin:0; }
 
-  /* ── Alert ──────────────────────────────────────────────────────────────── */
   .nm-alert { display:flex; align-items:flex-start; gap:10px; padding:13px 16px; border-radius:10px; font-size:0.875rem; font-weight:500; margin-bottom:24px; }
   .nm-alert i { font-size:1rem; flex-shrink:0; margin-top:1px; }
   .nm-alert-success { background:rgba(46,204,138,0.08); border:1px solid rgba(46,204,138,0.2); color:#2ecc8a; }
 
-  /* ── Section label (above cards) ───────────────────────────────────────── */
-  .nm-section-label {
-    font-family:'Sora',sans-serif;
-    font-size:0.68rem;
-    font-weight:700;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.25);
-    margin:28px 0 10px 2px;
-  }
+  .nm-section-label { font-family:'Sora',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.25); margin:28px 0 10px 2px; }
 
-  /* ── Card ───────────────────────────────────────────────────────────────── */
   .nm-form-card { background:#0d1b2a; border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden; margin-bottom:16px; }
-  .nm-form-card-header {
-    display:flex; align-items:center; gap:12px;
-    padding:15px 20px;
-    border-bottom:1px solid rgba(255,255,255,0.07);
-    background:#112235;
-  }
-  .nm-form-card-icon {
-    width:32px; height:32px; border-radius:8px;
-    background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.18);
-    display:flex; align-items:center; justify-content:center;
-    color:#f5a623; font-size:0.9rem; flex-shrink:0;
-  }
+  .nm-form-card-header { display:flex; align-items:center; gap:12px; padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.07); background:#112235; }
+  .nm-form-card-icon { width:32px; height:32px; border-radius:8px; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.18); display:flex; align-items:center; justify-content:center; color:#f5a623; font-size:0.9rem; flex-shrink:0; }
   .nm-form-card-title { font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.92); }
   .nm-form-card-desc  { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-top:1px; }
   .nm-form-card-body  { padding:22px 20px; }
 
-  /* ── Field layout ───────────────────────────────────────────────────────── */
   .nm-field { margin-bottom:0; }
-  .nm-label {
-    display:flex; align-items:center; gap:6px;
-    font-size:0.8rem; font-weight:600;
-    color:rgba(255,255,255,0.7);
-    margin-bottom:6px; letter-spacing:0.01em;
-  }
-  .nm-label-badge {
-    font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
-    padding:2px 7px; border-radius:20px; line-height:1.4;
-  }
+  .nm-label { display:flex; align-items:center; gap:6px; font-size:0.8rem; font-weight:600; color:rgba(255,255,255,0.7); margin-bottom:6px; }
+  .nm-label-badge { font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:20px; line-height:1.4; }
   .nm-label-badge.statutory { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.2); }
   .nm-label-badge.employer  { background:rgba(96,165,250,0.1);  color:#60a5fa; border:1px solid rgba(96,165,250,0.2); }
   .nm-label-badge.custom    { background:rgba(245,166,35,0.1);  color:#f5a623; border:1px solid rgba(245,166,35,0.2); }
 
-  .nm-hint {
-    font-size:0.775rem; color:rgba(255,255,255,0.3);
-    margin-top:6px; line-height:1.5;
-  }
+  .nm-hint { font-size:0.775rem; color:rgba(255,255,255,0.3); margin-top:6px; line-height:1.5; }
   .nm-hint strong { color:rgba(255,255,255,0.5); font-weight:600; }
 
-  /* ── Inputs ─────────────────────────────────────────────────────────────── */
-  .nm-input {
-    display:block; width:100%; padding:9px 13px;
-    background:#071421; border:1px solid rgba(255,255,255,0.08);
-    border-radius:8px; color:rgba(255,255,255,0.92);
-    font-family:'DM Sans',sans-serif; font-size:0.9rem;
-    outline:none; transition:all 0.16s;
-  }
+  .nm-input { display:block; width:100%; padding:9px 13px; background:#071421; border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:rgba(255,255,255,0.92); font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none; transition:all 0.16s; }
   .nm-input:focus { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.07); background:#0a1a2a; }
+  select.nm-input { appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.3)' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; background-color:#071421; }
 
   .nm-input-group { display:flex; align-items:stretch; border:1px solid rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; background:#071421; transition:all 0.16s; }
   .nm-input-group:focus-within { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.07); }
@@ -83,78 +42,95 @@
   .nm-input-addon.right { border-right:none; border-left:1px solid rgba(255,255,255,0.07); }
   .nm-input-group .nm-input { border:none !important; background:transparent; flex:1; box-shadow:none !important; }
 
-  /* Live preview pill */
-  .nm-preview-pill {
-    display:inline-flex; align-items:center; gap:6px;
-    background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.15);
-    border-radius:8px; padding:8px 14px; margin-top:12px;
-    font-size:0.8rem; color:rgba(255,255,255,0.5);
-  }
+  .nm-preview-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.15); border-radius:8px; padding:8px 14px; margin-top:12px; font-size:0.8rem; color:rgba(255,255,255,0.5); }
   .nm-preview-pill strong { color:#f5a623; font-family:'Sora',sans-serif; font-size:0.875rem; }
 
-  /* ── Divider inside card ────────────────────────────────────────────────── */
   .nm-card-divider { border:none; border-top:1px solid rgba(255,255,255,0.05); margin:20px 0; }
 
-  /* ── Tax brackets table ─────────────────────────────────────────────────── */
+  /* Tax brackets */
   .nm-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
-  .nm-table thead th {
-    padding:10px 16px; font-size:0.68rem; font-weight:700;
-    text-transform:uppercase; letter-spacing:0.06em;
-    color:rgba(255,255,255,0.3); background:#112235;
-    border-bottom:1px solid rgba(255,255,255,0.07); text-align:left;
-  }
+  .nm-table thead th { padding:10px 16px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:rgba(255,255,255,0.3); background:#112235; border-bottom:1px solid rgba(255,255,255,0.07); text-align:left; }
   .nm-table td { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.6); vertical-align:middle; }
   .nm-table tr:last-child td { border-bottom:none; }
   .nm-table tr:hover td { background:rgba(255,255,255,0.02); }
-
   .nm-bracket-range { font-weight:600; color:rgba(255,255,255,0.82); font-family:'Sora',sans-serif; font-size:0.8rem; }
   .nm-bracket-base  { color:rgba(255,255,255,0.45); font-size:0.82rem; }
-  .nm-rate-badge {
-    display:inline-flex; align-items:center;
-    font-family:'Sora',sans-serif; font-size:0.8rem; font-weight:700;
-    padding:3px 10px; border-radius:20px;
-    background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623;
-  }
+  .nm-rate-badge { display:inline-flex; align-items:center; font-family:'Sora',sans-serif; font-size:0.8rem; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:#f5a623; }
   .nm-rate-badge.zero { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.35); }
-
-  .nm-table-note {
-    display:flex; align-items:flex-start; gap:8px;
-    padding:12px 16px; background:#071421;
-    border-top:1px solid rgba(255,255,255,0.05);
-    font-size:0.775rem; color:rgba(255,255,255,0.3); line-height:1.5;
-  }
+  .nm-table-note { display:flex; align-items:flex-start; gap:8px; padding:12px 16px; background:#071421; border-top:1px solid rgba(255,255,255,0.05); font-size:0.775rem; color:rgba(255,255,255,0.3); line-height:1.5; }
   .nm-table-note i { color:#f5a623; font-size:0.82rem; flex-shrink:0; margin-top:1px; }
 
-  /* ── Overtime formula explainer ─────────────────────────────────────────── */
-  .nm-formula-box {
-    background:#071421; border:1px solid rgba(255,255,255,0.06);
-    border-radius:10px; padding:14px 16px; margin-top:16px;
-    font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.8;
-  }
-  .nm-formula-box code {
-    font-family:'DM Mono','Courier New',monospace;
-    color:#f5a623; background:rgba(245,166,35,0.08);
-    padding:1px 6px; border-radius:4px; font-size:0.8rem;
-  }
+  .nm-formula-box { background:#071421; border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:14px 16px; margin-top:16px; font-size:0.8rem; color:rgba(255,255,255,0.4); line-height:1.8; }
+  .nm-formula-box code { font-family:'DM Mono','Courier New',monospace; color:#f5a623; background:rgba(245,166,35,0.08); padding:1px 6px; border-radius:4px; font-size:0.8rem; }
 
-  /* ── Submit bar ─────────────────────────────────────────────────────────── */
+  /* Payslip theme */
+  .nm-colour-row { display:flex; align-items:center; gap:12px; }
+  .nm-colour-swatch { width:36px; height:36px; border-radius:8px; border:2px solid rgba(255,255,255,0.12); cursor:pointer; flex-shrink:0; transition:border-color 0.16s; }
+  .nm-colour-swatch:hover { border-color:rgba(245,166,35,0.5); }
+  .nm-colour-presets { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .nm-preset-chip { width:28px; height:28px; border-radius:6px; cursor:pointer; border:2px solid transparent; transition:0.16s; flex-shrink:0; }
+  .nm-preset-chip:hover, .nm-preset-chip.active { border-color:rgba(255,255,255,0.6); transform:scale(1.1); }
+
+  .nm-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .nm-toggle-row:last-child { border-bottom:none; padding-bottom:0; }
+  .nm-toggle-label { font-size:0.875rem; color:rgba(255,255,255,0.7); }
+  .nm-toggle-sub   { font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:2px; }
+  .nm-switch { position:relative; display:inline-block; width:42px; height:24px; flex-shrink:0; }
+  .nm-switch input { opacity:0; width:0; height:0; }
+  .nm-slider { position:absolute; cursor:pointer; inset:0; background:#1a2f45; border-radius:24px; transition:0.2s; border:1px solid rgba(255,255,255,0.1); }
+  .nm-slider:before { position:absolute; content:''; height:16px; width:16px; left:3px; bottom:3px; background:rgba(255,255,255,0.35); border-radius:50%; transition:0.2s; }
+  input:checked + .nm-slider { background:#f5a623; border-color:#f5a623; }
+  input:checked + .nm-slider:before { transform:translateX(18px); background:#fff; }
+
+  .nm-payslip-preview { background:#f8fafc; border-radius:10px; padding:16px 20px; margin-top:18px; border:1px solid #e2e8f0; font-family:Arial,sans-serif; }
+  .nm-pp-bar   { height:5px; border-radius:2px; margin-bottom:10px; }
+  .nm-pp-title { font-size:13px; font-weight:700; color:#1e293b; }
+  .nm-pp-sub   { font-size:10px; color:#94a3b8; margin-top:2px; }
+  .nm-pp-section { height:4px; border-radius:2px; margin:10px 0 6px; width:100%; }
+  .nm-pp-row { display:flex; justify-content:space-between; font-size:10px; color:#475569; padding:3px 0; }
+  .nm-pp-net { display:flex; justify-content:space-between; padding:10px 12px; border-radius:6px; margin-top:10px; }
+  .nm-pp-net-label  { font-size:11px; font-weight:700; color:#fff; }
+  .nm-pp-net-amount { font-size:14px; font-weight:700; color:#fff; }
+
+  /* Custom items */
+  .nm-custom-type-badge { display:inline-flex; align-items:center; gap:4px; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .nm-custom-type-badge.earning_taxable    { background:rgba(52,211,153,0.1);  color:#34d399; border:1px solid rgba(52,211,153,0.2);  }
+  .nm-custom-type-badge.earning_nontaxable { background:rgba(96,165,250,0.1);  color:#60a5fa; border:1px solid rgba(96,165,250,0.2);  }
+  .nm-custom-type-badge.deduction          { background:rgba(248,113,113,0.1); color:#f87171; border:1px solid rgba(248,113,113,0.2); }
+
+  .nm-item-row { display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.12s; }
+  .nm-item-row:last-child { border-bottom:none; }
+  .nm-item-row:hover { background:rgba(255,255,255,0.02); }
+  .nm-item-row.inactive { opacity:0.45; }
+  .nm-item-name { font-weight:600; font-size:0.875rem; color:rgba(255,255,255,0.88); flex:1; min-width:0; }
+  .nm-item-desc { font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:2px; }
+  .nm-item-mode { font-size:0.7rem; color:rgba(255,255,255,0.28); }
+  .nm-item-actions { display:flex; gap:6px; flex-shrink:0; }
+  .nm-item-btn { display:inline-flex; align-items:center; gap:4px; padding:5px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; border:none; cursor:pointer; transition:0.14s; }
+  .nm-item-btn.toggle-on  { background:rgba(248,113,113,0.08); color:#f87171; border:1px solid rgba(248,113,113,0.18); }
+  .nm-item-btn.toggle-off { background:rgba(46,204,138,0.08);  color:#2ecc8a; border:1px solid rgba(46,204,138,0.18); }
+  .nm-item-btn.delete-btn { background:transparent; color:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.08); }
+  .nm-item-btn.delete-btn:hover { color:#f87171; border-color:rgba(248,113,113,0.3); background:rgba(248,113,113,0.06); }
+
+  .nm-add-item-form { padding:20px; border-top:1px solid rgba(255,255,255,0.06); background:#071421; }
+  .nm-add-item-form-title { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; }
+
+  .nm-type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  @media(max-width:640px) { .nm-type-grid { grid-template-columns:1fr; } }
+  .nm-type-option { position:relative; }
+  .nm-type-option input[type=radio] { position:absolute; opacity:0; width:0; }
+  .nm-type-label { display:flex; flex-direction:column; gap:4px; padding:12px 14px; border-radius:9px; border:1px solid rgba(255,255,255,0.07); background:#0d1b2a; cursor:pointer; transition:0.14s; }
+  .nm-type-label:hover { border-color:rgba(255,255,255,0.14); }
+  .nm-type-option input:checked + .nm-type-label { border-color:rgba(245,166,35,0.45); background:rgba(245,166,35,0.04); }
+  .nm-type-name { font-size:0.82rem; font-weight:700; color:rgba(255,255,255,0.85); }
+  .nm-type-desc { font-size:0.72rem; color:rgba(255,255,255,0.35); line-height:1.4; }
+  .nm-type-option input:checked + .nm-type-label .nm-type-name { color:#f5a623; }
+
   .nm-submit-row { display:flex; align-items:center; gap:14px; margin-top:28px; }
-  .nm-btn-primary {
-    display:inline-flex; align-items:center; gap:8px;
-    padding:11px 26px; border-radius:9px;
-    background:#f5a623; color:#1a0e00;
-    font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:700;
-    border:none; cursor:pointer; transition:all 0.18s;
-  }
+  .nm-btn-primary { display:inline-flex; align-items:center; gap:8px; padding:11px 26px; border-radius:9px; background:#f5a623; color:#1a0e00; font-family:'Sora',sans-serif; font-size:0.875rem; font-weight:700; border:none; cursor:pointer; transition:all 0.18s; }
   .nm-btn-primary:hover { background:#e8981e; transform:translateY(-1px); box-shadow:0 6px 20px rgba(245,166,35,0.22); }
 
-  /* ── Disclaimer ─────────────────────────────────────────────────────────── */
-  .nm-disclaimer {
-    display:flex; align-items:flex-start; gap:12px;
-    background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.12);
-    border-radius:12px; padding:18px; margin-top:28px;
-    font-size:0.82rem; color:rgba(255,255,255,0.45); line-height:1.65;
-  }
+  .nm-disclaimer { display:flex; align-items:flex-start; gap:12px; background:rgba(245,166,35,0.04); border:1px solid rgba(245,166,35,0.12); border-radius:12px; padding:18px; margin-top:28px; font-size:0.82rem; color:rgba(255,255,255,0.45); line-height:1.65; }
   .nm-disclaimer i { color:#f5a623; font-size:1.05rem; flex-shrink:0; margin-top:1px; }
   .nm-disclaimer strong { color:rgba(255,255,255,0.7); }
   .nm-disclaimer em { color:rgba(255,255,255,0.55); font-style:normal; font-weight:600; }
@@ -173,12 +149,12 @@
 
     <div class="nm-page-header">
       <h1 class="nm-page-title">Company Settings</h1>
-      <p class="nm-page-subtitle">Configure statutory Namibian payroll rates. These values are applied automatically each time payroll is processed.</p>
+      <p class="nm-page-subtitle">Configure payroll rates, payslip appearance, and your company's custom pay items.</p>
     </div>
 
     <form action="/settings" method="POST">
 
-      <!-- ── SECTION 1: Social Security ───────────────────────────────────── -->
+      <!-- ══ SECTION 1: SSC ════════════════════════════════════════════════ -->
       <div class="nm-section-label">Social Security Commission (SSC)</div>
 
       <div class="nm-form-card">
@@ -191,60 +167,44 @@
         </div>
         <div class="nm-form-card-body">
           <div class="row g-4">
-
             <div class="col-md-4 nm-field">
-              <label class="nm-label">
-                Contribution Rate
-                <span class="nm-label-badge statutory">Statutory</span>
-              </label>
+              <label class="nm-label">Contribution Rate <span class="nm-label-badge statutory">Statutory</span></label>
               <div class="nm-input-group">
                 <input type="number" name="sscRate" id="sscRateInput" class="nm-input" step="0.01" min="0" max="100"
                   value="<%= ((settings.sscRate || 0.009) * 100).toFixed(2) %>" oninput="updateSSCPreview()" />
                 <span class="nm-input-addon right">%</span>
               </div>
-              <div class="nm-hint">NamRA standard is <strong>0.90%</strong>. Applied to both employee and employer portions separately.</div>
+              <div class="nm-hint">NamRA standard is <strong>0.90%</strong>.</div>
             </div>
-
             <div class="col-md-4 nm-field">
-              <label class="nm-label">
-                Monthly Salary Cap
-                <span class="nm-label-badge statutory">Statutory</span>
-              </label>
+              <label class="nm-label">Monthly Salary Cap <span class="nm-label-badge statutory">Statutory</span></label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
                 <input type="number" name="sscMonthlyCap" id="sscCapInput" class="nm-input"
                   value="<%= settings.sscMonthlyCap || 11000 %>" oninput="updateSSCPreview()" />
               </div>
-              <div class="nm-hint">SSC is only calculated on salary <strong>up to this amount</strong>. Income above the cap is not subject to SSC.</div>
+              <div class="nm-hint">SSC only applied on salary <strong>up to this amount</strong>.</div>
             </div>
-
             <div class="col-md-4 nm-field">
-              <label class="nm-label">
-                Max Monthly Contribution
-                <span class="nm-label-badge statutory">Statutory</span>
-              </label>
+              <label class="nm-label">Max Monthly Contribution <span class="nm-label-badge statutory">Statutory</span></label>
               <div class="nm-input-group">
                 <span class="nm-input-addon">N$</span>
                 <input type="number" name="sscMaxContribution" id="sscMaxInput" class="nm-input" step="0.01"
                   value="<%= settings.sscMaxContribution || 99.00 %>" oninput="updateSSCPreview()" />
               </div>
-              <div class="nm-hint">The <strong>maximum N$ amount</strong> that can be deducted per month per person. Standard is <strong>N$99.00</strong>.</div>
+              <div class="nm-hint">Standard is <strong>N$99.00</strong>.</div>
             </div>
-
           </div>
-
-          <!-- Live preview -->
           <div class="nm-preview-pill mt-3">
             <i class="bi bi-calculator" style="color:#f5a623;"></i>
-            Employee on N$<strong id="prev-cap"><%= settings.sscMonthlyCap || 11000 %></strong> salary:
-            Employee deduction = <strong id="prev-emp">N$ <span id="prev-emp-val">99.00</span></strong> &nbsp;·&nbsp;
-            Employer contributes = <strong id="prev-emr">N$ <span id="prev-emr-val">99.00</span></strong>
+            Employee on N$<strong id="prev-cap"><%= settings.sscMonthlyCap || 11000 %></strong>:
+            Deduction = <strong>N$ <span id="prev-emp-val">99.00</span></strong> &nbsp;·&nbsp;
+            Employer = <strong>N$ <span id="prev-emr-val">99.00</span></strong>
           </div>
-
         </div>
       </div>
 
-      <!-- ── SECTION 2: ECF + Overtime ────────────────────────────────────── -->
+      <!-- ══ SECTION 2: ECF + Overtime ═════════════════════════════════════ -->
       <div class="nm-section-label">Employer Costs & Overtime</div>
 
       <div class="row g-3 mb-0">
@@ -254,71 +214,56 @@
               <span class="nm-form-card-icon"><i class="bi bi-hospital"></i></span>
               <div>
                 <div class="nm-form-card-title">Workmen's Compensation (ECF)</div>
-                <div class="nm-form-card-desc">Employer liability only — not deducted from employee.</div>
+                <div class="nm-form-card-desc">Employer liability — not deducted from employee.</div>
               </div>
             </div>
             <div class="nm-form-card-body">
-              <label class="nm-label">
-                Employer ECF Rate
-                <span class="nm-label-badge employer">Employer Only</span>
-              </label>
+              <label class="nm-label">ECF Rate <span class="nm-label-badge employer">Employer Only</span></label>
               <div class="nm-input-group">
                 <input type="number" name="ecfRate" class="nm-input" step="0.01" min="0"
                   value="<%= ((settings.ecfRate || 0) * 100).toFixed(2) %>" />
                 <span class="nm-input-addon right">%</span>
               </div>
-              <div class="nm-hint">Set by the Employees' Compensation Commissioner based on your industry <strong>risk class</strong>. Enter <strong>0</strong> if not applicable to your sector.</div>
+              <div class="nm-hint">Set by the Employees' Compensation Commissioner. Enter <strong>0</strong> if not applicable.</div>
             </div>
           </div>
         </div>
-
         <div class="col-md-7">
           <div class="nm-form-card h-100 mb-0">
             <div class="nm-form-card-header">
               <span class="nm-form-card-icon"><i class="bi bi-clock-history"></i></span>
               <div>
                 <div class="nm-form-card-title">Overtime Calculation</div>
-                <div class="nm-form-card-desc">Defines how overtime pay is calculated from the basic salary.</div>
+                <div class="nm-form-card-desc">Defines how overtime pay is calculated from basic salary.</div>
               </div>
             </div>
             <div class="nm-form-card-body">
               <div class="row g-3">
                 <div class="col-6 nm-field">
-                  <label class="nm-label">
-                    Working Days/Month
-                    <span class="nm-label-badge custom">Custom</span>
-                  </label>
+                  <label class="nm-label">Working Days/Month <span class="nm-label-badge custom">Custom</span></label>
                   <input type="number" name="workingDaysPerMonth" id="workDays" class="nm-input" min="1" max="31"
                     value="<%= settings.workingDaysPerMonth || 22 %>" oninput="updateOTPreview()" />
-                  <div class="nm-hint">Typically <strong>22</strong> for a standard 5-day working week.</div>
+                  <div class="nm-hint">Typically <strong>22</strong> for a 5-day week.</div>
                 </div>
                 <div class="col-6 nm-field">
-                  <label class="nm-label">
-                    OT Multiplier
-                    <span class="nm-label-badge custom">Custom</span>
-                  </label>
+                  <label class="nm-label">OT Multiplier <span class="nm-label-badge custom">Custom</span></label>
                   <input type="number" name="overtimeMultiplier" id="otMultiplier" class="nm-input" step="0.1" min="1"
                     value="<%= settings.overtimeMultiplier || 1.5 %>" oninput="updateOTPreview()" />
-                  <div class="nm-hint">Standard is <strong>1.5×</strong> (time and a half). Use <strong>2.0×</strong> for double time on public holidays.</div>
+                  <div class="nm-hint">Standard: <strong>1.5×</strong>. Public holidays: <strong>2.0×</strong>.</div>
                 </div>
               </div>
-
-              <!-- OT formula explainer -->
               <div class="nm-formula-box">
                 <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.25);margin-bottom:6px;">Overtime Pay Formula</div>
                 Hourly Rate = <code>Basic Salary ÷ (Days/Month × 8hrs)</code><br>
                 OT Pay = <code>Hourly Rate × OT Hours × Multiplier</code><br>
-                <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;">
-                  e.g. N$10,000 salary → <span id="ot-example">N$85.23/hr @ 1.5× = N$127.84/hr OT</span>
-                </span>
+                <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;">e.g. N$10,000 → <span id="ot-example">N$56.82/hr @ 1.5× = N$85.23/hr OT</span></span>
               </div>
-
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ── SECTION 3: Tax Brackets ───────────────────────────────────────── -->
+      <!-- ══ SECTION 3: Tax Brackets ════════════════════════════════════════ -->
       <div class="nm-section-label" style="margin-top:28px;">Income Tax Brackets</div>
 
       <div class="nm-form-card">
@@ -326,10 +271,9 @@
           <span class="nm-form-card-icon"><i class="bi bi-bank2"></i></span>
           <div>
             <div class="nm-form-card-title">NamRA Individual Tax Brackets — 2025/2026</div>
-            <div class="nm-form-card-desc">Applied to annualised taxable income. Read-only — managed globally for NamRA compliance.</div>
+            <div class="nm-form-card-desc">Applied to annualised taxable income. Read-only.</div>
           </div>
         </div>
-
         <div class="table-responsive">
           <table class="nm-table">
             <thead>
@@ -343,49 +287,322 @@
               <% (settings.taxBrackets || []).forEach((bracket, i) => { %>
                 <tr>
                   <td>
-                    <div class="nm-bracket-range">
-                      N$ <%= Number(bracket.min || 0).toLocaleString() %>
-                      <%= bracket.max ? '– N$ ' + Number(bracket.max).toLocaleString() : 'and above' %>
-                    </div>
-                    <% if (i === 0) { %>
-                      <div style="font-size:0.72rem;color:rgba(46,204,138,0.7);margin-top:2px;">✓ Tax-free threshold</div>
-                    <% } %>
+                    <div class="nm-bracket-range">N$ <%= Number(bracket.min||0).toLocaleString() %> <%= bracket.max ? '– N$ ' + Number(bracket.max).toLocaleString() : 'and above' %></div>
+                    <% if (i === 0) { %><div style="font-size:0.72rem;color:rgba(46,204,138,0.7);margin-top:2px;">✓ Tax-free threshold</div><% } %>
                   </td>
-                  <td class="nm-bracket-base">
-                    <%= bracket.baseAmount ? 'N$ ' + Number(bracket.baseAmount).toLocaleString() : '—' %>
-                  </td>
-                  <td>
-                    <span class="nm-rate-badge <%= bracket.rate === 0 ? 'zero' : '' %>">
-                      <%= ((bracket.rate || 0) * 100).toFixed(0) %>%
-                    </span>
-                  </td>
+                  <td class="nm-bracket-base"><%= bracket.baseAmount ? 'N$ ' + Number(bracket.baseAmount).toLocaleString() : '—' %></td>
+                  <td><span class="nm-rate-badge <%= bracket.rate === 0 ? 'zero' : '' %>"><%= ((bracket.rate||0)*100).toFixed(0) %>%</span></td>
                 </tr>
               <% }) %>
             </tbody>
           </table>
         </div>
-
         <div class="nm-table-note">
           <i class="bi bi-lock-fill"></i>
-          These brackets are locked and managed globally to comply with NamRA's N$100,000 tax-free threshold. Contact support to request a review if brackets change.
+          These brackets are locked to comply with NamRA's N$100,000 tax-free threshold. Contact support to request a review.
         </div>
       </div>
 
-      <!-- ── Submit ─────────────────────────────────────────────────────────── -->
+      <!-- ══ SECTION 4: Payslip Design ══════════════════════════════════════ -->
+      <div class="nm-section-label" style="margin-top:28px;">Payslip Design & Appearance</div>
+
+      <div class="nm-form-card">
+        <div class="nm-form-card-header">
+          <span class="nm-form-card-icon" style="background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.2);color:#a78bfa;">
+            <i class="bi bi-palette-fill"></i>
+          </span>
+          <div>
+            <div class="nm-form-card-title">Payslip Theme</div>
+            <div class="nm-form-card-desc">Customise the accent colour, footer note, and visible sections on every payslip PDF.</div>
+          </div>
+        </div>
+        <div class="nm-form-card-body">
+          <div class="row g-4">
+            <div class="col-md-5 nm-field">
+              <label class="nm-label">Accent Colour <span class="nm-label-badge custom">Design</span></label>
+              <div class="nm-colour-row">
+                <input type="color" name="themeAccentColor" id="accentPicker"
+                  value="<%= settings.payslipTheme?.accentColor || '#000000' %>"
+                  class="nm-colour-swatch" oninput="syncAccent(this.value)" />
+                <input type="text" id="accentHex" class="nm-input" style="max-width:110px;font-family:monospace;"
+                  value="<%= settings.payslipTheme?.accentColor || '#000000' %>"
+                  oninput="syncAccentFromHex(this.value)" maxlength="7" placeholder="#000000" />
+              </div>
+              <div class="nm-colour-presets" id="presetChips">
+                <% const presets = ['#000000','#003366','#002D62','#1a3a5c','#2c3e50','#7b2d8b','#c0392b','#16a085','#27ae60','#e67e22','#8e44ad'] %>
+                <% presets.forEach(hex => { %>
+                  <div class="nm-preset-chip <%= (settings.payslipTheme?.accentColor || '#000000') === hex ? 'active' : '' %>"
+                       style="background:<%= hex %>;"
+                       onclick="setPreset('<%= hex %>')" title="<%= hex %>"></div>
+                <% }) %>
+              </div>
+              <div class="nm-hint">Used for the top bar, section headers, and net pay box on every payslip.</div>
+            </div>
+
+            <div class="col-md-7">
+              <label class="nm-label">Visible Sections</label>
+              <div style="background:#071421;border-radius:10px;padding:4px 14px;">
+                <div class="nm-toggle-row">
+                  <div>
+                    <div class="nm-toggle-label">Show Employer Contributions</div>
+                    <div class="nm-toggle-sub">SSC employer share and ECF displayed below net pay</div>
+                  </div>
+                  <label class="nm-switch">
+                    <input type="checkbox" name="themeShowEmployerContributions" id="togEmpCont"
+                      <%= (settings.payslipTheme?.showEmployerContributions !== false) ? 'checked' : '' %>
+                      onchange="updatePreview()" />
+                    <span class="nm-slider"></span>
+                  </label>
+                </div>
+                <div class="nm-toggle-row">
+                  <div>
+                    <div class="nm-toggle-label">Show Leave Balances</div>
+                    <div class="nm-toggle-sub">Annual and sick leave taken displayed at the bottom</div>
+                  </div>
+                  <label class="nm-switch">
+                    <input type="checkbox" name="themeShowLeaveBalances" id="togLeave"
+                      <%= (settings.payslipTheme?.showLeaveBalances !== false) ? 'checked' : '' %>
+                      onchange="updatePreview()" />
+                    <span class="nm-slider"></span>
+                  </label>
+                </div>
+                <div class="nm-toggle-row">
+                  <div>
+                    <div class="nm-toggle-label">Show Reference Number</div>
+                    <div class="nm-toggle-sub">REF-YYYYMM-XXXX printed in the payslip header</div>
+                  </div>
+                  <label class="nm-switch">
+                    <input type="checkbox" name="themeShowRefNumber" id="togRef"
+                      <%= (settings.payslipTheme?.showRefNumber !== false) ? 'checked' : '' %>
+                      onchange="updatePreview()" />
+                    <span class="nm-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 nm-field">
+              <label class="nm-label">Custom Footer Note <span class="nm-label-badge custom">Optional</span></label>
+              <input type="text" name="themeFooterNote" class="nm-input"
+                value="<%= settings.payslipTheme?.footerNote || '' %>"
+                placeholder="e.g. Contact HR with any queries. | Leave blank for default confidentiality notice."
+                maxlength="300" />
+              <div class="nm-hint">Appears at the bottom of every payslip PDF. Max 300 characters.</div>
+            </div>
+          </div>
+
+          <hr class="nm-card-divider" />
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.25);margin-bottom:10px;">
+            <i class="bi bi-eye"></i> &nbsp;Live Preview
+          </div>
+          <div class="nm-payslip-preview">
+            <div class="nm-pp-bar" id="pp-bar" style="background:#000000;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div class="nm-pp-title">PAYSLIP</div>
+                <div class="nm-pp-sub">MARCH 2025 &nbsp;·&nbsp; <span id="pp-ref">REF-202503-0001</span></div>
+              </div>
+              <div style="text-align:right;font-size:10px;color:#94a3b8;">Your Company Name<br>employee@company.na</div>
+            </div>
+            <div class="nm-pp-section" id="pp-sec" style="background:#000000;opacity:0.15;"></div>
+            <div class="nm-pp-row"><span>Basic Salary</span><span>N$ 10,000.00</span></div>
+            <div class="nm-pp-row" style="color:#94a3b8;"><span>P.A.Y.E</span><span>-N$ 412.50</span></div>
+            <div class="nm-pp-row" style="color:#94a3b8;"><span>SSC Employee</span><span>-N$ 90.00</span></div>
+            <div class="nm-pp-net" id="pp-net" style="background:#000000;">
+              <span class="nm-pp-net-label">NET PAY</span>
+              <span class="nm-pp-net-amount">N$ 9,497.50</span>
+            </div>
+            <div id="pp-emp-contrib" style="margin-top:8px;font-size:9px;color:#94a3b8;">
+              <strong style="color:#475569;">Employer Contributions</strong><br>
+              SSC Employer: N$ 90.00 &nbsp;·&nbsp; ECF: N$ 400.00
+            </div>
+            <div id="pp-leave" style="margin-top:6px;font-size:9px;color:#94a3b8;">
+              Annual Leave Taken: 0 day(s) &nbsp;·&nbsp; Sick Leave: 0 day(s)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Save button for the main settings form ─────────────────────── -->
       <div class="nm-submit-row">
         <button type="submit" class="nm-btn-primary">
-          <i class="bi bi-check2-all"></i> Save Company Settings
+          <i class="bi bi-check2-all"></i> Save Settings
         </button>
-        <span style="font-size:0.8rem;color:rgba(255,255,255,0.25);">Changes apply to the next payroll run.</span>
+        <span style="font-size:0.8rem;color:rgba(255,255,255,0.25);">Changes apply to the next payroll run and all future payslip downloads.</span>
       </div>
 
     </form>
 
-    <!-- ── Legal disclaimer ─────────────────────────────────────────────────── -->
+    <!-- ══ SECTION 5: Custom Pay Items (own form, outside main settings form) -->
+    <div id="custom-items" style="scroll-margin-top:80px; margin-top:32px;">
+      <div class="nm-section-label">Custom Payslip Line Items</div>
+
+      <div class="nm-form-card">
+        <div class="nm-form-card-header">
+          <span class="nm-form-card-icon" style="background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.2);color:#a78bfa;">
+            <i class="bi bi-sliders2-vertical"></i>
+          </span>
+          <div>
+            <div class="nm-form-card-title">Custom Earnings & Deductions</div>
+            <div class="nm-form-card-desc">
+              Add company-specific pay lines here. Each item becomes a named column on your payroll entry screen
+              and a named row on employee payslips. Examples: Housing Allowance, Car Allowance, Staff Loan Repayment, Union Dues.
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing items list -->
+        <%
+          const allItems = settings.customPayItems || [];
+          const activeItems   = allItems.filter(i => i.isActive);
+          const inactiveItems = allItems.filter(i => !i.isActive);
+        %>
+
+        <% if (activeItems.length > 0) { %>
+          <div style="padding:10px 20px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.2);">
+            Active — appear on next payroll run
+          </div>
+          <% activeItems.forEach(item => { %>
+            <div class="nm-item-row">
+              <span class="nm-custom-type-badge <%= item.type %>">
+                <% if (item.type === 'earning_taxable')    { %><i class="bi bi-arrow-up-circle-fill"></i> Taxable<% } %>
+                <% if (item.type === 'earning_nontaxable') { %><i class="bi bi-arrow-up-circle-fill"></i> Non-Taxable<% } %>
+                <% if (item.type === 'deduction')          { %><i class="bi bi-arrow-down-circle-fill"></i> Deduction<% } %>
+              </span>
+              <div style="flex:1;min-width:0;">
+                <div class="nm-item-name"><%= item.name %></div>
+                <div style="display:flex;gap:10px;align-items:center;margin-top:3px;">
+                  <span class="nm-item-mode">
+                    <% if (item.inputMode === 'fixed') { %>
+                      Fixed: N$ <%= (item.defaultAmount||0).toLocaleString('en-NA',{minimumFractionDigits:2}) %> per employee
+                    <% } else { %>
+                      Variable — entered per employee each run
+                    <% } %>
+                  </span>
+                  <% if (item.description) { %><span class="nm-item-desc"><%= item.description %></span><% } %>
+                </div>
+              </div>
+              <div class="nm-item-actions">
+                <form action="/settings/custom-items/<%= item._id %>/toggle" method="POST" style="display:inline;">
+                  <button type="submit" class="nm-item-btn toggle-on"><i class="bi bi-pause-fill"></i> Disable</button>
+                </form>
+                <form action="/settings/custom-items/<%= item._id %>/delete" method="POST" style="display:inline;"
+                  onsubmit="return confirm('Remove \'<%= item.name %>\' from future payroll runs?')">
+                  <button type="submit" class="nm-item-btn delete-btn"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+
+        <% if (inactiveItems.length > 0) { %>
+          <div style="padding:10px 20px 4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.15);margin-top:4px;">
+            Inactive — hidden from new runs
+          </div>
+          <% inactiveItems.forEach(item => { %>
+            <div class="nm-item-row inactive">
+              <span class="nm-custom-type-badge <%= item.type %>" style="opacity:0.5;">
+                <% if (item.type === 'earning_taxable')    { %>Taxable<% } %>
+                <% if (item.type === 'earning_nontaxable') { %>Non-Taxable<% } %>
+                <% if (item.type === 'deduction')          { %>Deduction<% } %>
+              </span>
+              <div style="flex:1;min-width:0;">
+                <div class="nm-item-name"><%= item.name %></div>
+              </div>
+              <div class="nm-item-actions">
+                <form action="/settings/custom-items/<%= item._id %>/toggle" method="POST" style="display:inline;">
+                  <button type="submit" class="nm-item-btn toggle-off"><i class="bi bi-play-fill"></i> Enable</button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+
+        <% if (allItems.length === 0) { %>
+          <div style="padding:32px 20px;text-align:center;color:rgba(255,255,255,0.25);font-size:0.855rem;">
+            <i class="bi bi-sliders" style="font-size:2rem;opacity:0.12;display:block;margin-bottom:12px;"></i>
+            No custom items yet.<br>Add your first item below — it will immediately appear as a column on your next payroll run.
+          </div>
+        <% } %>
+
+        <!-- Add new item form (separate POST — not inside the main settings form) -->
+        <form action="/settings/custom-items" method="POST">
+          <div class="nm-add-item-form">
+            <div class="nm-add-item-form-title"><i class="bi bi-plus-circle me-1"></i> Add New Item</div>
+
+            <!-- Type selector -->
+            <div class="nm-type-grid">
+              <div class="nm-type-option">
+                <input type="radio" name="type" id="type-taxable" value="earning_taxable" checked>
+                <label class="nm-type-label" for="type-taxable">
+                  <span class="nm-type-name" style="color:rgba(52,211,153,0.9);">Taxable Earning</span>
+                  <span class="nm-type-desc">Adds to gross pay and taxable income. Affects PAYE. E.g. Housing Allowance, Performance Bonus.</span>
+                </label>
+              </div>
+              <div class="nm-type-option">
+                <input type="radio" name="type" id="type-nontax" value="earning_nontaxable">
+                <label class="nm-type-label" for="type-nontax">
+                  <span class="nm-type-name" style="color:rgba(96,165,250,0.9);">Non-Taxable Earning</span>
+                  <span class="nm-type-desc">Adds to gross pay but exempt from PAYE. E.g. Travel Reimbursement, Subsistence Allowance.</span>
+                </label>
+              </div>
+              <div class="nm-type-option">
+                <input type="radio" name="type" id="type-ded" value="deduction">
+                <label class="nm-type-label" for="type-ded">
+                  <span class="nm-type-name" style="color:rgba(248,113,113,0.9);">Deduction</span>
+                  <span class="nm-type-desc">Reduces net pay. Not statutory. E.g. Staff Loan Repayment, Uniform Fee, Union Dues.</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="nm-field">
+                  <label class="nm-label">Item Name <span style="color:#f5a623;">*</span></label>
+                  <input type="text" name="name" class="nm-input" placeholder="e.g. Housing Allowance" required maxlength="60" />
+                  <div class="nm-hint">This exact name appears as the column header and on the payslip row.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="nm-field">
+                  <label class="nm-label">Input Mode</label>
+                  <select name="inputMode" class="nm-input" id="inputModeSelect">
+                    <option value="variable">Variable — enter per employee each run</option>
+                    <option value="fixed">Fixed — same amount for all employees</option>
+                  </select>
+                  <div class="nm-hint">Fixed items are pre-filled with the default amount but can still be overridden.</div>
+                </div>
+              </div>
+              <div class="col-md-2" id="defaultAmountField" style="display:none;">
+                <div class="nm-field">
+                  <label class="nm-label">Default Amount (N$)</label>
+                  <input type="number" name="defaultAmount" class="nm-input" value="0" min="0" step="0.01" placeholder="0.00" />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="nm-field">
+                  <label class="nm-label">Note <span style="color:rgba(255,255,255,0.3);font-weight:400;">(optional)</span></label>
+                  <input type="text" name="description" class="nm-input" placeholder="Short note for the payslip" maxlength="120" />
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <button type="submit" class="nm-btn-primary" style="padding:9px 22px;">
+                <i class="bi bi-plus-lg"></i> Add Item to Payroll
+              </button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <!-- ── End Custom Items ──────────────────────────────────────────────── -->
+
     <div class="nm-disclaimer">
       <i class="bi bi-info-square-fill"></i>
       <div>
-        <strong>Legal Compliance Note:</strong> In accordance with the <em>Namibian Income Tax Act</em> and <em>Social Security Act</em>, employers are responsible for the accurate deduction and timely remittance of P.A.Y.E and SSC contributions. Ensure all "Other Deductions" are supported by signed employee agreements before deducting.
+        <strong>Legal Compliance Note:</strong> In accordance with the <em>Namibian Income Tax Act</em> and <em>Social Security Act</em>, employers are responsible for the accurate deduction and timely remittance of P.A.Y.E and SSC contributions. Ensure all deductions are supported by signed employee agreements.
       </div>
     </div>
 
@@ -393,37 +610,50 @@
 </div>
 
 <script>
-  // ── SSC live preview ──────────────────────────────────────────────────────
   function updateSSCPreview() {
-    const rate = parseFloat(document.getElementById('sscRateInput').value) / 100 || 0;
-    const cap  = parseFloat(document.getElementById('sscCapInput').value)  || 0;
-    const max  = parseFloat(document.getElementById('sscMaxInput').value)  || 0;
-
-    const base = Math.min(cap, cap); // salary at cap level
-    const raw  = cap * rate;
-    const contribution = Math.min(raw, max).toFixed(2);
-
+    const rate         = parseFloat(document.getElementById('sscRateInput').value) / 100 || 0;
+    const cap          = parseFloat(document.getElementById('sscCapInput').value)  || 0;
+    const max          = parseFloat(document.getElementById('sscMaxInput').value)  || 0;
+    const contribution = Math.min(cap * rate, max).toFixed(2);
     document.getElementById('prev-cap').textContent     = cap.toLocaleString();
     document.getElementById('prev-emp-val').textContent = contribution;
     document.getElementById('prev-emr-val').textContent = contribution;
   }
 
-  // ── OT formula live example ───────────────────────────────────────────────
   function updateOTPreview() {
-    const days  = parseFloat(document.getElementById('workDays').value)      || 22;
-    const multi = parseFloat(document.getElementById('otMultiplier').value)  || 1.5;
-    const salary = 10000;
-
-    const hourly = salary / (days * 8);
-    const otRate = hourly * multi;
-
+    const days  = parseFloat(document.getElementById('workDays').value)     || 22;
+    const multi = parseFloat(document.getElementById('otMultiplier').value) || 1.5;
+    const hourly = 10000 / (days * 8);
     document.getElementById('ot-example').textContent =
-      `N$${hourly.toFixed(2)}/hr @ ${multi}× = N$${otRate.toFixed(2)}/hr OT`;
+      `N$${hourly.toFixed(2)}/hr @ ${multi}× = N$${(hourly * multi).toFixed(2)}/hr OT`;
   }
 
-  // Run on load
+  function syncAccent(hex)          { document.getElementById('accentHex').value = hex; updatePreview(); markActiveChip(hex); }
+  function syncAccentFromHex(val)   { if (/^#[0-9a-fA-F]{6}$/.test(val)) { document.getElementById('accentPicker').value = val; updatePreview(); markActiveChip(val); } }
+  function setPreset(hex)           { document.getElementById('accentPicker').value = hex; document.getElementById('accentHex').value = hex; updatePreview(); markActiveChip(hex); }
+  function markActiveChip(hex)      { document.querySelectorAll('.nm-preset-chip').forEach(c => c.classList.toggle('active', c.getAttribute('onclick') === `setPreset('${hex}')`)); }
+
+  function updatePreview() {
+    const hex       = document.getElementById('accentHex').value || '#000000';
+    const showEmp   = document.getElementById('togEmpCont').checked;
+    const showLeave = document.getElementById('togLeave').checked;
+    const showRef   = document.getElementById('togRef').checked;
+    document.getElementById('pp-bar').style.background  = hex;
+    document.getElementById('pp-sec').style.background  = hex;
+    document.getElementById('pp-net').style.background  = hex;
+    document.getElementById('pp-ref').style.display              = showRef   ? '' : 'none';
+    document.getElementById('pp-emp-contrib').style.display      = showEmp   ? '' : 'none';
+    document.getElementById('pp-leave').style.display            = showLeave ? '' : 'none';
+  }
+
+  // Show/hide default amount field
+  document.getElementById('inputModeSelect')?.addEventListener('change', function () {
+    document.getElementById('defaultAmountField').style.display = this.value === 'fixed' ? '' : 'none';
+  });
+
   updateSSCPreview();
   updateOTPreview();
+  updatePreview();
 </script>
 
 <%- include('../partials/footer') %>
